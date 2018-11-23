@@ -2,12 +2,12 @@ package com.company;
 
 public class Account {
 
-    boolean fullRights;
-    String name;
-    String password;
-    String phoneNumber;
-    String address;
-    String ssn;
+    private boolean fullRights;
+    private String name;
+    private String password;
+    private String phoneNumber;
+    private String address;
+    private String ssn;
     int userID;
     int userCount;
 }
