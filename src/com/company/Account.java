@@ -7,7 +7,7 @@ public class Account {
     private String password;
     private String phoneNumber;
     private String address;
-    private String sfffffffn;
+    private String ssn;
     int userID;
     int userCount;
 }
