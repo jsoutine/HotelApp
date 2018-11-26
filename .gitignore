@@ -1,5 +1,4 @@
 # Intellij
-.idea/
-*.iml
-*.iws
+.idea/workspace.xml
+out/
 artifacts/
