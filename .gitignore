@@ -1,4 +1,3 @@
 # Intellij
-.idea
-out/
+.idea/workspace.xml
 artifacts/
