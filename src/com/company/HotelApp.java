@@ -2,16 +2,23 @@ package com.company;
 
 import java.util.Scanner;
 
-public class HotelApp {
+public class Main {
+    private Scanner input = new Scanner(System.in);
 
     public static void main(String[] args) {
+        //Main myApp = new Main();
+        HotelLogistics logistics = new HotelLogistics();
 
-        System.out.println("\nWelcome dude. What's up?");
+        //================================= INITIALIZE OBJECTS ======================================================
 
-        Scanner input = new Scanner(System.in);
+        logistics.createObjects();
 
-        String reply = input.nextLine();
+        //============================ EXAMPLE OF LOG IN STRUCTURE =====================================================
 
-        System.out.println("Cool story dude.");
+        int id = 0;                     //Account identifier
+        String password = "admin";     //Account password
+        logistics.logIn(id, password);  //Method call
+
+        System.out.println("Just a print to see if log out returns to main.");
     }
 }
