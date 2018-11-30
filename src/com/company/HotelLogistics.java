@@ -84,15 +84,100 @@ import java.util.Scanner;
         }
 
         public void adminCustomers(Account loggedInAccount) {  //UNDER CONSTRUCTION
-            System.out.println("3.1. CUSTOMERS");
+            ArrayList<Account> methodList = new ArrayList<>();
+            String menuChoice;
+            boolean validateInput;
+            int intChoice = 0;  //for choosing a customer
+
+            do {
+                System.out.println("3.1. CUSTOMERS");
+
+                int countElements = 0;
+                for (Account x : accountList) {
+                    if (!x.isFullRights() && !x.isCancelledAccount()) {     //If account is not admin, and nor cancelled; add to new ArrayList (methodList)
+                        methodList.add(x);
+                        countElements++;
+                        System.out.printf("%-3s%s%n", Integer.toString(countElements).concat("."), x);
+                    }
+                }
+                if (methodList.isEmpty()) {
+                    System.out.println("Customer list is empty.");
+
+                } else {
+                    System.out.printf("%s%n",
+                            "1-n. Choose customer");
+                }
+                System.out.printf("%s%n%s%n%s%n",
+                        "A.   Add customer",
+                        "C.   Cancelled accounts",
+                        "0.   Back");
+                do { // do this while input is not numeric, or while input does not match accounts (1-n) or 0, A or C.
+                    menuChoice = input.nextLine();
+                    //=============================== ADD CUSTOMER ====================================================
+                    if (menuChoice.equalsIgnoreCase("A")) {
+                        System.out.println("INVOKE ADD CUSTOMER METHOD??");
+                        validateInput = true;
+                        //=========================== CANCELLED ACCOUNTS ===================================================
+                    } else if (menuChoice.equalsIgnoreCase("C")) {
+                        adminCancelledAccounts(loggedInAccount);
+                        validateInput = true;
+                        //============================== BACK =============================================================
+                    } else if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
+                        return;
+                        //========================== SPECIFIC CUSTOMER ===================================================
+                    } else {
+                        try {
+                            intChoice = Integer.parseInt(menuChoice);  // String -> int
+                            validateInput = true;
+                            if (intChoice < 1 || intChoice > methodList.size()) {
+                                validateInput = false;
+                                System.out.println("Choice did not match an alternative. Try again:");
+                                //} else {
+                                //    validateNumeric = true;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Choice did not match an alternative. Try again:");
+                            validateInput = false;
+                        }
+                        if (validateInput) {
+                            for (int i = 0; i < accountList.size(); i++) {
+                                if (methodList.get(intChoice - 1).getAccountID() == accountList.get(i).getAccountID()) {    //Find the corresponding account in the original list.
+                                    adminCustomer(accountList.get(i));   //Method call
+                                }
+                            }
+                        }
+                    }
+                } while (!validateInput);
+            }while(true); //Always loop, until menuChoice = 0 -> Return
+
+        }
+
+        public void adminCustomer(Account customer) {   //UNDER CONSTRUCTION
+            System.out.printf("%s%n%s%n%s%n%s%n",
+                    "3.1.2. CUSTOMER (Admin level)",
+                    customer,
+                    "NOT COMPLETE METHOD,",
+                    "Back (Enter)");
+            input.nextLine();
+        }
+
+        public void adminCancelledAccounts(Account loggedInAccount) {  //UNDER CONSTRUCTION
+            ArrayList<Account> cancelledAccounts = new ArrayList<>();
+            System.out.println("3.1.3. CANCELLED ACCOUNTS");
+            int countElements2 = 0;
             for (Account x : accountList) {
-                if (x.isFullRights() == false) {
-                    System.out.println(x);
+                if (x.isCancelledAccount() && !x.isFullRights()) {  //If account is cancelled and not admin
+                    cancelledAccounts.add(x);
+                    countElements2++;
+                    System.out.printf("%-3s%s%n", Integer.toString(countElements2).concat("."), x);
                 }
             }
-            System.out.println("Back (Enter)");
-            input.nextLine();
+            if (cancelledAccounts.isEmpty()) {
+                System.out.println("No cancelled accounts.");
 
+            }
+            System.out.println("NOT COMPLETE METHOD\n" + "Back (Enter)");
+            input.nextLine();
         }
 
         public void adminEditAccess() {  //STILL UNDER CONSTRUCTION
@@ -270,6 +355,32 @@ import java.util.Scanner;
                     }
                 } while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("0"));
             }while(!logout);
+        }
+
+        public void viewBookings(Account loggedIn) {
+            ArrayList <Booking> methodList = new ArrayList<>();
+            String menuChoice;
+            for (Room room : roomList) {
+                for (Booking booking : room.getRoomBookingList()) {
+                    if(loggedIn.isFullRights()) {
+                        methodList.add(booking);
+                    }else if (booking.getCustomer().getAccountID() == loggedIn.getAccountID()) {
+                        methodList.add(booking);
+                    }
+                }
+            }  //MAYBE ADD: SORTING DEPENDING ON FROM WHICH METHOD THIS METHOD IS INVOKED (compareTo)
+            if (methodList.isEmpty()) {
+                System.out.println("No bookings found.\n" + "Back (Enter)");
+                return;
+            }else{
+                for (int i = 0; i < methodList.size(); i++) {
+                    System.out.printf("%-4s%s%n", Integer.toString(i+1).concat(". "), methodList.get(i));
+
+                }
+                System.out.printf("%-4s%s%n", "0.", "Back (Enter");
+                menuChoice = input.nextLine();
+
+            }
         }
 
         public void bookingDates(Room room, Account customer, LocalDate fromDate, LocalDate toDate) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
