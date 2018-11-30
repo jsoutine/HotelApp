@@ -47,6 +47,10 @@ public class Account {
         }
     }
 
+    public boolean isCancelledAccount() {
+        return cancelledAccount;
+    }
+
     public String getPassword() {
         return password;
     }

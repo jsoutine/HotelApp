@@ -35,6 +35,10 @@ public class Booking {
         return toDate;
     }
 
+    public Account getCustomer(){
+        return customer;
+    }
+
     public String getPeriod() {
         //Period diff = Period.between(fromdate, toDate);  //Gets period divided in yy,mm,dd
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);  //ChronoUnit. To get time in only one unit, t.ex. days.
