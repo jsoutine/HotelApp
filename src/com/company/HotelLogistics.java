@@ -1,6 +1,7 @@
 package com.company;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -349,11 +350,40 @@ import java.util.Scanner;
                             logout = logOut();
                             break;
                         default:
-                            System.out.println("Invalid option. Typa a choice 0-3:");
+                            System.out.println("Invalid option. Type a a choice 0-3:");
                             break;
                     }
                 } while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("0"));
             }while(!logout);
+        }
+
+        public void makeBooking (Account concernedAccount) {
+            System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
+            LocalDate fromDate;
+            LocalDate toDate;
+            String date;
+            int year;
+            int month;
+            int day;
+            //String toD;
+            String beds;
+            String standard;
+            do{
+                System.out.println("Step 1/4. Enter date of desired arrival: (YY-MM-DD)" + "\nBack: 0");
+                date = input.nextLine();
+                String[] splitDate = date.split("-");    //Could also use charAt. T.ex. YYMMDD
+                try{
+                    year = Integer.parseInt("20" + splitDate[0]);
+                    month = Integer.parseInt(splitDate[1]);
+                    day = Integer.parseInt(splitDate[2]);
+                    fromDate= LocalDate.of(year, month, day);
+                }catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please type numeric values:");
+                }catch (DateTimeParseException e) {     //Or DateTimeException
+                    System.out.println("Invalid date. Please try again:");
+                }
+
+            }while(fromD.equals("0") || answer.equalsIgnoreCase("O"));
         }
 
         public void viewBookings(Account concernedAccount) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
@@ -414,7 +444,6 @@ import java.util.Scanner;
                             }
                         }
                     } while (!validateInput);
-
                 }
             }while(true);
         }
@@ -432,11 +461,13 @@ import java.util.Scanner;
                 System.out.println("Booking successful. Code 1");
                 return;
             } else if (room.getRoomBookingList().size() == 1) {                                        //Om bara finns en bokning i listan
-                if (toDate.isBefore(room.getRoomBookingList().get(0).getFromDate())) {                 //Om utcheck är innan existerande incheck
+                if (toDate.isEqual(room.getRoomBookingList().get(0).getFromDate()) ||                      // Om utchek är samma dag som existerande incheck
+                        toDate.isBefore(room.getRoomBookingList().get(0).getFromDate())) {                 //Om utcheck är innan existerande incheck
                     room.getRoomBookingList().add(0, new Booking(customer, room, fromDate, toDate));     //Lägg till innan existerande bokning i listan
                     System.out.println("Booking successful. Code 2");
                     return;
-                } else if (fromDate.isAfter(room.getRoomBookingList().get(0).getToDate())) {          //Om incheck är efter existerande utcheck.
+                } else if ( fromDate.isEqual(room.getRoomBookingList().get(0).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
+                        fromDate.isAfter(room.getRoomBookingList().get(0).getToDate())) {          //Om incheck är efter existerande utcheck.
                     room.getRoomBookingList().add(new Booking(customer, room, fromDate, toDate));             //Lägg till efter existerande bokning i listan.
                     System.out.println("Booking successful. Code 3");
                     return;
@@ -447,18 +478,23 @@ import java.util.Scanner;
             } else {
                 for (int i = 0; i < room.getRoomBookingList().size(); i++) {
 
-                    if ((i == 0) && (toDate.isBefore(room.getRoomBookingList().get(0).getFromDate()))) {      //Om index är 0 && Om utcheck är innan existerande incheck
+                    if ((i == 0) && (toDate.equals(room.getRoomBookingList().get(0).getFromDate()) ||    // Om index är 0 && Om utchek är samma dag som existerande incheck || utcheck är innan existerande incheck
+                            toDate.isBefore(room.getRoomBookingList().get(0).getFromDate()))) {
                         room.getRoomBookingList().add(0, new Booking(customer, room, fromDate, toDate));       //Lägg till innan existerande bokning i listan
                         System.out.println("Booking successful. Code 4 " + " Iteration " + i);
                         return;
                     } else if ((i > 0) && (i < room.getRoomBookingList().size() - 1)) {                                                                 // Om index är mer än 0 && index nite pekar på det sista objektet i listan.
-                        if (fromDate.isAfter(room.getRoomBookingList().get(i).getToDate()) && toDate.isBefore(room.getRoomBookingList().get(i + 1).getFromDate())) {  //Om incheck är är efter existerande utcheck i, och före existerande incheck i+1.)
+                        if ((fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
+                                fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) &&
+                                (toDate.equals(room.getRoomBookingList().get(i + 1).getFromDate()) ||                      // Om utchek är samma dag som existerande incheck
+                                        toDate.isBefore(room.getRoomBookingList().get(i + 1).getFromDate()))) {  //Om incheck är är efter existerande utcheck i, och före existerande incheck i+1.)
                             room.getRoomBookingList().add(i + 1, new Booking(customer, room, fromDate, toDate));                       //Lägg till efter bokning "i" (Finns ledigt mellan bokning i och bokning i+1
                             System.out.println("Booking successful. Code 5 " + " Iteration " + i);
                             return;
                         }
                     } else if (i == room.getRoomBookingList().size() - 1) {                      // If index points to last item in list.
-                        if (fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) {   //Om incheckning är efter existerande utcheck i.
+                        if (fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
+                                fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) {   //Om incheckning är efter existerande utcheck i.
                             room.getRoomBookingList().add(new Booking(customer, room, fromDate, toDate));
                             System.out.println("Booking successful. Code 6 " + " Iteration " + i);
                             return;
@@ -485,8 +521,19 @@ import java.util.Scanner;
             //============================ EXAMPLES OF ADDING ROOMS ======================================================
 
             roomList.add(new Room(2, 3));
-            roomList.add(new Room(1, 5));
+            roomList.add(new Room(1, 4));
             roomList.add(new Room(2, 2));
+            roomList.add(new Room(2, 1));
+            roomList.add(new Room(2, 2));
+            roomList.add(new Room(2, 3));
+            roomList.add(new Room(2, 4));
+            roomList.add(new Room(2, 5));
+            roomList.add(new Room(4, 1));
+            roomList.add(new Room(4, 2));
+            roomList.add(new Room(4, 3));
+            roomList.add(new Room(4, 4));
+            roomList.add(new Room(4, 5));
+
 
             //============================ EXAMPLE OF ADDING BOOKINGS ======================================================
 
@@ -496,7 +543,7 @@ import java.util.Scanner;
             try {    //                room       ,   customer
                 bookingDates(roomList.get(0), accountList.get(1), fromDate1, toDate1);
             } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED! " + e.getMessage());
+                System.out.println("BOOKING FAILED!1 " + e.getMessage());
             }
 
             LocalDate fromDate2 = LocalDate.of(2019, 2, 12);
@@ -504,23 +551,23 @@ import java.util.Scanner;
             try {
                 bookingDates(roomList.get(0), accountList.get(2), fromDate2, toDate2);
             } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED! " + e.getMessage());
+                System.out.println("BOOKING FAILED!2 " + e.getMessage());
             }
 
             LocalDate fromDate3 = LocalDate.of(2019, 7, 12);
             LocalDate toDate3 = LocalDate.of(2019, 7, 17);
             try {
-                bookingDates(roomList.get(1), accountList.get(3), fromDate3, toDate3);
+                bookingDates(roomList.get(0), accountList.get(3), fromDate3, toDate3);
             } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED! " + e.getMessage());
+                System.out.println("BOOKING FAILED!3 " + e.getMessage());
             }
 
             LocalDate fromDate4 = LocalDate.of(2019, 5, 12);
-            LocalDate toDate4 = LocalDate.of(2019, 5, 17);
+            LocalDate toDate4 = LocalDate.of(2019, 5, 18);
             try {
                 bookingDates(roomList.get(2), accountList.get(4), fromDate4, toDate4);
             } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED! " + e.getMessage());
+                System.out.println("BOOKING FAILED!4 " + e.getMessage());
             }
 
             LocalDate fromDate5 = LocalDate.of(2019, 6, 12);
@@ -528,66 +575,28 @@ import java.util.Scanner;
             try {
                 bookingDates(roomList.get(2), accountList.get(5), fromDate5, toDate5);
             } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED! " + e.getMessage());
+                System.out.println("BOOKING FAILED!5 " + e.getMessage());
             }
 
             LocalDate fromDate6 = LocalDate.of(2019, 5, 18);
             LocalDate toDate6 = LocalDate.of(2019, 5, 25);
             try {
-                bookingDates(roomList.get(2), accountList.get(4), fromDate6, toDate6);
+                bookingDates(roomList.get(0), accountList.get(4), fromDate6, toDate6);
             } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED! " + e.getMessage());
+                System.out.println("BOOKING FAILED!6 " + e.getMessage());
             }
 
             LocalDate fromDate7 = LocalDate.of(2019, 2, 1);
             LocalDate toDate7 = LocalDate.of(2019, 2, 6);
             try {
-                bookingDates(roomList.get(2), accountList.get(4), fromDate7, toDate7);
+                bookingDates(roomList.get(0), accountList.get(4), fromDate7, toDate7);
             } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED! " + e.getMessage());
+                System.out.println("BOOKING FAILED!7 " + e.getMessage());
             }
-
-
-
 
             //============================ EXAMPLES OF SETTING ACCOUNT AS ADMIN ============================================
 
             accountList.get(0).setFullRights(true);
 
-        /*============================ EXAMPLES OF PRINTING ============================================
-        System.out.println();
-
-        System.out.println("ACCOUNTS");
-        for (Account x : accountList) {
-            System.out.printf("%s%n", x);
-        }
-        System.out.println();
-
-        System.out.println("ADMINS");
-        for (Account x : accountList) {
-            if (x.isFullRights() == true) {
-                System.out.println(x);
-            }
-        }
-        System.out.println();
-
-        System.out.println("ROOMS");
-        for (Room x : roomList) {
-            System.out.printf("%s%n", x);
-        }
-        System.out.println();
-
-
-        System.out.println("BOOKINGS");
-        for (Booking x : roomList.get(0).getRoomBookingList()) {
-            System.out.printf("%s%n", x);
-        }
-
-
-        System.out.println("ACCOUNTS");
-        for (Account x : accountList) {
-            System.out.printf("%s%n", x);
-        }
-        */
         }
     }
