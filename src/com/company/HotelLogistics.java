@@ -66,7 +66,8 @@ import java.util.Scanner;
                             System.out.println("3.2. Rooms");
                             break;
                         case "3":
-                            System.out.println("3.3. Bookings");
+                            System.out.println("Method still under construction");
+                            viewBookings(loggedInAccount);
                             break;
                         case "4":
                             System.out.println("Method still under construction");
@@ -318,9 +319,7 @@ import java.util.Scanner;
                         }
                     }
                 }
-
-
-            } while (!loopEntireMethod);  // If chosen Back to 3.4.
+            } while (loopEntireMethod);  // If chosen Back to 3.4.
         }
 
         public void customerMainMenu (Account loggedInAccount) {
@@ -357,30 +356,74 @@ import java.util.Scanner;
             }while(!logout);
         }
 
-        public void viewBookings(Account loggedIn) {
-            ArrayList <Booking> methodList = new ArrayList<>();
-            String menuChoice;
-            for (Room room : roomList) {
-                for (Booking booking : room.getRoomBookingList()) {
-                    if(loggedIn.isFullRights()) {
-                        methodList.add(booking);
-                    }else if (booking.getCustomer().getAccountID() == loggedIn.getAccountID()) {
-                        methodList.add(booking);
+        public void viewBookings(Account concernedAccount) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
+            do {
+                if (concernedAccount.isFullRights()) {
+                    System.out.println("4.2. ALL BOOKINGS");
+                } else {
+                    System.out.println("4.2. BOOKINGS FOR: " + concernedAccount.getName());
+                }
+                ArrayList<Booking> methodList = new ArrayList<>();
+                String menuChoice;
+                boolean validateInput;
+                int intChoice = 0;
+                for (Room room : roomList) {
+                    for (Booking booking : room.getRoomBookingList()) {
+                        if (concernedAccount.isFullRights()) {
+                            methodList.add(booking);
+                        } else if (booking.getCustomer().getAccountID() == concernedAccount.getAccountID()) {
+                            methodList.add(booking);
+                        }
                     }
-                }
-            }  //MAYBE ADD: SORTING DEPENDING ON FROM WHICH METHOD THIS METHOD IS INVOKED (compareTo)
-            if (methodList.isEmpty()) {
-                System.out.println("No bookings found.\n" + "Back (Enter)");
-                return;
-            }else{
-                for (int i = 0; i < methodList.size(); i++) {
-                    System.out.printf("%-4s%s%n", Integer.toString(i+1).concat(". "), methodList.get(i));
+                }  //MAYBE ADD: SORTING DEPENDING ON FROM WHICH METHOD THIS METHOD IS INVOKED (compareTo). t.ex. by date rather than room->date
+                if (methodList.isEmpty()) {
+                    System.out.println("No bookings found.\n" + "Back (Enter)");
+                    return;
+                } else {
+                    for (int i = 0; i < methodList.size(); i++) {
+                        System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), methodList.get(i));
+
+                    }
+                    System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                    do {
+                        menuChoice = input.nextLine();
+                        if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
+                            return;
+                        } else {
+                            try {
+                                intChoice = Integer.parseInt(menuChoice);  // String -> int
+                                validateInput = true;
+                                if (intChoice < 1 || intChoice > methodList.size()) {
+                                    validateInput = false;
+                                    System.out.println("Choice did not match an alternative. Try again:");
+                                    //} else {
+                                    //    validateNumeric = true;
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Choice did not match an alternative. Try again:");
+                                validateInput = false;
+                            }
+                            if (validateInput) {
+                                for (Room room : roomList) {
+                                    for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+                                        if (methodList.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()){    //Find the corresponding account in the original list.
+                                            viewBooking(room.getRoomBookingList().get(i));   //Method call
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } while (!validateInput);
 
                 }
-                System.out.printf("%-4s%s%n", "0.", "Back (Enter");
-                menuChoice = input.nextLine();
+            }while(true);
+        }
 
-            }
+        public void viewBooking(Booking booking){
+            System.out.println("4.2.1. BOOKING");
+            System.out.println(booking);
+            System.out.println("Back (Enter)");
+            input.nextLine();
         }
 
         public void bookingDates(Room room, Account customer, LocalDate fromDate, LocalDate toDate) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
@@ -445,16 +488,67 @@ import java.util.Scanner;
             roomList.add(new Room(1, 5));
             roomList.add(new Room(2, 2));
 
-            //============================ EXAMPLE OF ADDING BOOKING ======================================================
+            //============================ EXAMPLE OF ADDING BOOKINGS ======================================================
 
             LocalDate fromDate1 = LocalDate.of(2019, 3, 12);
             LocalDate toDate1 = LocalDate.of(2019, 4, 11);
 
             try {    //                room       ,   customer
-                bookingDates(roomList.get(0), accountList.get(0), fromDate1, toDate1);
+                bookingDates(roomList.get(0), accountList.get(1), fromDate1, toDate1);
             } catch (IllegalArgumentException e) {
                 System.out.println("BOOKING FAILED! " + e.getMessage());
             }
+
+            LocalDate fromDate2 = LocalDate.of(2019, 2, 12);
+            LocalDate toDate2 = LocalDate.of(2019, 3, 11);
+            try {
+                bookingDates(roomList.get(0), accountList.get(2), fromDate2, toDate2);
+            } catch (IllegalArgumentException e) {
+                System.out.println("BOOKING FAILED! " + e.getMessage());
+            }
+
+            LocalDate fromDate3 = LocalDate.of(2019, 7, 12);
+            LocalDate toDate3 = LocalDate.of(2019, 7, 17);
+            try {
+                bookingDates(roomList.get(1), accountList.get(3), fromDate3, toDate3);
+            } catch (IllegalArgumentException e) {
+                System.out.println("BOOKING FAILED! " + e.getMessage());
+            }
+
+            LocalDate fromDate4 = LocalDate.of(2019, 5, 12);
+            LocalDate toDate4 = LocalDate.of(2019, 5, 17);
+            try {
+                bookingDates(roomList.get(2), accountList.get(4), fromDate4, toDate4);
+            } catch (IllegalArgumentException e) {
+                System.out.println("BOOKING FAILED! " + e.getMessage());
+            }
+
+            LocalDate fromDate5 = LocalDate.of(2019, 6, 12);
+            LocalDate toDate5 = LocalDate.of(2019, 6, 17);
+            try {
+                bookingDates(roomList.get(2), accountList.get(5), fromDate5, toDate5);
+            } catch (IllegalArgumentException e) {
+                System.out.println("BOOKING FAILED! " + e.getMessage());
+            }
+
+            LocalDate fromDate6 = LocalDate.of(2019, 5, 18);
+            LocalDate toDate6 = LocalDate.of(2019, 5, 25);
+            try {
+                bookingDates(roomList.get(2), accountList.get(4), fromDate6, toDate6);
+            } catch (IllegalArgumentException e) {
+                System.out.println("BOOKING FAILED! " + e.getMessage());
+            }
+
+            LocalDate fromDate7 = LocalDate.of(2019, 2, 1);
+            LocalDate toDate7 = LocalDate.of(2019, 2, 6);
+            try {
+                bookingDates(roomList.get(2), accountList.get(4), fromDate7, toDate7);
+            } catch (IllegalArgumentException e) {
+                System.out.println("BOOKING FAILED! " + e.getMessage());
+            }
+
+
+
 
             //============================ EXAMPLES OF SETTING ACCOUNT AS ADMIN ============================================
 

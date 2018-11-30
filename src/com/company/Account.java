@@ -79,7 +79,7 @@ public class Account {
         }else{
             rights = "Customer";
         }
-        return String.format( "%-9s%s%-20s%s%-4d%s%-10s", rights, "Name: ", name, "Account id: ", accountID, "Password: ", password);
+        return String.format("%-9s%s%-20s%s%-4d%s%-10s", rights, "Name: ", name, "Account id: ", accountID, "Password: ", password);
     }
 
 }
