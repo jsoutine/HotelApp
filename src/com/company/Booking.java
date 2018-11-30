@@ -24,7 +24,7 @@ public class Booking {
         }
         this.customer = customer;
         this.room = room;
-        bookingID = bookingIdCount++;
+        bookingID = ++bookingIdCount;
     }
 
     public LocalDate getFromDate() {
@@ -37,6 +37,10 @@ public class Booking {
 
     public Account getCustomer(){
         return customer;
+    }
+
+    public int getBookingID() {
+        return bookingID;
     }
 
     public String getPeriod() {
@@ -52,11 +56,8 @@ public class Booking {
 
     @Override
     public String toString(){
-        return String.format("%-10s%-20s%n%-10s%d%n%-10s%s%s%s%n%-10s%s%n%-10s%s%n",
-                "Customer: ", customer.getName(),
-                "Room: ", room.getRoomNumber(),
-                "Dates: ", fromDate, " to ", toDate,
-                "Period: ", getPeriod(),
-                "Time until: ", getTimeUntil());
+        StringBuilder dates = new StringBuilder().append(fromDate).append(" to ").append(toDate);
+
+        return String.format("%-28s%s%-4d%s%-6d%s%-25s%s%d%s", dates, "Room: ", room.getRoomNumber(), "Booking ID: ", bookingID, "Name: ", customer.getName(), "(Account ID: ", customer.getAccountID(), ")");
     }
 }
