@@ -34,6 +34,14 @@ public class Room {
         return roomNumber;
     }
 
+    public int getBeds() {
+        return beds;
+    }
+
+    public int getStandard() {
+        return standard;
+    }
+
     @Override
     public String toString(){
         return String.format ("%s%-4d%s%-2d%s%-2d", "Room number: ", roomNumber, "Beds: ", beds, "Standard: ", standard);
