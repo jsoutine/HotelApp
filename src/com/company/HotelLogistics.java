@@ -15,6 +15,7 @@ public class HotelLogistics {
     private Scanner input = new Scanner(System.in);
 
 
+    //2.1.
     public void logIn(int id, String password) {
         if (accountList.get(id).getPassword().equals(password)) {
             if (accountList.get(id).isFullRights()) {
@@ -28,6 +29,7 @@ public class HotelLogistics {
         }
     }
 
+    //3.4. & 4.5.
     public boolean logOut() {   //This method returns true if user choose to log out, and false if not.
         String menuChoice;
         boolean logout = false;
@@ -48,6 +50,7 @@ public class HotelLogistics {
         return logout;
     }
 
+    //3.
     public void adminMainMenu(Account loggedInAccount) {
         String menuChoice;
         boolean logout = false;
@@ -89,6 +92,7 @@ public class HotelLogistics {
         } while (!logout);
     }
 
+    //3.1.
     public void adminCustomers(Account loggedInAccount) {  //UNDER CONSTRUCTION
         ArrayList<Account> methodList = new ArrayList<>();
         String menuChoice;
@@ -158,16 +162,18 @@ public class HotelLogistics {
 
     }
 
+    //3.1.2.  & Ev 4.(Då krävs att metoden känner av om customer/admin)
     public void adminCustomer(Account customer) {   //UNDER CONSTRUCTION
         System.out.printf("%s%n%s%n%s%n%s%n",
                 "3.1.2. CUSTOMER (Admin level)",
                 customer,
-                "NOT COMPLETE METHOD,",
+                "NOT COMPLETE METHOD, 'Enter' will for now lead directly to 'Make booking' for this customer",
                 "Back (Enter)");
         input.nextLine();
         makeBooking(customer);
     }
 
+    //3.1.3.
     public void adminCancelledAccounts(Account loggedInAccount) {  //UNDER CONSTRUCTION
         ArrayList<Account> cancelledAccounts = new ArrayList<>();
         System.out.println("3.1.3. CANCELLED ACCOUNTS");
@@ -187,6 +193,7 @@ public class HotelLogistics {
         input.nextLine();
     }
 
+    //3.4. (Eventuellt lägga till: if index 0; not able to change -> En permanent admin.
     public void adminEditAccess() {  //STILL UNDER CONSTRUCTION
         ArrayList<Account> methodList = new ArrayList<>();
         // Vi kan skapa nya objekt (t.ex. ArrayLists) inuti metoder hur mycket vi vill utan att bekymra oss om
@@ -197,7 +204,7 @@ public class HotelLogistics {
         boolean validateNumeric;
         int intChoice = 0;
         String answer;
-        boolean validateInput2;
+        boolean validateInput;
         boolean loopEntireMethod = false;
         boolean admin = false;  //Used in method to determine if we are edting admin account(s) or customer account(s)
         do {
@@ -286,7 +293,7 @@ public class HotelLogistics {
                             System.out.printf("%s%n%s%n", "3.4.2.1. Set as admin? y/n", (methodList.get(intChoice - 1)));
                         }
                         do {  // do while input is not y/n
-                            validateInput2 = true;
+                            validateInput = true;
                             answer = input.nextLine();
                             switch (answer) {
                                 case "y":
@@ -318,16 +325,17 @@ public class HotelLogistics {
                                     return;
                                 default:
                                     System.out.println("Type an answer 'y' or 'n'");
-                                    validateInput2 = false;
+                                    validateInput = false;
                                     break;
                             }
-                        } while (!validateInput2);
+                        } while (!validateInput);
                     }
                 }
             }
         } while (loopEntireMethod);  // If chosen Back to 3.4.
     }
 
+    //4.
     public void customerMainMenu(Account loggedInAccount) {
         String menuChoice;
         boolean logout = false;
@@ -363,6 +371,7 @@ public class HotelLogistics {
         } while (!logout);
     }
 
+    //4.1.
     public void makeBooking(Account concernedAccount) {
         System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
         ArrayList<Booking> matchingResults = new ArrayList<>();
@@ -682,6 +691,7 @@ public class HotelLogistics {
         }
     }
 
+    //4.2.
     public void viewBookings(Account concernedAccount) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
         do {
             if (concernedAccount.isFullRights()) {
@@ -744,6 +754,7 @@ public class HotelLogistics {
         } while (true);
     }
 
+    //4.2.1.
     public void viewBooking(Booking booking) {
         System.out.println("4.2.1. BOOKING");
         System.out.println(booking);
