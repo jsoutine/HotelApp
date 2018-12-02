@@ -39,6 +39,10 @@ public class Booking {
         return customer;
     }
 
+    public Room getRoom(){
+        return room;
+    }
+
     public int getBookingID() {
         return bookingID;
     }
@@ -54,10 +58,13 @@ public class Booking {
         return String.format("%d%s%d%s%d%s", diff2.getYears()," years, ", diff2.getMonths(), " months and ", diff2.getDays(), " days.");
     }
 
+    public String getDates() {
+        StringBuilder dates = new StringBuilder().append(fromDate).append(" to ").append(toDate); //String concatenation using StringBuilder
+        return String.format("%s", dates);
+    }
+
     @Override
     public String toString(){
-        StringBuilder dates = new StringBuilder().append(fromDate).append(" to ").append(toDate);
-
-        return String.format("%-28s%s%-4d%s%-6d%s%-25s%s%d%s", dates, "Room: ", room.getRoomNumber(), "Booking ID: ", bookingID, "Name: ", customer.getName(), "(Account ID: ", customer.getAccountID(), ")");
+        return String.format("%-28s%s%-4d%s%-6d%s%-25s%s%d%s", getDates(), "Room: ", room.getRoomNumber(), "Booking ID: ", bookingID, "Name: ", customer.getName(), "(Account ID: ", customer.getAccountID(), ")");
     }
 }
