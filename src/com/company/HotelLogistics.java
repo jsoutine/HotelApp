@@ -911,11 +911,13 @@ public class HotelLogistics {
         accountList.get(0).setFullRights(true);
 
         //============================ CREATE STANDARD PRICE OBJECT ============================================
+
+
         StandardPrice standard1 = new StandardPrice(1, 999);
         StandardPrice standard2 = new StandardPrice(2, 1499);
         StandardPrice standard3 = new StandardPrice(3, 1999);
         StandardPrice standard4 = new StandardPrice(4, 2999);
-        StandardPrice standard5 = new StandardPrice(5, 4999);
+        StandardPrice standaggggggrd5 = new StandardPrice(5, 4999);
 
         //============================ CREATE BEDS OBJECT =======================================================
 
