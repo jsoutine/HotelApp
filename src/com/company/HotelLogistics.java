@@ -5,6 +5,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -162,7 +163,7 @@ public class HotelLogistics {
 
     }
 
-    //3.1.2.  & Ev 4.(Då krävs att metoden känner av om customer/admin)
+    //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
     public void adminCustomer(Account customer) {   //UNDER CONSTRUCTION
         System.out.printf("%s%n%s%n%s%n%s%n",
                 "3.1.2. CUSTOMER (Admin level)",
@@ -335,7 +336,7 @@ public class HotelLogistics {
         } while (loopEntireMethod);  // If chosen Back to 3.4.
     }
 
-    //4.
+    //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
     public void customerMainMenu(Account loggedInAccount) {
         String menuChoice;
         boolean logout = false;
@@ -382,7 +383,7 @@ public class HotelLogistics {
         int month;
         int day;
         int beds = 0;
-        int standard = 5;
+        int standard = 0;
         int bookingChoice = 0;
         boolean validateInput;
         boolean cancel;
@@ -691,7 +692,15 @@ public class HotelLogistics {
         }
     }
 
-    //4.2.
+    public double calculateBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {
+        double price = 0;
+        long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
+        price = (periodDays -1) * 
+        //nights x standard x beds
+        return price;
+    }
+
+    //4.2.  &&  3.3.)
     public void viewBookings(Account concernedAccount) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
         do {
             if (concernedAccount.isFullRights()) {
