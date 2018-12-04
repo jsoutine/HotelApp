@@ -743,7 +743,8 @@ public class HotelLogistics {
 
     public double calculateBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {
         double price = 0;
-        double standardPrice =
+        double standardPrice = (double)standardList.get(room.getStandard() -1);
+        double bedsConstant = (double)
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
         price = (periodDays -1) * 
         //nights x standard x beds
