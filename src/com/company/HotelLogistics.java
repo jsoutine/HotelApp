@@ -920,17 +920,31 @@ public class HotelLogistics {
         accountList.get(0).setFullRights(true);
 
         //============================ CREATE STANDARD PRICE OBJECT ============================================
+
+        standardList.add(new StandardPrice(1, 999));
+        standardList.add(new StandardPrice(2,1499));
+        standardList.add(new StandardPrice(3,1999));
+        standardList.add(new StandardPrice(4,2999));
+        standardList.add(new StandardPrice(5,4999));
+
+
         standardList.add(new StandardPrice(1, 999));
         StandardPrice standard2 = new StandardPrice(2, 1499);
         StandardPrice standard3 = new StandardPrice(3, 1999);
         StandardPrice standard4 = new StandardPrice(4, 2999);
         StandardPrice standard5 = new StandardPrice(5, 4999);
 
+
         //============================ CREATE BEDS OBJECT =======================================================
 
         bedConstantList.add(new BedPrices(1, 1));
+        bedConstantList.add(new BedPrices(2, 1.2));
+        bedConstantList.add(new BedPrices(4, 1.7));
+
+
         BedPrices beds2 = new BedPrices(2, 1.2);
         BedPrices beds4 = new BedPrices(4, 1.7);
+
 
     }
 
