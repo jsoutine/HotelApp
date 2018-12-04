@@ -13,8 +13,8 @@ public class HotelLogistics {
 
     private ArrayList<Account> accountList = new ArrayList<>();  //Lista över accounts.
     private ArrayList<Room> roomList = new ArrayList<>();        //Lista över rummen
-    private ArrayList bedConstantList = new ArrayList<>();
-    private ArrayList standardList = new ArrayList<>();
+    private ArrayList<BedPrices> bedConstantList = new ArrayList<>();
+    private ArrayList<StandardPrice> standardList = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
 
 
@@ -742,12 +742,17 @@ public class HotelLogistics {
     }
 
     public double calculateBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {
-        double price = 0;
-        double standardPrice = (double)standardList.get(room.getStandard() -1);
-        double bedsConstant = (double)
+        double price;
+        double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
-        price = (periodDays -1) * 
-        //nights x standard x beds
+            double standardPrice = standardList.get(room.getStandard()).getPrice();  //May throw IndexOutOfBoundsException if no match??
+        for (BedPrices beds : bedConstantList) {
+            if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
+                bedsConstant = beds.getConstant();
+                break;
+            }
+        }
+        price = (periodDays -1) * standardPrice * bedsConstant;   //nights x standard x beds
         return price;
     }
 
