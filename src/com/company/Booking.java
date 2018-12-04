@@ -10,6 +10,7 @@ public class Booking {
     private Account customer;
     private Room room;
     //private int price;
+    //private boolean confirmedBooking;  //To separate a confirmed booking from suggested bookings from search.
     private int bookingID;
     private static int bookingIdCount = 0;
     private static LocalDate today = LocalDate.now();

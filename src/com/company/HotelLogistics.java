@@ -13,8 +13,8 @@ public class HotelLogistics {
 
     private ArrayList<Account> accountList = new ArrayList<>();  //Lista över accounts.
     private ArrayList<Room> roomList = new ArrayList<>();        //Lista över rummen
-    private ArrayList bedConstantList = new ArrayList<>();
-    private ArrayList standardList = new ArrayList<>();
+    private ArrayList<BedPrices> bedConstantList = new ArrayList<>();
+    private ArrayList<StandardPrice> standardList = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
 
 
@@ -242,6 +242,7 @@ public class HotelLogistics {
         }
 
     }
+
 
     //3.4. (Eventuellt lägga till: if index 0; not able to change -> En permanent admin.
     public void adminEditAccess(){  //STILL UNDER CONSTRUCTION
@@ -570,6 +571,7 @@ public class HotelLogistics {
                     if (room.getBeds() >= beds) {      //HOW SHOULD WE FILTER SECOND HAND MATCHES?
                         if (checkDates(room, fromDate, toDate)) {
                             matchingResults.add(new Booking(concernedAccount, room, fromDate, toDate));
+                            break;
                         }
 
                     }
@@ -742,11 +744,17 @@ public class HotelLogistics {
     }
 
     public double calculateBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {
-        double price = 0;
-        double standardPrice =
+        double price;
+        double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
-        price = (periodDays -1) * 
-        //nights x standard x beds
+            double standardPrice = standardList.get(room.getStandard()).getPrice();  //May throw IndexOutOfBoundsException if no match??
+        for (BedPrices beds : bedConstantList) {
+            if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
+                bedsConstant = beds.getConstant();
+                break;
+            }
+        }
+        price = (periodDays -1) * standardPrice * bedsConstant;   //nights x standard x beds
         return price;
     }
 
@@ -921,24 +929,11 @@ public class HotelLogistics {
         standardList.add(new StandardPrice(4,2999));
         standardList.add(new StandardPrice(5,4999));
 
-
-        standardList.add(new StandardPrice(1, 999));
-        StandardPrice standard2 = new StandardPrice(2, 1499);
-        StandardPrice standard3 = new StandardPrice(3, 1999);
-        StandardPrice standard4 = new StandardPrice(4, 2999);
-        StandardPrice standard5 = new StandardPrice(5, 4999);
-
-
         //============================ CREATE BEDS OBJECT =======================================================
 
         bedConstantList.add(new BedPrices(1, 1));
         bedConstantList.add(new BedPrices(2, 1.2));
         bedConstantList.add(new BedPrices(4, 1.7));
-
-
-        BedPrices beds2 = new BedPrices(2, 1.2);
-        BedPrices beds4 = new BedPrices(4, 1.7);
-
 
     }
 
