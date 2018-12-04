@@ -194,8 +194,55 @@ public class HotelLogistics {
         input.nextLine();
     }
 
+    //3.2.4 (edit price)
+
+    public void editprices() {
+        int choice;
+
+        do {
+            System.out.printf("%s%n%s%n%s%n%s%n%s%n",
+                    "Edit price for",
+                    "Type a choice:",
+                    "1. standards",
+                    "2. beds.",
+                    "0. Back.");
+            choice = input.nextInt();
+
+            do {
+                switch (choice) {
+                    case 1:
+
+                        System.out.printf("%s%n%s%n",
+                                "choose standard 1-5",
+                                "Type a choice:");
+
+                        break;
+                    case 2:
+                        System.out.printf("%s%n%s%n",
+                                "choose beds 1, 2 or 4",
+                                "Type a choice:");
+
+                        break;
+
+                    case 0:
+                        return;
+                    break;
+
+                    default:
+                        System.out.println("Please enter 0-2");
+                        break;
+
+
+                }
+
+            }
+
+        }
+
+    }
+
     //3.4. (Eventuellt lägga till: if index 0; not able to change -> En permanent admin.
-    public void adminEditAccess() {  //STILL UNDER CONSTRUCTION
+    public void adminEditAccess(){  //STILL UNDER CONSTRUCTION
         ArrayList<Account> methodList = new ArrayList<>();
         // Vi kan skapa nya objekt (t.ex. ArrayLists) inuti metoder hur mycket vi vill utan att bekymra oss om
         //hur det påverkar det stora programmet, eftersom objekt som skapas i metoder dör när metoden avslutas.
@@ -858,9 +905,24 @@ public class HotelLogistics {
             System.out.println("BOOKING FAILED!7 " + e.getMessage());
         }
 
+
         //============================ EXAMPLES OF SETTING ACCOUNT AS ADMIN ============================================
 
         accountList.get(0).setFullRights(true);
 
+        //============================ CREATE STANDARD PRICE OBJECT ============================================
+        StandardPrice standard1 = new StandardPrice(1, 999);
+        StandardPrice standard2 = new StandardPrice(2, 1499);
+        StandardPrice standard3 = new StandardPrice(3, 1999);
+        StandardPrice standard4 = new StandardPrice(4, 2999);
+        StandardPrice standard5 = new StandardPrice(5, 4999);
+
+        //============================ CREATE BEDS OBJECT =======================================================
+
+        BedPrices beds1 = new BedPrices(1, 1);
+        BedPrices beds2 = new BedPrices(2, 1.2);
+        BedPrices beds4 = new BedPrices(4, 1.7);
+
     }
+
 }
