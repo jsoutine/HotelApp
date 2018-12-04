@@ -1,6 +1,6 @@
 package com.company;
 
-import java.lang.reflect.Array;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
@@ -13,6 +13,8 @@ public class HotelLogistics {
 
     private ArrayList<Account> accountList = new ArrayList<>();  //Lista över accounts.
     private ArrayList<Room> roomList = new ArrayList<>();        //Lista över rummen
+    private ArrayList bedConstantList = new ArrayList<>();
+    private ArrayList standardList = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
 
 
@@ -741,6 +743,7 @@ public class HotelLogistics {
 
     public double calculateBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {
         double price = 0;
+        double standardPrice =
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
         price = (periodDays -1) * 
         //nights x standard x beds
@@ -912,18 +915,19 @@ public class HotelLogistics {
 
         //============================ CREATE STANDARD PRICE OBJECT ============================================
 
+        standardList.add(new StandardPrice(1, 999));
+        standardList.add(new StandardPrice(2,1499));
+        standardList.add(new StandardPrice(3,1999));
+        standardList.add(new StandardPrice(4,2999));
+        standardList.add(new StandardPrice(5,4999));
 
-        StandardPrice standard1 = new StandardPrice(1, 999);
-        StandardPrice standard2 = new StandardPrice(2, 1499);
-        StandardPrice standard3 = new StandardPrice(3, 1999);
-        StandardPrice standard4 = new StandardPrice(4, 2999);
-        StandardPrice standaggggggrd5 = new StandardPrice(5, 4999);
 
         //============================ CREATE BEDS OBJECT =======================================================
 
-        BedPrices beds1 = new BedPrices(1, 1);
-        BedPrices beds2 = new BedPrices(2, 1.2);
-        BedPrices beds4 = new BedPrices(4, 1.7);
+        bedConstantList.add(new BedPrices(1, 1));
+        bedConstantList.add(new BedPrices(2, 1.2));
+        bedConstantList.add(new BedPrices(4, 1.7));
+
 
     }
 
