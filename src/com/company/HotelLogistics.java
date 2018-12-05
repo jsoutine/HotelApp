@@ -24,7 +24,7 @@ public class HotelLogistics {
             if (accountList.get(id).isFullRights()) {
                 adminMainMenu(accountList.get(id));
             } else {
-                System.out.println("Welcome " + accountList.get(id).getName());
+                System.out.println("\nWelcome " + accountList.get(id).getName() + "\n");
                 customerMainMenu(accountList.get(id));
             }
         } else {
