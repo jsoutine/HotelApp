@@ -7,7 +7,7 @@ public class Room {
     private static int roomCounter;
     private int beds;
     private int standard;
-    private ArrayList<Booking> roomBookingList = new ArrayList<>();
+    private ArrayList<BookingConfirm> roomBookingList = new ArrayList<>();
     //private int pricePerNight; Use enums for standard??
 
     public Room(int beds, int standard) {
@@ -26,7 +26,7 @@ public class Room {
         roomNumber = ++roomCounter;
     }
 
-    public ArrayList<Booking> getRoomBookingList(){
+    public ArrayList<BookingConfirm> getRoomBookingList(){
         return roomBookingList;
     }
 

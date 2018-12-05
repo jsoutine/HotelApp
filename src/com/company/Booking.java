@@ -7,15 +7,15 @@ import java.time.temporal.ChronoUnit;
 public class Booking {
     private LocalDate fromDate;
     private LocalDate toDate;
-    private Account customer;
+    //private Account customer;
     private Room room;
-    //private int price;
+    private double price;
     //private boolean confirmedBooking;  //To separate a confirmed booking from suggested bookings from search.
-    private int bookingID;
-    private static int bookingIdCount = 0;
+    //private int bookingID;
+    //private static int bookingIdCount = 0;
     private static LocalDate today = LocalDate.now();
 
-    public Booking (Account customer, Room room, LocalDate fromDate, LocalDate toDate) {
+    public Booking ( Room room, LocalDate fromDate, LocalDate toDate, double price) {
         if (fromDate.isAfter(toDate)   ||   fromDate.isBefore(today)) {
             throw new IllegalArgumentException(
                     "Unable to book: Your arrival date must be today or day to come, and your departure date must be after your arrival date.");
@@ -23,9 +23,10 @@ public class Booking {
             this.fromDate = fromDate;
             this.toDate = toDate;
         }
-        this.customer = customer;
+        //this.customer = customer;
         this.room = room;
-        bookingID = ++bookingIdCount;
+        this.price = price;
+        //bookingID = ++bookingIdCount;
     }
 
     public LocalDate getFromDate() {
@@ -36,17 +37,21 @@ public class Booking {
         return toDate;
     }
 
-    public Account getCustomer(){
+   /* public Account getCustomer(){
         return customer;
-    }
+    }*/
 
     public Room getRoom(){
         return room;
     }
 
-    public int getBookingID() {
-        return bookingID;
+    public double getPrice() {
+        return price;
     }
+
+    /*public int getBookingID() {
+        return bookingID;
+    }*/
 
     public String getPeriod() {
         //Period diff = Period.between(fromdate, toDate);  //Gets period divided in yy,mm,dd
@@ -65,7 +70,8 @@ public class Booking {
     }
 
     @Override
-    public String toString(){
-        return String.format("%-28s%s%-4d%s%-6d%s%-25s%s%d%s", getDates(), "Room: ", room.getRoomNumber(), "Booking ID: ", bookingID, "Name: ", customer.getName(), "(Account ID: ", customer.getAccountID(), ")");
+    public String toString(){                                       //Integer.toString(countElements2).concat(".")
+        String priceString = String.format("%.02f%s", price, " SEK");
+        return String.format("%-28s%s%-4d%s%-4d%s%13s", getDates(), "Room: ", room.getRoomNumber(), "Beds: ", room.getBeds(), "Price: ", priceString);
     }
 }
