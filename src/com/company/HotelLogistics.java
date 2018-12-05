@@ -197,7 +197,7 @@ public class HotelLogistics {
     }
 
     //3.2.4 (edit price)
-
+/*
     public void editprices() {
         int choice;
 
@@ -242,10 +242,11 @@ public class HotelLogistics {
         }
 
     }
+    */
 
 
     //3.4. (Eventuellt lägga till: if index 0; not able to change -> En permanent admin.
-    public void adminEditAccess(){  //STILL UNDER CONSTRUCTION
+    public void adminEditAccess() {  //STILL UNDER CONSTRUCTION
         ArrayList<Account> methodList = new ArrayList<>();
         // Vi kan skapa nya objekt (t.ex. ArrayLists) inuti metoder hur mycket vi vill utan att bekymra oss om
         //hur det påverkar det stora programmet, eftersom objekt som skapas i metoder dör när metoden avslutas.
@@ -560,7 +561,8 @@ public class HotelLogistics {
             for (Room room : roomList) {
                 if (room.getBeds() == beds && room.getStandard() == standard) {
                     if (checkDates(room, fromDate, toDate)) {
-                        matchingResults.add(new Booking(concernedAccount, room, fromDate, toDate));
+                        double price = calculateBookingPrice(fromDate, toDate, room);
+                        matchingResults.add(new Booking(room, fromDate, toDate, price));
                         break;
                     }
                 }
@@ -570,8 +572,8 @@ public class HotelLogistics {
                 for (Room room : roomList) {
                     if (room.getBeds() >= beds) {      //HOW SHOULD WE FILTER SECOND HAND MATCHES?
                         if (checkDates(room, fromDate, toDate)) {
-                            matchingResults.add(new Booking(concernedAccount, room, fromDate, toDate));
-                            break;
+                            double price = calculateBookingPrice(fromDate, toDate, room);
+                            matchingResults.add(new Booking(room, fromDate, toDate, price));
                         }
 
                     }
@@ -583,8 +585,7 @@ public class HotelLogistics {
             } else {
                 int countElements = 0;
                 for (Booking booking : matchingResults) {
-                    System.out.printf("%-4s%-28s%s%-4d%s%-4d%s%-4d%n", Integer.toString(++countElements).concat("."), booking.getDates(), "Room: ", booking.getRoom().getRoomNumber(),
-                            "Beds: ", booking.getRoom().getBeds(), "Standard: ", booking.getRoom().getStandard());
+                    System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
                 }
                 System.out.println("1-n: Make a booking from the list" + "\n0. Back");
             }
@@ -619,8 +620,8 @@ public class HotelLogistics {
                     case "Y":
                     case "y":
                         try {    // Maybe simplify, since basically: bookingDates(matchingResults)
-                            bookingDates(matchingResults.get(bookingChoice - 1).getRoom(), concernedAccount,
-                                    matchingResults.get(bookingChoice - 1).getFromDate(), matchingResults.get(bookingChoice - 1).getToDate());
+                            bookingDates(matchingResults.get(bookingChoice - 1).getRoom(),
+                                    matchingResults.get(bookingChoice - 1).getFromDate(), matchingResults.get(bookingChoice - 1).getToDate(), concernedAccount, matchingResults.get(bookingChoice - 1).getPrice());
                             validateInput = true;
                         } catch (IllegalArgumentException e) {
                             System.out.println("BOOKING FAILED!1 " + e.getMessage());
@@ -691,20 +692,20 @@ public class HotelLogistics {
     }
 
 
-    public void bookingDates(Room room, Account customer, LocalDate fromDate, LocalDate toDate) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
+    public void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, Account customer, double price) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
         if (room.getRoomBookingList().isEmpty()) {                                                  //Om bokningslistan för rummet är tom.
-            room.getRoomBookingList().add(new Booking(customer, room, fromDate, toDate));
+            room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price));
             System.out.println("Booking successful. Code 1");
             return;
         } else if (room.getRoomBookingList().size() == 1) {                                        //Om bara finns en bokning i listan
             if (toDate.isEqual(room.getRoomBookingList().get(0).getFromDate()) ||                      // Om utchek är samma dag som existerande incheck
                     toDate.isBefore(room.getRoomBookingList().get(0).getFromDate())) {                 //Om utcheck är innan existerande incheck
-                room.getRoomBookingList().add(0, new Booking(customer, room, fromDate, toDate));     //Lägg till innan existerande bokning i listan
+                room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price));     //Lägg till innan existerande bokning i listan
                 System.out.println("Booking successful. Code 2");
                 return;
             } else if (fromDate.isEqual(room.getRoomBookingList().get(0).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
                     fromDate.isAfter(room.getRoomBookingList().get(0).getToDate())) {          //Om incheck är efter existerande utcheck.
-                room.getRoomBookingList().add(new Booking(customer, room, fromDate, toDate));             //Lägg till efter existerande bokning i listan.
+                room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price));             //Lägg till efter existerande bokning i listan.
                 System.out.println("Booking successful. Code 3");
                 return;
             } else {
@@ -716,7 +717,7 @@ public class HotelLogistics {
 
                 if ((i == 0) && (toDate.equals(room.getRoomBookingList().get(0).getFromDate()) ||    // Om index är 0 && Om utchek är samma dag som existerande incheck || utcheck är innan existerande incheck
                         toDate.isBefore(room.getRoomBookingList().get(0).getFromDate()))) {
-                    room.getRoomBookingList().add(0, new Booking(customer, room, fromDate, toDate));       //Lägg till innan existerande bokning i listan
+                    room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price));       //Lägg till innan existerande bokning i listan
                     System.out.println("Booking successful. Code 4 " + " Iteration " + i);
                     return;
                 } else if ((i > 0) && (i < room.getRoomBookingList().size() - 1)) {                                                                 // Om index är mer än 0 && index nite pekar på det sista objektet i listan.
@@ -724,14 +725,14 @@ public class HotelLogistics {
                             fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) &&
                             (toDate.equals(room.getRoomBookingList().get(i + 1).getFromDate()) ||                      // Om utchek är samma dag som existerande incheck
                                     toDate.isBefore(room.getRoomBookingList().get(i + 1).getFromDate()))) {  //Om incheck är är efter existerande utcheck i, och före existerande incheck i+1.)
-                        room.getRoomBookingList().add(i + 1, new Booking(customer, room, fromDate, toDate));                       //Lägg till efter bokning "i" (Finns ledigt mellan bokning i och bokning i+1
+                        room.getRoomBookingList().add(i + 1, new BookingConfirm(room, fromDate, toDate, customer, price));                       //Lägg till efter bokning "i" (Finns ledigt mellan bokning i och bokning i+1
                         System.out.println("Booking successful. Code 5 " + " Iteration " + i);
                         return;
                     }
                 } else if (i == room.getRoomBookingList().size() - 1) {                      // If index points to last item in list.
                     if (fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
                             fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) {   //Om incheckning är efter existerande utcheck i.
-                        room.getRoomBookingList().add(new Booking(customer, room, fromDate, toDate));
+                        room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price));
                         System.out.println("Booking successful. Code 6 " + " Iteration " + i);
                         return;
                     } else {
@@ -747,14 +748,14 @@ public class HotelLogistics {
         double price;
         double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
-            double standardPrice = standardList.get(room.getStandard()).getPrice();  //May throw IndexOutOfBoundsException if no match??
+        double standardPrice = standardList.get(room.getStandard()-1).getPrice();  //May throw IndexOutOfBoundsException if no match??
         for (BedPrices beds : bedConstantList) {
             if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
                 bedsConstant = beds.getConstant();
                 break;
             }
         }
-        price = (periodDays -1) * standardPrice * bedsConstant;   //nights x standard x beds
+        price = (periodDays - 1) * standardPrice * bedsConstant;   //nights x standard x beds
         return price;
     }
 
@@ -766,12 +767,12 @@ public class HotelLogistics {
             } else {
                 System.out.println("4.2. BOOKINGS FOR: " + concernedAccount.getName());
             }
-            ArrayList<Booking> methodList = new ArrayList<>();
+            ArrayList<BookingConfirm> methodList = new ArrayList<>();
             String menuChoice;
             boolean validateInput;
             int intChoice = 0;
             for (Room room : roomList) {
-                for (Booking booking : room.getRoomBookingList()) {
+                for (BookingConfirm booking : room.getRoomBookingList()) {
                     if (concernedAccount.isFullRights()) {
                         methodList.add(booking);
                     } else if (booking.getCustomer().getAccountID() == concernedAccount.getAccountID()) {
@@ -856,6 +857,19 @@ public class HotelLogistics {
         roomList.add(new Room(4, 4));
         roomList.add(new Room(4, 5));
 
+        //============================ CREATE STANDARD PRICE OBJECT ============================================
+
+        standardList.add(new StandardPrice(1, 999));
+        standardList.add(new StandardPrice(2, 1499));
+        standardList.add(new StandardPrice(3, 1999));
+        standardList.add(new StandardPrice(4, 2999));
+        standardList.add(new StandardPrice(5, 4999));
+
+        //============================ CREATE BEDS OBJECT =======================================================
+
+        bedConstantList.add(new BedPrices(1, 1));
+        bedConstantList.add(new BedPrices(2, 1.2));
+        bedConstantList.add(new BedPrices(4, 1.7));
 
         //============================ EXAMPLE OF ADDING BOOKINGS ======================================================
 
@@ -863,7 +877,8 @@ public class HotelLogistics {
         LocalDate toDate1 = LocalDate.of(2019, 4, 11);
 
         try {    //                room       ,   customer
-            bookingDates(roomList.get(0), accountList.get(1), fromDate1, toDate1);
+            double price1 = calculateBookingPrice(fromDate1, toDate1, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate1, toDate1, accountList.get(1), price1 );
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!1 " + e.getMessage());
         }
@@ -871,7 +886,8 @@ public class HotelLogistics {
         LocalDate fromDate2 = LocalDate.of(2019, 2, 12);
         LocalDate toDate2 = LocalDate.of(2019, 3, 11);
         try {
-            bookingDates(roomList.get(0), accountList.get(2), fromDate2, toDate2);
+            double price2 = calculateBookingPrice(fromDate2, toDate2, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate2, toDate2, accountList.get(2), price2);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!2 " + e.getMessage());
         }
@@ -879,7 +895,8 @@ public class HotelLogistics {
         LocalDate fromDate3 = LocalDate.of(2019, 7, 12);
         LocalDate toDate3 = LocalDate.of(2019, 7, 17);
         try {
-            bookingDates(roomList.get(0), accountList.get(3), fromDate3, toDate3);
+            double price3 = calculateBookingPrice(fromDate3, toDate3, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate3, toDate3, accountList.get(3), price3);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!3 " + e.getMessage());
         }
@@ -887,7 +904,8 @@ public class HotelLogistics {
         LocalDate fromDate4 = LocalDate.of(2019, 5, 12);
         LocalDate toDate4 = LocalDate.of(2019, 5, 18);
         try {
-            bookingDates(roomList.get(2), accountList.get(4), fromDate4, toDate4);
+            double price4 = calculateBookingPrice(fromDate4, toDate4, roomList.get(2));
+            bookingDates(roomList.get(2), fromDate4, toDate4, accountList.get(4), price4);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!4 " + e.getMessage());
         }
@@ -895,7 +913,8 @@ public class HotelLogistics {
         LocalDate fromDate5 = LocalDate.of(2019, 6, 12);
         LocalDate toDate5 = LocalDate.of(2019, 6, 17);
         try {
-            bookingDates(roomList.get(2), accountList.get(5), fromDate5, toDate5);
+            double price5 = calculateBookingPrice(fromDate4, toDate4, roomList.get(2));
+            bookingDates(roomList.get(2), fromDate5, toDate5, accountList.get(5), price5);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!5 " + e.getMessage());
         }
@@ -903,7 +922,8 @@ public class HotelLogistics {
         LocalDate fromDate6 = LocalDate.of(2019, 5, 18);
         LocalDate toDate6 = LocalDate.of(2019, 5, 25);
         try {
-            bookingDates(roomList.get(0), accountList.get(4), fromDate6, toDate6);
+            double price6 = calculateBookingPrice(fromDate6, toDate6, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate6, toDate6, accountList.get(4), price6);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!6 " + e.getMessage());
         }
@@ -911,7 +931,8 @@ public class HotelLogistics {
         LocalDate fromDate7 = LocalDate.of(2019, 2, 1);
         LocalDate toDate7 = LocalDate.of(2019, 2, 6);
         try {
-            bookingDates(roomList.get(0), accountList.get(4), fromDate7, toDate7);
+            double price7 = calculateBookingPrice(fromDate7, toDate7, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate7, toDate7, accountList.get(4), price7);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!7 " + e.getMessage());
         }
@@ -920,20 +941,6 @@ public class HotelLogistics {
         //============================ EXAMPLES OF SETTING ACCOUNT AS ADMIN ============================================
 
         accountList.get(0).setFullRights(true);
-
-        //============================ CREATE STANDARD PRICE OBJECT ============================================
-
-        standardList.add(new StandardPrice(1, 999));
-        standardList.add(new StandardPrice(2,1499));
-        standardList.add(new StandardPrice(3,1999));
-        standardList.add(new StandardPrice(4,2999));
-        standardList.add(new StandardPrice(5,4999));
-
-        //============================ CREATE BEDS OBJECT =======================================================
-
-        bedConstantList.add(new BedPrices(1, 1));
-        bedConstantList.add(new BedPrices(2, 1.2));
-        bedConstantList.add(new BedPrices(4, 1.7));
 
     }
 
