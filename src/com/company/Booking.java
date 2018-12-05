@@ -72,6 +72,6 @@ public class Booking {
     @Override
     public String toString(){                                       //Integer.toString(countElements2).concat(".")
         String priceString = String.format("%.02f%s", price, " SEK");
-        return String.format("%-28s%s%-4d%s%-4d%s%13s", getDates(), "Room: ", room.getRoomNumber(), "Beds: ", room.getBeds(), "Price: ", priceString);
+        return String.format("%-28s%s%-4d%s%-4d%s%-4d%s%13s", getDates(), "Room: ", room.getRoomNumber(), "Beds: ", room.getBeds(), "Standard: ", room.getStandard(), "Price: ", priceString);
     }
 }

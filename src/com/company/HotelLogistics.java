@@ -3,7 +3,6 @@ package com.company;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -11,7 +10,8 @@ import java.util.Scanner;
 
 public class HotelLogistics {
 
-    private ArrayList<Account> accountList = new ArrayList<>();  //Lista över accounts.
+    private ArrayList<AccountCustomer> customerList = new ArrayList<>();  //Lista över kunder.
+    private ArrayList<AccountAdmin> adminList = new ArrayList<>();
     private ArrayList<Room> roomList = new ArrayList<>();        //Lista över rummen
     private ArrayList<BedPrices> bedConstantList = new ArrayList<>();
     private ArrayList<StandardPrice> standardList = new ArrayList<>();
@@ -19,18 +19,35 @@ public class HotelLogistics {
 
 
     //2.1.
-    public void logIn(int id, String password) {
-        if (accountList.get(id).getPassword().equals(password)) {
-            if (accountList.get(id).isFullRights()) {
-                adminMainMenu(accountList.get(id));
-            } else {
-                System.out.println("\nWelcome " + accountList.get(id).getName() + "\n");
-                customerMainMenu(accountList.get(id));
+    public void logIn(String id, String password) {
+        boolean match = true;
+        if (id.matches("C\\d+") || id.matches("c\\d+")) {
+            for (AccountCustomer customer : customerList) {
+                if (customer.getAccountID().equalsIgnoreCase(id) && customer.getPassword().equals(password)) {
+                    System.out.println("\nWelcome " + customer.getName() + "\n");
+                    customerMainMenu(customer);
+                    match = true;
+                }else{
+                    match = false;
+                }
+            }
+        } else if (id.matches("A\\d+") || id.matches("a\\d+")) {
+            for (AccountAdmin admin : adminList) {
+                if (admin.getAccountID().equalsIgnoreCase(id) && admin.getPassword().equals(password)) {
+                    adminMainMenu(admin);
+                    match = true;
+                }else {
+                    match = false;
+                }
             }
         } else {
-            System.out.println("Login failed. Check user id or password.\n");
+            match = false;
+        }
+        if(!match){
+            System.out.println("Login failed. Check user id and password.\n");
         }
     }
+
 
     //3.4. & 4.5.
     public boolean logOut() {   //This method returns true if user choose to log out, and false if not.
@@ -81,7 +98,7 @@ public class HotelLogistics {
                         break;
                     case "4":
                         System.out.println("Method still under construction");
-                        adminEditAccess();
+                        //adminEditAccess();
                         break;
                     case "0":
                         logout = logOut();
@@ -106,8 +123,8 @@ public class HotelLogistics {
             System.out.println("3.1. CUSTOMERS");
 
             int countElements = 0;
-            for (Account x : accountList) {
-                if (!x.isFullRights() && !x.isCancelledAccount()) {     //If account is not admin, and nor cancelled; add to new ArrayList (methodList)
+            for (AccountCustomer x : customerList) {
+                if (!x.isCancelledAccount()) {     //If account is not admin, and nor cancelled; add to new ArrayList (methodList)
                     methodList.add(x);
                     countElements++;
                     System.out.printf("%-3s%s%n", Integer.toString(countElements).concat("."), x);
@@ -153,9 +170,9 @@ public class HotelLogistics {
                         validateInput = false;
                     }
                     if (validateInput) {
-                        for (int i = 0; i < accountList.size(); i++) {
-                            if (methodList.get(intChoice - 1).getAccountID() == accountList.get(i).getAccountID()) {    //Find the corresponding account in the original list.
-                                adminCustomer(accountList.get(i));   //Method call
+                        for (int i = 0; i < customerList.size(); i++) {
+                            if (methodList.get(intChoice - 1).getAccountID().equalsIgnoreCase(customerList.get(i).getAccountID())) {    //Find the corresponding account in the original list.
+                                adminCustomer(customerList.get(i));   //Method call
                             }
                         }
                     }
@@ -166,7 +183,7 @@ public class HotelLogistics {
     }
 
     //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
-    public void adminCustomer(Account customer) {   //UNDER CONSTRUCTION
+    public void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
         System.out.printf("%s%n%s%n%s%n%s%n",
                 "3.1.2. CUSTOMER (Admin level)",
                 customer,
@@ -180,12 +197,12 @@ public class HotelLogistics {
     public void adminCancelledAccounts(Account loggedInAccount) {  //UNDER CONSTRUCTION
         ArrayList<Account> cancelledAccounts = new ArrayList<>();
         System.out.println("3.1.3. CANCELLED ACCOUNTS");
-        int countElements2 = 0;
-        for (Account x : accountList) {
-            if (x.isCancelledAccount() && !x.isFullRights()) {  //If account is cancelled and not admin
+        int countElements = 0;
+        for (AccountCustomer x : customerList) {
+            if (x.isCancelledAccount()) {  //If account is cancelled
                 cancelledAccounts.add(x);
-                countElements2++;
-                System.out.printf("%-3s%s%n", Integer.toString(countElements2).concat("."), x);
+                countElements++;
+                System.out.printf("%-3s%s%n", Integer.toString(countElements).concat("."), x);
             }
         }
         if (cancelledAccounts.isEmpty()) {
@@ -199,7 +216,8 @@ public class HotelLogistics {
     //3.2.4 (edit price)
 
 
-   public void editprices() {
+   /*
+    public void editprices() {
 
         int choice;
 
@@ -246,9 +264,11 @@ public class HotelLogistics {
 
 
     }
+*/
 
 
-    //3.4. (Eventuellt lägga till: if index 0; not able to change -> En permanent admin.
+   /*
+   //3.4. (Eventuellt lägga till: if index 0; not able to change -> En permanent admin.
     public void adminEditAccess() {  //STILL UNDER CONSTRUCTION
         ArrayList<Account> methodList = new ArrayList<>();
         // Vi kan skapa nya objekt (t.ex. ArrayLists) inuti metoder hur mycket vi vill utan att bekymra oss om
@@ -289,14 +309,14 @@ public class HotelLogistics {
             }
             while (!menuChoice.equals("1") && !menuChoice.equals("2"));  // Loop if haven't chosen to exit method in 3.4.
 
-            if (accountList.isEmpty()) {
+            if (customerList.isEmpty()) {
                 System.out.println("Account list is empty." + "\nBack (Enter)");
                 input.nextLine();
                 return;
             } else {
                 int countElements = 0;
                 if (admin) {
-                    for (Account x : accountList) {
+                    for (Account x : customerList) {
                         if (x.isFullRights() == true) {     //Add all admin accounts into a new ArrayList
                             methodList.add(x);              //Add all admin accounts into a new ArrayList
                             countElements++;                                 // count number of elements
@@ -304,7 +324,7 @@ public class HotelLogistics {
                         } //                              for representation: concat two String objects
                     }
                 } else {
-                    for (Account x : accountList) {
+                    for (Account x : customerList) {
                         if (x.isFullRights() == false) {     //Add all non-admin accounts into a new ArrayList
                             methodList.add(x);
                             countElements++;
@@ -353,12 +373,12 @@ public class HotelLogistics {
                             switch (answer) {
                                 case "y":
                                 case "Y":
-                                    for (int i = 0; i < accountList.size(); i++) {
-                                        if (methodList.get(intChoice - 1).getAccountID() == accountList.get(i).getAccountID()) {    //Find the corresponding account in the original list.
+                                    for (int i = 0; i < customerList.size(); i++) {
+                                        if (methodList.get(intChoice - 1).getAccountID() == customerList.get(i).getAccountID()) {    //Find the corresponding account in the original list.
                                             if (admin) {
-                                                accountList.get(i).setFullRights(false);                                                // make the changes in the account in the original list.
+                                                customerList.get(i).setFullRights(false);                                                // make the changes in the account in the original list.
                                             } else {
-                                                accountList.get(i).setFullRights(true);
+                                                customerList.get(i).setFullRights(true);
                                             }
                                         }
                                     }
@@ -389,9 +409,10 @@ public class HotelLogistics {
             }
         } while (loopEntireMethod);  // If chosen Back to 3.4.
     }
+    */
 
     //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
-    public void customerMainMenu(Account loggedInAccount) {
+    public void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
         boolean logout = false;
         do {
@@ -426,8 +447,9 @@ public class HotelLogistics {
         } while (!logout);
     }
 
+
     //4.1.
-    public void makeBooking(Account concernedAccount) {
+    public void makeBooking(AccountCustomer concernedAccount) {
         System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
         ArrayList<Booking> matchingResults = new ArrayList<>();
         LocalDate fromDate = LocalDate.of(2000, 1, 1);
@@ -578,9 +600,7 @@ public class HotelLogistics {
                             double price = calculateBookingPrice(fromDate, toDate, room);
                             matchingResults.add(new Booking(room, fromDate, toDate, price));
                         }
-
                     }
-
                 }
             }
             if (matchingResults.isEmpty()) {
@@ -695,7 +715,7 @@ public class HotelLogistics {
     }
 
 
-    public void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, Account customer, double price) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
+    public void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
         if (room.getRoomBookingList().isEmpty()) {                                                  //Om bokningslistan för rummet är tom.
             room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price));
             System.out.println("Booking successful. Code 1");
@@ -751,7 +771,7 @@ public class HotelLogistics {
         double price;
         double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
-        double standardPrice = standardList.get(room.getStandard()-1).getPrice();  //May throw IndexOutOfBoundsException if no match??
+        double standardPrice = standardList.get(room.getStandard() - 1).getPrice();  //May throw IndexOutOfBoundsException if no match??
         for (BedPrices beds : bedConstantList) {
             if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
                 bedsConstant = beds.getConstant();
@@ -763,12 +783,12 @@ public class HotelLogistics {
     }
 
     //4.2.  &&  3.3.)
-    public void viewBookings(Account concernedAccount) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
+    public void viewBookings(Account loggedIn) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
         do {
-            if (concernedAccount.isFullRights()) {
+            if (loggedIn instanceof AccountAdmin) {
                 System.out.println("4.2. ALL BOOKINGS");
             } else {
-                System.out.println("4.2. BOOKINGS FOR: " + concernedAccount.getName());
+                System.out.println("4.2. BOOKINGS FOR: " + loggedIn.getName());
             }
             ArrayList<BookingConfirm> methodList = new ArrayList<>();
             String menuChoice;
@@ -776,15 +796,16 @@ public class HotelLogistics {
             int intChoice = 0;
             for (Room room : roomList) {
                 for (BookingConfirm booking : room.getRoomBookingList()) {
-                    if (concernedAccount.isFullRights()) {
+                    if (loggedIn instanceof AccountAdmin) {
                         methodList.add(booking);
-                    } else if (booking.getCustomer().getAccountID() == concernedAccount.getAccountID()) {
+                    } else if (booking.getCustomer().getAccountID().equalsIgnoreCase(loggedIn.getAccountID())) {
                         methodList.add(booking);
                     }
                 }
             }  //MAYBE ADD: SORTING DEPENDING ON FROM WHICH METHOD THIS METHOD IS INVOKED (compareTo). t.ex. by date rather than room->date
             if (methodList.isEmpty()) {
                 System.out.println("No bookings found.\n" + "Back (Enter)");
+                input.nextLine();
                 return;
             } else {
                 for (int i = 0; i < methodList.size(); i++) {
@@ -835,14 +856,22 @@ public class HotelLogistics {
 
 
     public void createObjects() {
-        //============================ EXAMPLES OF ADDING ACCOUNTS =====================================================
+        //=================================== ADDING CUSTOMERS =====================================================
 
-        accountList.add(new Account("Admin", "045125033", "admin"));  //index 0 = Admin
-        accountList.add(new Account("Anton Göransson", "0703545036", "custom"));
-        accountList.add(new Account("Arnold Svensson", "0704565656", "custom"));
-        accountList.add(new Account("Erik Larsson", "0704576556", "custom"));
-        accountList.add(new Account("Elin Hansson", "0707676768", "custom"));
-        accountList.add(new Account("Lena Karlsson", "044343434", "custom"));
+        customerList.add(new AccountCustomer("Ron Burgundy", "045125033", "custom"));
+        customerList.add(new AccountCustomer("Anton Göransson", "0703545036", "custom"));
+        customerList.add(new AccountCustomer("Arnold Svensson", "0704565656", "custom"));
+        customerList.add(new AccountCustomer("Erik Larsson", "0704576556", "custom"));
+        customerList.add(new AccountCustomer("Elin Hansson", "0707676768", "custom"));
+        customerList.add(new AccountCustomer("Lena Karlsson", "044343434", "custom"));
+
+        //=================================== ADDING ADMINS =====================================================
+
+        adminList.add(new AccountAdmin("Admin", "044545454", "admin"));
+
+        //=================================== ADDING GUEST =====================================================
+
+        AccountGuest Guest = new AccountGuest("Guest");
 
         //============================ EXAMPLES OF ADDING ROOMS ======================================================
 
@@ -881,7 +910,7 @@ public class HotelLogistics {
 
         try {    //                room       ,   customer
             double price1 = calculateBookingPrice(fromDate1, toDate1, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate1, toDate1, accountList.get(1), price1 );
+            bookingDates(roomList.get(0), fromDate1, toDate1, customerList.get(1), price1);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!1 " + e.getMessage());
         }
@@ -890,7 +919,7 @@ public class HotelLogistics {
         LocalDate toDate2 = LocalDate.of(2019, 3, 11);
         try {
             double price2 = calculateBookingPrice(fromDate2, toDate2, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate2, toDate2, accountList.get(2), price2);
+            bookingDates(roomList.get(0), fromDate2, toDate2, customerList.get(2), price2);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!2 " + e.getMessage());
         }
@@ -899,7 +928,7 @@ public class HotelLogistics {
         LocalDate toDate3 = LocalDate.of(2019, 7, 17);
         try {
             double price3 = calculateBookingPrice(fromDate3, toDate3, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate3, toDate3, accountList.get(3), price3);
+            bookingDates(roomList.get(0), fromDate3, toDate3, customerList.get(3), price3);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!3 " + e.getMessage());
         }
@@ -908,7 +937,7 @@ public class HotelLogistics {
         LocalDate toDate4 = LocalDate.of(2019, 5, 18);
         try {
             double price4 = calculateBookingPrice(fromDate4, toDate4, roomList.get(2));
-            bookingDates(roomList.get(2), fromDate4, toDate4, accountList.get(4), price4);
+            bookingDates(roomList.get(2), fromDate4, toDate4, customerList.get(4), price4);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!4 " + e.getMessage());
         }
@@ -917,7 +946,7 @@ public class HotelLogistics {
         LocalDate toDate5 = LocalDate.of(2019, 6, 17);
         try {
             double price5 = calculateBookingPrice(fromDate4, toDate4, roomList.get(2));
-            bookingDates(roomList.get(2), fromDate5, toDate5, accountList.get(5), price5);
+            bookingDates(roomList.get(2), fromDate5, toDate5, customerList.get(5), price5);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!5 " + e.getMessage());
         }
@@ -926,7 +955,7 @@ public class HotelLogistics {
         LocalDate toDate6 = LocalDate.of(2019, 5, 25);
         try {
             double price6 = calculateBookingPrice(fromDate6, toDate6, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate6, toDate6, accountList.get(4), price6);
+            bookingDates(roomList.get(0), fromDate6, toDate6, customerList.get(4), price6);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!6 " + e.getMessage());
         }
@@ -935,15 +964,11 @@ public class HotelLogistics {
         LocalDate toDate7 = LocalDate.of(2019, 2, 6);
         try {
             double price7 = calculateBookingPrice(fromDate7, toDate7, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate7, toDate7, accountList.get(4), price7);
+            bookingDates(roomList.get(0), fromDate7, toDate7, customerList.get(4), price7);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!7 " + e.getMessage());
         }
 
-
-        //============================ EXAMPLES OF SETTING ACCOUNT AS ADMIN ============================================
-
-        accountList.get(0).setFullRights(true);
 
     }
 
