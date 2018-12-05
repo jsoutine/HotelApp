@@ -198,7 +198,7 @@ public class HotelLogistics {
 
     //3.2.4 (edit price)
 
-   /* public void editprices() {
+   /* public void editprices() {   // Lisa
         int choice;
 
         do {
@@ -871,12 +871,13 @@ public class HotelLogistics {
 
         roomList.add(new Room(4, 1));               //20
         roomList.add(new Room(4, 2));               //21
-        roomList.add(new Room(4, 3));               //22
+        roomList.add(new Room(4, 2));               //22
         roomList.add(new Room(4, 3));               //23
         roomList.add(new Room(4, 4));               //24
         roomList.add(new Room(4, 5));               //25
 
         //===================================== 6 ST 4 BEDS ROOM STANDARD 2-4========================================
+        //======================================SUM ROOMS = 25 =====================================================
 
 
         //============================ EXAMPLE OF ADDING BOOKINGS ======================================================
