@@ -11,17 +11,17 @@ public class Room {
     //private int pricePerNight; Use enums for standard??
 
     public Room(int beds, int standard) {
-        if (beds <= 0 || beds > 8) {
-            throw new IllegalArgumentException(
-                    "Number of beds in a room can only be 1-8.");
-        }else {
+        if(beds == 1 || beds == 2 || beds == 4) {
             this.beds = beds;
-        }
-        if (standard < 1 || standard > 5) {
+        }else{
             throw new IllegalArgumentException(
-                    "Standards only rank 1-5.");
-        }else {
+                    "Number of beds in a room can only be 1, 2 or 4.");
+        }
+        if (standard > 0 && standard < 6) {
             this.standard = standard;
+        }else {
+            throw new IllegalArgumentException(
+                "Standards only rank 1-5.");
         }
         roomNumber = ++roomCounter;
     }

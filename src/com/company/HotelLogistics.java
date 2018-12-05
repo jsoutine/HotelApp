@@ -1,10 +1,11 @@
 package com.company;
 
-import java.lang.reflect.Array;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,6 +13,8 @@ public class HotelLogistics {
 
     private ArrayList<Account> accountList = new ArrayList<>();  //Lista över accounts.
     private ArrayList<Room> roomList = new ArrayList<>();        //Lista över rummen
+    private ArrayList<BedPrices> bedConstantList = new ArrayList<>();
+    private ArrayList<StandardPrice> standardList = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
 
 
@@ -162,7 +165,7 @@ public class HotelLogistics {
 
     }
 
-    //3.1.2.  & Ev 4.(Då krävs att metoden känner av om customer/admin)
+    //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
     public void adminCustomer(Account customer) {   //UNDER CONSTRUCTION
         System.out.printf("%s%n%s%n%s%n%s%n",
                 "3.1.2. CUSTOMER (Admin level)",
@@ -193,8 +196,56 @@ public class HotelLogistics {
         input.nextLine();
     }
 
+    //3.2.4 (edit price)
+
+    public void editprices() {
+        int choice;
+
+        do {
+            System.out.printf("%s%n%s%n%s%n%s%n%s%n",
+                    "Edit price for",
+                    "Type a choice:",
+                    "1. standards",
+                    "2. beds.",
+                    "0. Back.");
+            choice = input.nextInt();
+
+            do {
+                switch (choice) {
+                    case 1:
+
+                        System.out.printf("%s%n%s%n",
+                                "choose standard 1-5",
+                                "Type a choice:");
+
+                        break;
+                    case 2:
+                        System.out.printf("%s%n%s%n",
+                                "choose beds 1, 2 or 4",
+                                "Type a choice:");
+
+                        break;
+
+                    case 0:
+                        return;
+                    break;
+
+                    default:
+                        System.out.println("Please enter 0-2");
+                        break;
+
+
+                }
+
+            }
+
+        }
+
+    }
+
+
     //3.4. (Eventuellt lägga till: if index 0; not able to change -> En permanent admin.
-    public void adminEditAccess() {  //STILL UNDER CONSTRUCTION
+    public void adminEditAccess(){  //STILL UNDER CONSTRUCTION
         ArrayList<Account> methodList = new ArrayList<>();
         // Vi kan skapa nya objekt (t.ex. ArrayLists) inuti metoder hur mycket vi vill utan att bekymra oss om
         //hur det påverkar det stora programmet, eftersom objekt som skapas i metoder dör när metoden avslutas.
@@ -335,7 +386,7 @@ public class HotelLogistics {
         } while (loopEntireMethod);  // If chosen Back to 3.4.
     }
 
-    //4.
+    //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
     public void customerMainMenu(Account loggedInAccount) {
         String menuChoice;
         boolean logout = false;
@@ -382,7 +433,7 @@ public class HotelLogistics {
         int month;
         int day;
         int beds = 0;
-        int standard = 5;
+        int standard = 0;
         int bookingChoice = 0;
         boolean validateInput;
         boolean cancel;
@@ -520,6 +571,7 @@ public class HotelLogistics {
                     if (room.getBeds() >= beds) {      //HOW SHOULD WE FILTER SECOND HAND MATCHES?
                         if (checkDates(room, fromDate, toDate)) {
                             matchingResults.add(new Booking(concernedAccount, room, fromDate, toDate));
+                            break;
                         }
 
                     }
@@ -691,7 +743,22 @@ public class HotelLogistics {
         }
     }
 
-    //4.2.
+    public double calculateBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {
+        double price;
+        double bedsConstant = 1;
+        long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
+            double standardPrice = standardList.get(room.getStandard()).getPrice();  //May throw IndexOutOfBoundsException if no match??
+        for (BedPrices beds : bedConstantList) {
+            if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
+                bedsConstant = beds.getConstant();
+                break;
+            }
+        }
+        price = (periodDays -1) * standardPrice * bedsConstant;   //nights x standard x beds
+        return price;
+    }
+
+    //4.2.  &&  3.3.)
     public void viewBookings(Account concernedAccount) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
         do {
             if (concernedAccount.isFullRights()) {
@@ -849,9 +916,25 @@ public class HotelLogistics {
             System.out.println("BOOKING FAILED!7 " + e.getMessage());
         }
 
+
         //============================ EXAMPLES OF SETTING ACCOUNT AS ADMIN ============================================
 
         accountList.get(0).setFullRights(true);
 
+        //============================ CREATE STANDARD PRICE OBJECT ============================================
+
+        standardList.add(new StandardPrice(1, 999));
+        standardList.add(new StandardPrice(2,1499));
+        standardList.add(new StandardPrice(3,1999));
+        standardList.add(new StandardPrice(4,2999));
+        standardList.add(new StandardPrice(5,4999));
+
+        //============================ CREATE BEDS OBJECT =======================================================
+
+        bedConstantList.add(new BedPrices(1, 1));
+        bedConstantList.add(new BedPrices(2, 1.2));
+        bedConstantList.add(new BedPrices(4, 1.7));
+
     }
+
 }
