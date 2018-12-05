@@ -832,21 +832,43 @@ public class HotelLogistics {
         accountList.add(new Account("Elin Hansson", "0707676768", "custom"));
         accountList.add(new Account("Lena Karlsson", "044343434", "custom"));
 
-        //============================ EXAMPLES OF ADDING ROOMS ======================================================
+        //============================ EXAMPLES OF ADDING ROOMS =====================================================
 
-        roomList.add(new Room(2, 3));
-        roomList.add(new Room(1, 4));
-        roomList.add(new Room(2, 2));
-        roomList.add(new Room(2, 1));
-        roomList.add(new Room(2, 2));
-        roomList.add(new Room(2, 3));
-        roomList.add(new Room(2, 4));
-        roomList.add(new Room(2, 5));
-        roomList.add(new Room(4, 1));
-        roomList.add(new Room(4, 2));
-        roomList.add(new Room(4, 3));
-        roomList.add(new Room(4, 4));
-        roomList.add(new Room(4, 5));
+
+
+        roomList.add(new Room(1, 1));               //1
+        roomList.add(new Room(1, 1));               //2
+        roomList.add(new Room(1, 2));               //3
+        roomList.add(new Room(1, 2));               //4
+
+        //================================== 4 ST SINGELROOM. STANDARD 1-3 =========================================
+
+        roomList.add(new Room(2, 1));               //5
+        roomList.add(new Room(2, 1));               //6
+        roomList.add(new Room(2, 1));               //7
+        roomList.add(new Room(2, 2));               //8
+        roomList.add(new Room(2, 2));               //9
+        roomList.add(new Room(2, 2));               //10
+        roomList.add(new Room(2, 2));               //11
+        roomList.add(new Room(2, 2));               //12
+        roomList.add(new Room(2, 3));               //13
+        roomList.add(new Room(2, 3));               //14
+        roomList.add(new Room(2, 3));               //15
+        roomList.add(new Room(2, 4));               //16
+        roomList.add(new Room(2, 4));               //17
+        roomList.add(new Room(2, 5));               //18
+        roomList.add(new Room(2, 5));               //19
+
+        //===================================== 15 ST DOUBLE ROOM STANDARD 1-5=======================================
+
+        roomList.add(new Room(4, 1));               //20
+        roomList.add(new Room(4, 2));               //21
+        roomList.add(new Room(4, 3));               //22
+        roomList.add(new Room(4, 3));               //23
+        roomList.add(new Room(4, 4));               //24
+        roomList.add(new Room(4, 5));               //25
+
+        //===================================== 6 ST 4 BEDS ROOM STANDARD 2-4========================================
 
 
         //============================ EXAMPLE OF ADDING BOOKINGS ======================================================
