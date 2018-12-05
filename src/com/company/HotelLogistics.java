@@ -23,7 +23,7 @@ public class HotelLogistics {
         boolean match = true;
         if (id.matches("C\\d+") || id.matches("c\\d+")) {
             for (AccountCustomer customer : customerList) {
-                if (customer.getAccountID().equalsIgnoreCase(id) && customer.getPassword().equals(password)) {
+                if (customer.getAccountID().equalsIgnoreCase(id) && customer.getPassword().equals(password) && !customer.isCancelledAccount()) {
                     System.out.println("\nWelcome " + customer.getName() + "\n");
                     customerMainMenu(customer);
                     match = true;
@@ -33,7 +33,7 @@ public class HotelLogistics {
             }
         } else if (id.matches("A\\d+") || id.matches("a\\d+")) {
             for (AccountAdmin admin : adminList) {
-                if (admin.getAccountID().equalsIgnoreCase(id) && admin.getPassword().equals(password)) {
+                if (admin.getAccountID().equalsIgnoreCase(id) && admin.getPassword().equals(password) && !admin.isCancelledAccount()) {
                     adminMainMenu(admin);
                     match = true;
                 }else {
