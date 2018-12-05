@@ -24,11 +24,11 @@ public class HotelLogistics {
             if (accountList.get(id).isFullRights()) {
                 adminMainMenu(accountList.get(id));
             } else {
-                System.out.println("Welcome " + accountList.get(id).getName());
+                System.out.println("\nWelcome " + accountList.get(id).getName() + "\n");
                 customerMainMenu(accountList.get(id));
             }
         } else {
-            System.out.println("Login failed. Check user id or password.");
+            System.out.println("Login failed. Check user id or password.\n");
         }
     }
 
@@ -197,8 +197,10 @@ public class HotelLogistics {
     }
 
     //3.2.4 (edit price)
-/*
-    public void editprices() {
+
+
+   public void editprices() {
+
         int choice;
 
         do {
@@ -240,9 +242,10 @@ public class HotelLogistics {
             }
 
         }
+    }
+
 
     }
-    */
 
 
     //3.4. (Eventuellt lägga till: if index 0; not able to change -> En permanent admin.
