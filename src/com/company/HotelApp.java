@@ -37,26 +37,27 @@ public class HotelApp {
 
             switch (selection) {
                 case 1:
-                    do {
+                    //do {
                         System.out.print("Please enter your user ID: ");
                         answerID = myApp.input.nextLine();
-                        try {
+                       /* try {
                             intAnswer = Integer.parseInt(answerID);
                             validateInput = true;
                         } catch (NumberFormatException e) {
                             System.out.println("\nYour user ID is the number you received while creating your account. Try again. \n");
                             validateInput = false;
                         }
-                    } while (!validateInput);
+                    } while (!validateInput);*/
 
                     System.out.print("Please enter your password: ");
                     password = myApp.input.nextLine();
-                    logistics.logIn(intAnswer, password);
-                    if (password.equals("custom")) { //This shit ain't pretty, vi ändrar det tillsammans. -J
+                    logistics.logIn(answerID, password);
+                  /*  if (password.equals("custom")) { //This shit ain't pretty, vi ändrar det tillsammans. -J
                         validMenu = true;
                     } else {
                         validMenu = false;
-                    }
+                    }*/
+                  validMenu = false;
                     break;
 
                 case 2:
