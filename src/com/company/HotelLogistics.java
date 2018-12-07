@@ -1,6 +1,8 @@
 package com.company;
 
 
+import com.sun.jdi.IntegerType;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class HotelLogistics {
+
 
     private ArrayList<Account> accountList = new ArrayList<>();  //Lista över accounts.
     private ArrayList<Room> roomList = new ArrayList<>();        //Lista över rummen
@@ -74,6 +77,7 @@ public class HotelLogistics {
                         break;
                     case "2":
                         System.out.println("3.2. Rooms");
+                        editRoomInfo(roomList.get(2));
                         break;
                     case "3":
                         System.out.println("Method still under construction");
@@ -754,7 +758,7 @@ public class HotelLogistics {
         double price;
         double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
-        double standardPrice = standardList.get(room.getStandard()-1).getPrice();  //May throw IndexOutOfBoundsException if no match??
+        double standardPrice = standardList.get(room.getStandard() - 1).getPrice();  //May throw IndexOutOfBoundsException if no match??
         for (BedPrices beds : bedConstantList) {
             if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
                 bedsConstant = beds.getConstant();
@@ -836,6 +840,93 @@ public class HotelLogistics {
         input.nextLine();
     }
 
+    // 3.2.3.1
+    public void editRoomInfo(Room room) {
+        String anwser;
+        int intAnwser;
+
+        boolean validate = false;
+        do {
+            System.out.printf("%s%n%s%s%n%s%n%s%n%s%n",
+                    "Edit room info: ",
+                    "1: Edit beds",
+                    "2: Edit standard ",
+                    "3: Remove room",
+                    "4: View bookings",
+                    "0. Back");
+            do {
+                anwser = input.nextLine();
+
+                switch (anwser) {
+                    case "1":
+                        System.out.println("Edit number of beds for room " + room.getRoomNumber());
+                        do {
+                            System.out.println("Type in new number of beds for this room: ");
+                            anwser = input.nextLine();
+                            try {
+                                intAnwser = Integer.parseInt(anwser);
+                                room.setBeds(intAnwser);
+                                validate = true;
+
+                            } catch (NumberFormatException e) {
+                                System.out.println("Answer must be digits.");
+                                validate = false;
+
+                            } catch (IllegalArgumentException b) {
+                                System.out.println(b.getMessage());
+                                validate = false;
+                            }
+
+                        } while (!validate);
+                        break;
+                    case "2":
+                        System.out.println("Edit standard for the room" + room.getStandard());
+
+                        do {
+                            System.out.println("Type in new standard for the room ");
+                            anwser = input.nextLine();
+
+                            try {
+                                intAnwser = Integer.parseInt(anwser);
+                                room.setStandard(intAnwser);
+                                validate = true;
+
+                            } catch (NumberFormatException a) {
+                                System.out.println("Answer must be digits.");
+                                validate = false;
+
+                            } catch (IllegalArgumentException b) {
+                                System.out.println(b.getMessage());
+                                validate = false;
+
+                            }
+                        } while (!validate);
+                        break;
+
+                    case "3":
+                        room.getRoomBookingList().isEmpty(); //kalla dagens datum och fram.
+                      //  do {
+                    System.out.println("Are you sure that you would like to remove your room");
+                    break;
+
+                    case "4":
+                        break;
+
+                    case "0":
+                        System.out.println("Back (Enter)");
+                        input.nextLine();
+                        return;
+
+                    default:
+                        System.out.println("Not correct anwser, please enter 0-2");
+                        validate = false;
+
+                        break;
+                }
+
+            } while (!validate);
+        } while (true);
+    }
 
     public void createObjects() {
         //============================ EXAMPLES OF ADDING ACCOUNTS =====================================================
@@ -848,7 +939,6 @@ public class HotelLogistics {
         accountList.add(new Account("Lena Karlsson", "044343434", "custom"));
 
         //============================ EXAMPLES OF ADDING ROOMS =====================================================
-
 
 
         roomList.add(new Room(1, 1));               //1
@@ -907,7 +997,7 @@ public class HotelLogistics {
 
         try {    //                room       ,   customer
             double price1 = calculateBookingPrice(fromDate1, toDate1, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate1, toDate1, accountList.get(1), price1 );
+            bookingDates(roomList.get(0), fromDate1, toDate1, accountList.get(1), price1);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!1 " + e.getMessage());
         }
