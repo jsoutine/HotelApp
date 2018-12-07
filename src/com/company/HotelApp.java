@@ -1,5 +1,8 @@
 package com.company;
 
+import java.awt.print.Book;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class HotelApp {
@@ -16,7 +19,7 @@ public class HotelApp {
 
         //============================ EXAMPLE OF LOG IN STRUCTURE =====================================================
 
-        int selection;
+        String selection;
         int intAnswer = 0;
         String answerID;
         String password;
@@ -32,11 +35,10 @@ public class HotelApp {
                     "3. View available rooms",
                     "4. Exit");
 
-            selection = myApp.input.nextInt();
-            myApp.input.nextLine();
+            selection = myApp.input.nextLine();
 
             switch (selection) {
-                case 1:
+                case "1":
                     //do {
                         System.out.print("Please enter your user ID: ");
                         answerID = myApp.input.nextLine();
@@ -60,7 +62,7 @@ public class HotelApp {
                   validMenu = false;
                     break;
 
-                case 2:
+                case "2":
                     //myApp.input.nextLine();
                     System.out.printf("%s%n%s", "Welcome new guest. You will be assigned a unique user ID.", "Enter your desired password: ");
                     myApp.input.nextLine();
@@ -68,12 +70,23 @@ public class HotelApp {
                     validMenu = false;
                     break;
 
-                case 3:
-                    System.out.println("\nSorry, there are no available rooms at this time.\n");
+                case "3":
+                    System.out.println("2.3. Search for available rooms. Note: Need to register to book.");
+                    ArrayList<Booking> matchingResults = logistics.searchBooking(); //Method call
+                    if (matchingResults.isEmpty()) {
+                        System.out.println("No results" + "\n Back (Enter)");
+                    } else {
+                        int countElements = 0;
+                        for (Booking booking : matchingResults) {
+                            System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
+                        }
+                        System.out.println(("Add something about guest has to become registred user to make any of the suggested bookings. \nBack(Enter)"));
+                        myApp.input.nextLine();
+                    }
                     validMenu = false;
                     break;
 
-                case 4:
+                case "4":
                     return;
 
                 default:

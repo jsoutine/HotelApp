@@ -27,7 +27,7 @@ public class HotelLogistics {
                     System.out.println("\nWelcome " + customer.getName() + "\n");
                     customerMainMenu(customer);
                     match = true;
-                }else{
+                } else {
                     match = false;
                 }
             }
@@ -36,14 +36,14 @@ public class HotelLogistics {
                 if (admin.getAccountID().equalsIgnoreCase(id) && admin.getPassword().equals(password) && !admin.isCancelledAccount()) {
                     adminMainMenu(admin);
                     match = true;
-                }else {
+                } else {
                     match = false;
                 }
             }
         } else {
             match = false;
         }
-        if(!match){
+        if (!match) {
             System.out.println("Login failed. Check user id and password.\n");
         }
     }
@@ -449,10 +449,8 @@ public class HotelLogistics {
         } while (!logout);
     }
 
-
-    //4.1.
-    public void makeBooking(AccountCustomer concernedAccount) {
-        System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
+    //Part of 4.1.
+    public ArrayList<Booking> searchBooking() {
         ArrayList<Booking> matchingResults = new ArrayList<>();
         LocalDate fromDate = LocalDate.of(2000, 1, 1);
         LocalDate toDate = LocalDate.of(2000, 1, 1);
@@ -462,7 +460,6 @@ public class HotelLogistics {
         int day;
         int beds = 0;
         int standard = 0;
-        int bookingChoice = 0;
         boolean validateInput;
         boolean cancel;
         System.out.println("Step 1/4. Enter date of desired arrival: (YY-MM-DD)" + "\n0. Cancel");
@@ -590,7 +587,7 @@ public class HotelLogistics {
                     if (checkDates(room, fromDate, toDate)) {
                         double price = calculateBookingPrice(fromDate, toDate, room);
                         matchingResults.add(new Booking(room, fromDate, toDate, price));
-                        break;
+                        //break;
                     }
                 }
             }
@@ -605,38 +602,54 @@ public class HotelLogistics {
                     }
                 }
             }
-            if (matchingResults.isEmpty()) {
-                System.out.println("No results" + "\n0. Back");
-            } else {
-                int countElements = 0;
-                for (Booking booking : matchingResults) {
-                    System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
-                }
-                System.out.println("1-n: Make a booking from the list" + "\n0. Back");
-            }
-            do {
-                answer = input.nextLine();
-                if (answer.equals("0") || answer.equalsIgnoreCase("O")) {
-                    validateInput = true;
-                    cancel = true;
-                } else {
-                    try {
-                        bookingChoice = Integer.parseInt(answer);  // String -> int
-                        validateInput = true;
-                        if (bookingChoice < 1 || bookingChoice > matchingResults.size()) {
-                            validateInput = false;
-                            System.out.println("Choice did not match an alternative. Try again:");
-                            //} else {
-                            //    validateNumeric = true;
-                        }
-                    } catch (NumberFormatException e) {
-                        System.out.println("Choice did not match an alternative. Try again:");
-                        validateInput = false;
-                    }
-                }
-            } while (!validateInput);
-
         }
+        if (cancel) {
+            System.out.println("Booking stage cancelled. No booking made" + "\nBack (Enter)");
+            input.nextLine();
+        }
+        return matchingResults;
+    }
+
+    //4.1.
+    public void makeBooking(AccountCustomer concernedAccount) {
+        System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
+        ArrayList<Booking> matchingResults = searchBooking();  //Call to method searchBooking
+        String answer;
+
+        int bookingChoice = 0;
+        boolean validateInput;
+        boolean cancel = false;
+        if (matchingResults.isEmpty()) {
+            System.out.println("No results" + "\n0. Back");
+        } else {
+            int countElements = 0;
+            for (Booking booking : matchingResults) {
+                System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
+            }
+            System.out.println("1-n: Make a booking from the list" + "\n0. Back");
+        }
+        do {
+            answer = input.nextLine();
+            if (answer.equals("0") || answer.equalsIgnoreCase("O")) {
+                validateInput = true;
+                cancel = true;
+            } else {
+                try {
+                    bookingChoice = Integer.parseInt(answer);  // String -> int
+                    validateInput = true;
+                    if (bookingChoice < 1 || bookingChoice > matchingResults.size()) {
+                        validateInput = false;
+                        System.out.println("Choice did not match an alternative. Try again:");
+                        //} else {
+                        //    validateNumeric = true;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Choice did not match an alternative. Try again:");
+                    validateInput = false;
+                }
+            }
+        } while (!validateInput);
+
         if (!cancel) {
             System.out.printf("%s%n%s%n%s%n%s%n", "Make a booking for: ", matchingResults.get(bookingChoice - 1), "Y. Yes", "N. No. Cancel booking process.");
             do {
@@ -673,7 +686,7 @@ public class HotelLogistics {
         }
     }
 
-
+    //Part of 4.1.
     public boolean checkDates(Room room, LocalDate fromDate, LocalDate toDate) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
         boolean match = false;
         if (room.getRoomBookingList().isEmpty()) {                                                  //Om bokningslistan för rummet är tom.
@@ -716,7 +729,7 @@ public class HotelLogistics {
         return match;
     }
 
-
+    //Part of 4.1.
     public void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
         if (room.getRoomBookingList().isEmpty()) {                                                  //Om bokningslistan för rummet är tom.
             room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price));
@@ -876,7 +889,6 @@ public class HotelLogistics {
         AccountGuest Guest = new AccountGuest("Guest");
 
         //============================ EXAMPLES OF ADDING ROOMS =====================================================
-
 
 
         roomList.add(new Room(1, 1));               //1
