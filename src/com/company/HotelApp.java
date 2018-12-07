@@ -81,8 +81,9 @@ public class HotelApp {
                             System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
                         }
                         System.out.println(("Add something about guest has to become registred user to make any of the suggested bookings. \nBack(Enter)"));
-                        myApp.input.nextLine();
+
                     }
+                    myApp.input.nextLine();
                     validMenu = false;
                     break;
 
