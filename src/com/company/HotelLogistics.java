@@ -590,7 +590,7 @@ public class HotelLogistics {
                     if (checkDates(room, fromDate, toDate)) {
                         double price = calculateBookingPrice(fromDate, toDate, room);
                         matchingResults.add(new Booking(room, fromDate, toDate, price));
-                        break;
+                        //break;
                     }
                 }
             }
