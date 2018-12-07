@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class HotelLogistics {
-//Hej
-//hej
+
     private ArrayList<Account> accountList = new ArrayList<>();  //Lista över accounts.
     private ArrayList<Room> roomList = new ArrayList<>();        //Lista över rummen
     private ArrayList<BedPrices> bedConstantList = new ArrayList<>();
