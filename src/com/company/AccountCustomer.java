@@ -36,6 +36,10 @@ public class AccountCustomer extends Account{
         }
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
     public boolean isCancelledAccount() {
         return cancelledAccount;
     }
