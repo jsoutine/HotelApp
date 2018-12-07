@@ -2,6 +2,7 @@ package com.company;
 
 public class AccountAdmin extends Account {
     private boolean cancelledAccount;
+    private boolean fullRights;
     private String phoneNumber;
     private String password;
     private String accountID;  //??
@@ -50,6 +51,10 @@ public class AccountAdmin extends Account {
 
     public void setCancelledAccount (boolean cancelledAccount) {
         this.cancelledAccount = cancelledAccount;
+    }
+
+    public boolean isFullRights() {
+        return fullRights;
     }
 
     @Override

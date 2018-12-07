@@ -213,8 +213,183 @@ public class HotelLogistics {
         input.nextLine();
     }
 
-    //3.2.4 (edit price)
+    public void editCustomerInfo(AccountCustomer loggedInAccount) {
+        int choice;
 
+        System.out.println("---EDIT USER INFORMATION---");
+        System.out.println("1. Name");
+        System.out.println("2. Phonenumber");
+        System.out.println("3. Password");
+        System.out.println("4. Remove account");
+        System.out.println("0. Back");
+        choice = input.nextInt();
+
+        switch (choice) {
+            case 1:
+                changeName(loggedInAccount);
+                break;
+            case 2:
+                changePhoneNr(loggedInAccount);
+                break;
+            case 3:
+                changePassword(loggedInAccount);
+                break;
+            case 4:
+                removeAccount(loggedInAccount);
+                break;
+            default:
+                System.out.println("Faulty input recognized. Try Again!");
+                editCustomerInfo(loggedInAccount);
+                break;
+        }
+    }
+
+    private void changeName(AccountCustomer loggedInAccount) {
+        int choice;
+
+        System.out.println("---CHANGE NAME---");
+        System.out.println("Name currently assigned: " + loggedInAccount.getName());
+        System.out.println("1. Change name");
+        System.out.println("0. Back");
+        choice = input.nextInt();
+
+        switch (choice) {
+            case 1:
+                System.out.println("Enter new name: ");
+                String newName = input.nextLine();
+                newName = input.nextLine();
+                loggedInAccount.setName(newName);
+                System.out.println("New name: " + loggedInAccount.getName());
+                System.out.println("Are you happy with the newly entered name?");
+                System.out.println("(Y)es or (N)o");
+                String yesOrNo = input.next();
+                if (yesOrNo.equalsIgnoreCase("Y")) {
+                    System.out.println("Very well, then let's return to the previous menu");
+                    editCustomerInfo(loggedInAccount);
+                } else if (yesOrNo.equalsIgnoreCase("N")) {
+                    System.out.println("Returning to previous menu!");
+                    changeName(loggedInAccount);
+                }
+                break;
+            case 0:
+                editCustomerInfo(loggedInAccount);
+                break;
+            default:
+                System.out.println("Faulty input recognized. Let's try again!");
+                changeName(loggedInAccount);
+                break;
+        }
+    }
+
+    private void changePhoneNr(AccountCustomer loggedInAccount) {
+
+        String choice;
+
+        System.out.println("---CHANGE PHONENUMBER---");
+        System.out.println("Phonenumber currently assigned: " + loggedInAccount.getPhoneNumber());
+        System.out.println("1. Change current phonenumber");
+        System.out.println("0. Back");
+
+        choice = input.nextLine();
+        choice = input.nextLine();
+
+        switch (choice) {
+            case "1":
+                System.out.println("Required format: Start with 0, then enter a 9-digit number sequence.");
+                System.out.println("Enter new phonenumber: ");
+                String newNr = input.nextLine();
+                String regexStr = "^[0-9]{10}$";
+
+                if (newNr.matches(regexStr)) {
+                    loggedInAccount.setPhoneNumber(newNr);
+                    System.out.println("New phonenumber: " + loggedInAccount.getPhoneNumber());
+                    System.out.println("Are you happy with your newly entered phonenumber?");
+                    System.out.println("(Y)es or (N)o");
+                    String yesOrNo = input.next();
+                    if (yesOrNo.equalsIgnoreCase("Y")) {
+                        System.out.println("Very well, then lets return to the previous menu");
+                        editCustomerInfo(loggedInAccount);
+                    } else if (yesOrNo.equalsIgnoreCase("N")) {
+                        changePhoneNr(loggedInAccount);
+                    }
+                } else {
+                    System.out.println("Format not followed. Try again!");
+                    //changePhoneNr(loggedInAccount);
+                }
+                break;
+
+            case "0":
+                editCustomerInfo(loggedInAccount);
+                break;
+
+            default:
+                System.out.println("Faulty input recognized. Let's try again!");
+                changePhoneNr(loggedInAccount);
+                break;
+        }
+    }
+
+    private void changePassword(AccountCustomer loggedInAccount) {
+        System.out.println("---CHANGE PASSWORD---");
+        System.out.println("Current password: " + loggedInAccount.getPassword());
+        System.out.println("1. Change current password");
+        System.out.println("0. Back");
+        int choice = input.nextInt();
+
+        switch (choice) {
+            case 1:
+                System.out.println("Enter new password: ");
+                String newPwd = input.nextLine();
+                newPwd = input.nextLine();
+
+                System.out.println("New password: " + newPwd);
+                System.out.println("Are you happy with your newly entered password?");
+                System.out.println("(Y)es or (N)o");
+                String yesOrNo = input.next();
+
+                if (yesOrNo.equalsIgnoreCase("Y")) {
+                    System.out.println("Very well, then let's return to the previous menu");
+                    editCustomerInfo(loggedInAccount);
+                    loggedInAccount.setPassword(newPwd);
+                } else if (yesOrNo.equalsIgnoreCase("N")) {
+                    changePassword(loggedInAccount);
+                }
+                break;
+
+            case 0:
+                editCustomerInfo(loggedInAccount);
+                break;
+            default:
+                System.out.println("Faulty input recognized. Let's try again!");
+                changePassword(loggedInAccount);
+                break;
+        }
+    }
+
+    private void removeAccount(AccountCustomer loggedInAccount) {
+
+        System.out.println("Do you truly wish to delete your account?");
+        System.out.println("(Y)es or (N)o");
+        String yesOrNo = input.next();
+        if (yesOrNo.equalsIgnoreCase("Y")) {
+            System.out.println("Enter your password to verify deletion of account: ");
+            String pwCheck = input.nextLine();
+            pwCheck = input.nextLine();
+            if (pwCheck.matches(loggedInAccount.getPassword())) {
+                loggedInAccount.setCancelledAccount(true);
+            } else {
+                System.out.println("Wrong password has been entered. Try again!");
+                removeAccount(loggedInAccount);
+            }
+        } else if (yesOrNo.equalsIgnoreCase("N")) {
+            System.out.println("Returning to previous menu!");
+            editCustomerInfo(loggedInAccount);
+        } else {
+            System.out.println("(Y)es or (N)o hasn't been entered. Try again!");
+        }
+    }
+
+    //3.2.4 (edit price)
 
    /*
    public void editprices() {
@@ -429,13 +604,16 @@ public class HotelLogistics {
                 menuChoice = input.nextLine();
                 switch (menuChoice) {
                     case "1":
-                        System.out.println("4.1.");
+                        //System.out.println("4.1.");
+                        makeBooking(loggedInAccount);
                         break;
                     case "2":
-                        System.out.println("4.2.");
+                        //System.out.println("4.2.");
+                        viewBookings(loggedInAccount);
                         break;
                     case "3":
-                        System.out.println("4.3.");
+                        //System.out.println("4.3.");
+                        editCustomerInfo(loggedInAccount);
                         break;
                     case "0":
                         logout = logOut();
