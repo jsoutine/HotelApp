@@ -604,7 +604,7 @@ public class HotelLogistics {
             }
         }
         if (cancel) {
-            System.out.println("Booking stage cancelled. No booking made" + "\nBack (Enter)");
+            System.out.println("Search cancelled." + "\nBack (Enter)");
             input.nextLine();
         }
         return matchingResults;
