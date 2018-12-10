@@ -1188,6 +1188,8 @@ public class HotelLogistics {
     }
 
     public void viewBookingsforRoom(Room room) {
+        System.out.println("3.2.3.3. BOOKINGS FOR ROOM \n" + room.getRoomNumber());
+
         do {
             String menuChoice;
             boolean validateInput;
@@ -1269,7 +1271,8 @@ public class HotelLogistics {
         roomList.add(new Room(1, 2));               //3
         roomList.add(new Room(1, 2));               //4
 
-        //================================== 4 ST SINGELROOM. STANDARD 1-3 =========================================
+        //================================== 4 ST SINGELROOM. STANDARD 1-2 =========================================
+        //===================================2 ST STANDARD 1 & 2ST STANDARD 2=======================================
 
         roomList.add(new Room(2, 1));               //5
         roomList.add(new Room(2, 1));               //6
@@ -1288,6 +1291,7 @@ public class HotelLogistics {
         roomList.add(new Room(2, 5));               //19
 
         //===================================== 15 ST DOUBLE ROOM STANDARD 1-5=======================================
+        //========== 3 ST STANDARD 1, 5 ST STANDARD 2, 3 ST STANDARD 3, 2 ST STANDARD 4, 2 ST STANDARD 5=============
 
         roomList.add(new Room(4, 1));               //20
         roomList.add(new Room(4, 2));               //21
@@ -1297,6 +1301,7 @@ public class HotelLogistics {
         roomList.add(new Room(4, 5));               //25
 
         //===================================== 6 ST 4 BEDS ROOM STANDARD 2-4========================================
+        //========= 1 ST STANDARD 1, 2 ST STANDARD 2, 1 ST STANDARD 3, 1 ST STANDARD 4, 1 ST STANDARD 5 =============
         //======================================SUM ROOMS = 25 =====================================================
 
         //============================ CREATE STANDARD PRICE OBJECT ============================================
@@ -1378,7 +1383,6 @@ public class HotelLogistics {
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!7 " + e.getMessage());
         }
-
 
     }
 }
