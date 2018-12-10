@@ -1001,6 +1001,8 @@ public class HotelLogistics {
                         do {
                             System.out.println("Type in new number of beds for this room: ");
                             anwser = input.nextLine();
+                            System.out.println("The new number of bed(s) in room "+ room.getRoomNumber()
+                            + " is now " + anwser);
                             try {
                                 intAnwser = Integer.parseInt(anwser);
                                 room.setBeds(intAnwser);
@@ -1023,6 +1025,8 @@ public class HotelLogistics {
                         do {
                             System.out.println("Type in new standard for the room ");
                             anwser = input.nextLine();
+                            System.out.println("the new standard for room number " + room.getRoomNumber()
+                            + " is now: " + anwser);
 
                             try {
                                 intAnwser = Integer.parseInt(anwser);
@@ -1084,11 +1088,11 @@ public class HotelLogistics {
                             for (int i = 0; i < roomList.size(); i++) {
                                 if (roomList.get(i).getRoomNumber() == room.getRoomNumber()) {
                                     roomList.remove(roomList.get(i));
-                                    System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), "removed succesfully.");
+                                    System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), " removed succesfully.");
                                 }
                             }
                         }
-                        System.out.println("Back (Enter)");
+                        System.out.println("Back (Enter) ");
                         input.nextLine();
                         break;
 
@@ -1097,12 +1101,12 @@ public class HotelLogistics {
                         break;
 
                     case "0":
-                        System.out.println("Back (Enter)");
+                        System.out.println("Back (Enter) ");
                         input.nextLine();
                         return;
 
                     default:
-                        System.out.println("Not correct anwser, please enter 0-2");
+                        System.out.println(" Not correct anwser, please enter 0-2 ");
                         validate = false;
                         break;
                 }
@@ -1112,7 +1116,7 @@ public class HotelLogistics {
     }
 
     public void viewBookingsForRoom(Room room) {
-        System.out.println("3.2.3.3. BOOKINGS FOR ROOM \n" + room.getRoomNumber());
+        System.out.println("3.2.3.3. BOOKINGS FOR ROOM NUMBER " + room.getRoomNumber());
 
             do {
                 String menuChoice;
@@ -1128,7 +1132,7 @@ public class HotelLogistics {
                 }
 
                 if (metodlist.isEmpty()) {
-                    System.out.println("no current or future bookings found for room" + room.getRoomNumber() +
+                    System.out.println("no current or future bookings found for room " + room.getRoomNumber() +
                             ". \n Back (Enter)"
                     );
                     input.nextLine();
