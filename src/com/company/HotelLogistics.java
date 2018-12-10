@@ -420,7 +420,7 @@ public class HotelLogistics {
 
                 switch (menuChoice) {
                     case "A":
-                        System.out.println("This method does not exist yet. Press 0 to go back.");
+                        ;
                         validateInput = false;
                         break;
 
