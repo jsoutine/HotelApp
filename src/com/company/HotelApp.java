@@ -17,7 +17,7 @@ public class HotelApp {
 
         logistics.createObjects();
 
-        //============================ EXAMPLE OF LOG IN STRUCTURE =====================================================
+        //============================ EXAMPLE OF LOG IN STRUCTURE ===================================================
 
         String selection;
         int intAnswer = 0;
@@ -80,13 +80,11 @@ public class HotelApp {
                         for (Booking booking : matchingResults) {
                             System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
                         }
-                        System.out.println(("Add something about guest has to become registred user to make any of the suggested bookings. \nBack(Enter)"));
-
+                        System.out.println("You need to register to make any of the suggested bookings. \nBack(Enter)");
                     }
                     myApp.input.nextLine();
                     validMenu = false;
                     break;
-
                 case "4":
                     return;
 
