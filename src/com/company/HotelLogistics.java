@@ -1101,6 +1101,7 @@ public class HotelLogistics {
 
                     case "4": // view bookings.
                         viewBookingsForRoom(room);
+                        validate = true;
                         break;
 
                     case "0":
@@ -1109,7 +1110,7 @@ public class HotelLogistics {
                         return;
 
                     default:
-                        System.out.println("Not correct anwser, please enter 0-2");
+                        System.out.println("Not correct anwser, please enter 0-4");
                         validate = false;
                         break;
                 }
@@ -1143,7 +1144,7 @@ public class HotelLogistics {
                 for (int i = 0; i < metodlist.size(); i++) {
                     System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
                 }
-                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                System.out.printf("%-4s%s%n", "0.", "Back");
                 do {
                     menuChoice = input.nextLine();
                     if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
