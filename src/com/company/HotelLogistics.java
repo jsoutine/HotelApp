@@ -1,8 +1,6 @@
 package com.company;
 
 
-import com.sun.jdi.IntegerType;
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -94,7 +92,6 @@ public class HotelLogistics {
                         break;
                     case "2":
                         adminRooms(loggedInAccount);
-                        editRoomInfo(roomList.get(2));
                         break;
                     case "3":
                         System.out.println("Method still under construction");
@@ -730,6 +727,7 @@ public class HotelLogistics {
                 daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), booking.getFromDate());
                 if (daysUntil < 6 && periodDays < 10) {  //If last minute
                     lastMinute = true;
+                    booking.setPrice(booking.getPrice() * 0.75);
                 }
                 else{
                     lastMinute = false;
@@ -896,7 +894,6 @@ public class HotelLogistics {
         double price;
         double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);
-        long daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), fromDate);
         double standardPrice = standardList.get(room.getStandard() - 1).getPrice();  //May throw IndexOutOfBoundsException if no match??
         for (BedPrices beds : bedConstantList) {
             if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
@@ -905,9 +902,6 @@ public class HotelLogistics {
             }
         }
         price = periodDays * standardPrice * bedsConstant;   //nights x standard x beds
-        if (daysUntil < 6 && periodDays < 10) {  //If last minute
-            price = price * 0.75;
-        }
         return price;
     }
 
@@ -983,8 +977,8 @@ public class HotelLogistics {
         input.nextLine();
     }
 
-    // 3.2.3
-    public void editRoomInfo(Room room) {
+    // 3.2.3.
+    public void adminEditRoomInfo(Room room) {
         System.out.println("3.2.3 EDIT ROOM: " + room);
 
         String anwser;
@@ -997,7 +991,7 @@ public class HotelLogistics {
                     "1: Edit beds",
                     "2: Edit standard ",
                     "3: Remove room",
-                    "4: View bookings",
+                    "4: View bookings for this room",
                     "0. Back");
             do {
                 anwser = input.nextLine();
@@ -1076,8 +1070,7 @@ public class HotelLogistics {
 
                             } else if (acceptRemove) {
                                 for (BookingConfirm booking : room.getRoomBookingList()) {
-                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now()))
-                                        ;
+                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now()));
                                     acceptRemove = false;
                                     System.out.println("There are current or future bookings for this room.\n" +
                                             " Please remomve all current or future bookings for this room before removing it. ");
@@ -1092,17 +1085,15 @@ public class HotelLogistics {
                                 if (roomList.get(i).getRoomNumber() == room.getRoomNumber()) {
                                     roomList.remove(roomList.get(i));
                                     System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), "removed succesfully.");
-
                                 }
                             }
                         }
                         System.out.println("Back (Enter)");
                         input.nextLine();
-
                         break;
 
                     case "4": // view bookings.
-                        viewBookingsforRoom(room);
+                        viewBookingsForRoom(room);
                         break;
 
                     case "0":
@@ -1120,7 +1111,7 @@ public class HotelLogistics {
         } while (true);
     }
 
-    public void viewBookingsforRoom(Room room) {
+    public void viewBookingsForRoom(Room room) {
         do {
             String menuChoice;
             boolean validateInput;
