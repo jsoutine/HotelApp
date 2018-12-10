@@ -1018,7 +1018,7 @@ public class HotelLogistics {
                         } while (!validate);
                         break;
                     case "2":
-                        System.out.println("Edit standard for the room" + room.getStandard());
+                        System.out.println("Edit standard for room numnber " + room.getRoomNumber());
 
                         do {
                             System.out.println("Type in new standard for the room ");
