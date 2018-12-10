@@ -396,7 +396,7 @@ public class HotelLogistics {
 
     public void adminRooms(Account loggedInAccount) {
         String menuChoice;
-        boolean validateInput;
+        boolean validateInput = false;
         int roomSelect;  // selects room
 
         do {
@@ -420,12 +420,12 @@ public class HotelLogistics {
                 switch (menuChoice) {
                     case "A":
                         System.out.println("This method does not exist yet. Press 0 to go back.");
-                        validateInput = false;
+                        validateInput = true;
                         break;
 
                     case "E":
                         System.out.println("This method does not exist yet. Press 0 to go back.");
-                        validateInput = false;
+                        validateInput = true;
                         break;
 
                     case "0":
@@ -435,19 +435,19 @@ public class HotelLogistics {
                     default:
                         try {
                             roomSelect = Integer.parseInt(menuChoice);  // String -> int
-                            validateInput = false; //tvärtom
+                            validateInput = true; //tvärtom
                             if (roomSelect < 1 || roomSelect > roomList.size()) {
                                 System.out.printf("There are only %d rooms to select from. Try again or press \"0\" to go back.%n", roomList.size());
                             } else {
-                                System.out.println("Cool choice");
+                                adminEditRoomInfo(roomList.get(roomSelect - 1));
                             }
                         } catch (NumberFormatException e) {
                             System.out.printf("Please enter an option, or valid number between 1 and %d. Try again or press \"0\" to go back.%n", roomList.size());
-                            validateInput = false;
+                            validateInput = true;
                         }
                 }
 
-            } while (!validateInput); // loops the room menu
+            } while (validateInput); // loops the room menu
 
         } while (true); //Always loop, until menuChoice = 0 -> Return
 
