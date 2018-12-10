@@ -117,7 +117,7 @@ public class HotelLogistics {
 
     //3.1.
     public void adminCustomers(Account loggedInAccount) {  //UNDER CONSTRUCTION
-        ArrayList<Account> methodList = new ArrayList<>();
+        ArrayList<AccountCustomer> methodList = new ArrayList<>();
         String menuChoice;
         boolean validateInput;
         int intChoice = 0;  //for choosing a customer
@@ -1179,16 +1179,18 @@ public class HotelLogistics {
     public void createObjects() {
         //=================================== ADDING CUSTOMERS =====================================================
 
-        customerList.add(new AccountCustomer("Ron Burgundy", "045125033", "custom"));
-        customerList.add(new AccountCustomer("Anton Göransson", "0703545036", "custom"));
-        customerList.add(new AccountCustomer("Arnold Svensson", "0704565656", "custom"));
-        customerList.add(new AccountCustomer("Erik Larsson", "0704576556", "custom"));
-        customerList.add(new AccountCustomer("Elin Hansson", "0707676768", "custom"));
-        customerList.add(new AccountCustomer("Lena Karlsson", "044343434", "custom"));
+        customerList.add(new AccountCustomer("Ron Burgundy", "custom", "045125033"));
+        customerList.add(new AccountCustomer("Anton Göransson", "custom", "0703545036"));
+        customerList.add(new AccountCustomer("Arnold Svensson", "custom", "0705421876"));
+        customerList.add(new AccountCustomer("Erik Larsson", "custom", "0704576556"));
+        customerList.add(new AccountCustomer("Elin Hansson", "custom", "0707676768"));
+        customerList.add(new AccountCustomer("Lena Karlsson", "custom", "0707676768"));
+
+        //customerList.get(0).setCancelledAccount(true); //Set account to cancelled
 
         //=================================== ADDING ADMINS =====================================================
 
-        adminList.add(new AccountAdmin("Admin", "044545454", "admin"));
+        adminList.add(new AccountAdmin("Admin", "admin"));
 
         //============================ EXAMPLES OF ADDING ROOMS =====================================================
 
