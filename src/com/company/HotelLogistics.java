@@ -1,6 +1,8 @@
 package com.company;
 
 
+import com.sun.jdi.IntegerType;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -31,6 +33,7 @@ public class HotelLogistics {
                     match = false;
                 }
             }
+            return;
         } else if (id.matches("A\\d+") || id.matches("a\\d+")) {
             for (AccountAdmin admin : adminList) {
                 if (admin.getAccountID().equalsIgnoreCase(id) && admin.getPassword().equals(password) && !admin.isCancelledAccount()) {
@@ -91,6 +94,7 @@ public class HotelLogistics {
                         break;
                     case "2":
                         adminRooms(loggedInAccount);
+                        editRoomInfo(roomList.get(2));
                         break;
                     case "3":
                         System.out.println("Method still under construction");
@@ -209,7 +213,7 @@ public class HotelLogistics {
             System.out.println("No cancelled accounts.");
 
         }
-        System.out.println("NOT COMPLETE METHOD\n" + "Back (Enter)");
+        System.out.println("Back (Enter)");
         input.nextLine();
     }
 
@@ -503,152 +507,6 @@ public class HotelLogistics {
     }
 */
 
-
-
-   /*
-   //3.4. (Eventuellt lägga till: if index 0; not able to change -> En permanent admin.
-    public void adminEditAccess() {  //STILL UNDER CONSTRUCTION
-        ArrayList<Account> methodList = new ArrayList<>();
-        // Vi kan skapa nya objekt (t.ex. ArrayLists) inuti metoder hur mycket vi vill utan att bekymra oss om
-        //hur det påverkar det stora programmet, eftersom objekt som skapas i metoder dör när metoden avslutas.
-        // -> Det blir bara temporära objekt som används under metodens livstid.
-        String menuChoice;
-        String menuChoice2;
-        boolean validateNumeric;
-        int intChoice = 0;
-        String answer;
-        boolean validateInput;
-        boolean loopEntireMethod = false;
-        boolean admin = false;  //Used in method to determine if we are edting admin account(s) or customer account(s)
-        do {
-            System.out.printf("%s%n%s%n%s%n%s%n%s%n",
-                    "3.4. EDIT ACCOUNT ACCESS",
-                    "Type a choice:",
-                    "1. View admin accounts",
-                    "2. View customer accounts.",
-                    "0. Back.");
-            do {
-                menuChoice = input.nextLine();
-                switch (menuChoice) {
-                    case "1":
-                        admin = true;  // Editing admin accounts
-                        System.out.println("3.4.1. ADMIN ACCOUNTS");
-                        break;
-                    case "2":
-                        admin = false;  //  Editing customer accounts
-                        System.out.println("3.4.2. CUSTOMER ACCOUNTS");
-                        break;
-                    case "0":
-                        return; //Exit method
-                    default:
-                        System.out.println("Please type an answer '0', '1' or '2'.");
-                        break;
-                }
-            }
-            while (!menuChoice.equals("1") && !menuChoice.equals("2"));  // Loop if haven't chosen to exit method in 3.4.
-
-            if (customerList.isEmpty()) {
-                System.out.println("Account list is empty." + "\nBack (Enter)");
-                input.nextLine();
-                return;
-            } else {
-                int countElements = 0;
-                if (admin) {
-                    for (Account x : customerList) {
-                        if (x.isFullRights() == true) {     //Add all admin accounts into a new ArrayList
-                            methodList.add(x);              //Add all admin accounts into a new ArrayList
-                            countElements++;                                 // count number of elements
-                            System.out.printf("%-3s%s%n", Integer.toString(countElements).concat("."), x);    ////Print admin accounts with identifying numbers
-                        } //                              for representation: concat two String objects
-                    }
-                } else {
-                    for (Account x : customerList) {
-                        if (x.isFullRights() == false) {     //Add all non-admin accounts into a new ArrayList
-                            methodList.add(x);
-                            countElements++;
-                            System.out.printf("%-3s%s%n", Integer.toString(countElements).concat("."), x);
-                        }
-                    }
-                }
-                if (methodList.isEmpty()) {
-                    if (admin) {
-                        System.out.println("Admin list is empty." + "\nBack (Enter)");
-                    } else {
-                        System.out.println("Customer list is empty." + "\nBack (Enter)");
-                    }
-                    input.nextLine();
-                    //loopEntireMethod = true;  Better???
-                    return;
-                } else {
-                    System.out.printf("%-3s%s%n", "0.", "Back (to 3.4.)");
-                    do { // do this while input is not numeric, or while input does not match accounts (1-n) or 0 (Back)
-                        menuChoice2 = input.nextLine();
-                        try {
-                            intChoice = Integer.parseInt(menuChoice2);  // String -> int
-                            validateNumeric = true;
-                            if (intChoice < 0 || intChoice > methodList.size()) {
-                                validateNumeric = false;
-                                System.out.println("Choice did not match an alternative. Try again:");
-                                //} else {
-                                //    validateNumeric = true;
-                            }
-                        } catch (NumberFormatException e) {
-                            System.out.println("Answer must be numeric. Try again:");
-                            validateNumeric = false;
-                        }
-                    } while (!validateNumeric);
-                    if (intChoice == 0) { // = Back to beginning of menu (3.4.)
-                        loopEntireMethod = true;
-                    } else {
-                        if (admin) {
-                            System.out.printf("%s%n%s%n", "3.4.1.1. Remove admin access? y/n", (methodList.get(intChoice - 1)));
-                        } else {
-                            System.out.printf("%s%n%s%n", "3.4.2.1. Set as admin? y/n", (methodList.get(intChoice - 1)));
-                        }
-                        do {  // do while input is not y/n
-                            validateInput = true;
-                            answer = input.nextLine();
-                            switch (answer) {
-                                case "y":
-                                case "Y":
-                                    for (int i = 0; i < customerList.size(); i++) {
-                                        if (methodList.get(intChoice - 1).getAccountID() == customerList.get(i).getAccountID()) {    //Find the corresponding account in the original list.
-                                            if (admin) {
-                                                customerList.get(i).setFullRights(false);                                                // make the changes in the account in the original list.
-                                            } else {
-                                                customerList.get(i).setFullRights(true);
-                                            }
-                                        }
-                                    }
-                                    if (admin) {
-                                        System.out.printf("%s%s%s%n%s%n", "3.4.1.1.1. '", methodList.get(intChoice - 1).getName(), "' now only have customer access.",
-                                                "Back (Enter)");
-                                    } else {
-                                        System.out.printf("%s%s%s%n%s%n", "3.4.2.1.1. '", methodList.get(intChoice - 1).getName(), "' now have admin access.",
-                                                "Back (Enter)");
-                                    }
-                                    input.nextLine();
-                                    return;
-                                case "n":
-                                case "N":
-                                    System.out.printf("%s%n%s%n",
-                                            "3.4.1.1.2. Access edit cancelled",
-                                            "Back (Enter)");
-                                    input.nextLine();
-                                    return;
-                                default:
-                                    System.out.println("Type an answer 'y' or 'n'");
-                                    validateInput = false;
-                                    break;
-                            }
-                        } while (!validateInput);
-                    }
-                }
-            }
-        } while (loopEntireMethod);  // If chosen Back to 3.4.
-    }
-    */
-
     //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
     public void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
@@ -843,7 +701,7 @@ public class HotelLogistics {
             }
         }
         if (cancel) {
-            System.out.println("Booking stage cancelled. No booking made" + "\nBack (Enter)");
+            System.out.println("Search cancelled." + "\nBack (Enter)");
             input.nextLine();
         }
         return matchingResults;
@@ -858,12 +716,25 @@ public class HotelLogistics {
         int bookingChoice = 0;
         boolean validateInput;
         boolean cancel = false;
+        long periodDays;
+        long daysUntil;
+        boolean lastMinute;
+
         if (matchingResults.isEmpty()) {
             System.out.println("No results" + "\n0. Back");
         } else {
             int countElements = 0;
+
             for (Booking booking : matchingResults) {
-                System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
+                periodDays = ChronoUnit.DAYS.between(booking.getFromDate(), booking.getToDate());
+                daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), booking.getFromDate());
+                if (daysUntil < 6 && periodDays < 10) {  //If last minute
+                    lastMinute = true;
+                }
+                else{
+                    lastMinute = false;
+                }
+                System.out.printf("%-4s%s%s%n", Integer.toString(++countElements).concat("."), booking, ((lastMinute) ? " (Last minute price!)" : ""));
             }
             System.out.println("1-n: Make a booking from the list" + "\n0. Back");
         }
@@ -1024,7 +895,8 @@ public class HotelLogistics {
     public double calculateBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {
         double price;
         double bedsConstant = 1;
-        long periodDays = ChronoUnit.DAYS.between(fromDate, toDate); // - 1 för antal nätter
+        long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);
+        long daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), fromDate);
         double standardPrice = standardList.get(room.getStandard() - 1).getPrice();  //May throw IndexOutOfBoundsException if no match??
         for (BedPrices beds : bedConstantList) {
             if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
@@ -1032,7 +904,10 @@ public class HotelLogistics {
                 break;
             }
         }
-        price = (periodDays - 1) * standardPrice * bedsConstant;   //nights x standard x beds
+        price = periodDays * standardPrice * bedsConstant;   //nights x standard x beds
+        if (daysUntil < 6 && periodDays < 10) {  //If last minute
+            price = price * 0.75;
+        }
         return price;
     }
 
@@ -1108,6 +983,199 @@ public class HotelLogistics {
         input.nextLine();
     }
 
+    // 3.2.3
+    public void editRoomInfo(Room room) {
+        System.out.println("3.2.3 EDIT ROOM: " + room);
+
+        String anwser;
+        int intAnwser;
+
+        boolean validate = false;
+        do {
+            System.out.printf("%s%n%s%s%n%s%n%s%n%s%n",
+                    "Edit room info: ",
+                    "1: Edit beds",
+                    "2: Edit standard ",
+                    "3: Remove room",
+                    "4: View bookings",
+                    "0. Back");
+            do {
+                anwser = input.nextLine();
+
+                switch (anwser) {
+                    case "1":
+                        System.out.println("Edit number of beds for room " + room.getRoomNumber());
+                        do {
+                            System.out.println("Type in new number of beds for this room: ");
+                            anwser = input.nextLine();
+                            try {
+                                intAnwser = Integer.parseInt(anwser);
+                                room.setBeds(intAnwser);
+                                validate = true;
+
+                            } catch (NumberFormatException e) {
+                                System.out.println("Answer must be digits.");
+                                validate = false;
+
+                            } catch (IllegalArgumentException b) {
+                                System.out.println(b.getMessage());
+                                validate = false;
+                            }
+
+                        } while (!validate);
+                        break;
+                    case "2":
+                        System.out.println("Edit standard for the room" + room.getStandard());
+
+                        do {
+                            System.out.println("Type in new standard for the room ");
+                            anwser = input.nextLine();
+
+                            try {
+                                intAnwser = Integer.parseInt(anwser);
+                                room.setStandard(intAnwser);
+                                validate = true;
+
+                            } catch (NumberFormatException a) {
+                                System.out.println("Answer must be digits.");
+                                validate = false;
+
+                            } catch (IllegalArgumentException b) {
+                                System.out.println(b.getMessage());
+                                validate = false;
+
+                            }
+                        } while (!validate);
+                        break;
+
+                    case "3":
+                        boolean acceptRemove = false;
+                        System.out.println("Are you sure that you would like to remove this room? y/n");
+                        do {
+                            validate = true;
+
+                            anwser = input.nextLine();
+                            if (anwser.equalsIgnoreCase("y")) {
+                                acceptRemove = true;
+                                validate = true;
+                            } else if (anwser.equalsIgnoreCase("n")) {
+                                acceptRemove = false;
+                                validate = true;
+
+                            } else {
+                                System.out.println("Invalid anwser. Type y/n");
+                                validate = false;
+                            }
+
+                        } while (validate == false);
+
+                        if (acceptRemove) {
+
+                            if (room.getRoomBookingList().isEmpty()) {
+                                acceptRemove = true;
+
+                            } else if (acceptRemove) {
+                                for (BookingConfirm booking : room.getRoomBookingList()) {
+                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now()))
+                                        ;
+                                    acceptRemove = false;
+                                    System.out.println("There are current or future bookings for this room.\n" +
+                                            " Please remomve all current or future bookings for this room before removing it. ");
+                                    break;
+                                }
+                            }
+                        }
+                        if (!acceptRemove) {
+                            System.out.println("Removing room cancelled.");
+                        } else {
+                            for (int i = 0; i < roomList.size(); i++) {
+                                if (roomList.get(i).getRoomNumber() == room.getRoomNumber()) {
+                                    roomList.remove(roomList.get(i));
+                                    System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), "removed succesfully.");
+
+                                }
+                            }
+                        }
+                        System.out.println("Back (Enter)");
+                        input.nextLine();
+
+                        break;
+
+                    case "4": // view bookings.
+                        viewBookingsforRoom(room);
+                        break;
+
+                    case "0":
+                        System.out.println("Back (Enter)");
+                        input.nextLine();
+                        return;
+
+                    default:
+                        System.out.println("Not correct anwser, please enter 0-2");
+                        validate = false;
+                        break;
+                }
+
+            } while (!validate);
+        } while (true);
+    }
+
+    public void viewBookingsforRoom(Room room) {
+        do {
+            String menuChoice;
+            boolean validateInput;
+            int intChoice = 0;
+
+            ArrayList<BookingConfirm> metodlist = new ArrayList<>();
+
+            for (BookingConfirm booking : room.getRoomBookingList()) {
+                if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
+                    metodlist.add(booking);
+                }
+            }
+
+            if (metodlist.isEmpty()) {
+                System.out.println("no current or future bookings found for room" + room.getRoomNumber() +
+                        ". \n Back (Enter)"
+                );
+                input.nextLine();
+                return;
+
+            } else {
+                for (int i = 0; i < metodlist.size(); i++) {
+                    System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
+                }
+                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                do {
+                    menuChoice = input.nextLine();
+                    if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
+                        return;
+                    } else {
+                        try {
+                            intChoice = Integer.parseInt(menuChoice);  // String -> int
+                            validateInput = true;
+                            if (intChoice < 1 || intChoice > metodlist.size()) {
+                                validateInput = false;
+                                System.out.println("Choice did not match an alternative. Try again:");
+
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Choice did not match an alternative. Try again:");
+                            validateInput = false;
+                        }
+                        if (validateInput) {
+                            for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+                                if (metodlist.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
+                                    viewBooking(room.getRoomBookingList().get(i));   //Method call
+                                }
+                            }
+                        }
+                    }
+                } while (!validateInput);
+            }
+
+        } while (true);
+    }
 
     public void createObjects() {
         //=================================== ADDING CUSTOMERS =====================================================
@@ -1128,7 +1196,6 @@ public class HotelLogistics {
         AccountGuest Guest = new AccountGuest("Guest");
 
         //============================ EXAMPLES OF ADDING ROOMS =====================================================
-
 
         roomList.add(new Room(1, 1));               //1
         roomList.add(new Room(1, 1));               //2
@@ -1247,5 +1314,4 @@ public class HotelLogistics {
 
 
     }
-
 }
