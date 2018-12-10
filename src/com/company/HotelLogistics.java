@@ -584,9 +584,7 @@ public class HotelLogistics {
                             double price = calculateBookingPrice(fromDate, toDate, room);
                             matchingResults.add(new Booking(room, fromDate, toDate, price));
                         }
-
                     }
-
                 }
             }
             if (matchingResults.isEmpty()) {
@@ -839,8 +837,10 @@ public class HotelLogistics {
         input.nextLine();
     }
 
-    // 3.2.3.1
+    // 3.2.3
     public void editRoomInfo(Room room) {
+        System.out.println("3.2.3 EDIT ROOM: " + room);
+
         String anwser;
         int intAnwser;
 
@@ -903,12 +903,60 @@ public class HotelLogistics {
                         break;
 
                     case "3":
-                        room.getRoomBookingList().isEmpty(); //kalla dagens datum och fram.
-                      //  do {
-                    System.out.println("Are you sure that you would like to remove your room");
-                    break;
+                        boolean acceptRemove = false;
+                        System.out.println("Are you sure that you would like to remove this room? y/n");
+                        do {
+                            validate = true;
 
-                    case "4":
+                            anwser = input.nextLine();
+                            if (anwser.equalsIgnoreCase("y")) {
+                                acceptRemove = true;
+                                validate = true;
+                            } else if (anwser.equalsIgnoreCase("n")) {
+                                acceptRemove = false;
+                                validate = true;
+
+                            } else {
+                                System.out.println("Invalid anwser. Type y/n");
+                                validate = false;
+                            }
+
+                        } while (validate == false);
+
+                        if (acceptRemove) {
+
+                            if (room.getRoomBookingList().isEmpty()) {
+                                acceptRemove = true;
+
+                            } else if (acceptRemove) {
+                                for (BookingConfirm booking : room.getRoomBookingList()) {
+                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now()))
+                                        ;
+                                    acceptRemove = false;
+                                    System.out.println("There are current or future bookings for this room.\n" +
+                                            " Please remomve all current or future bookings for this room before removing it. ");
+                                    break;
+                                }
+                            }
+                        }
+                        if (!acceptRemove) {
+                            System.out.println("Removing room cancelled.");
+                        } else {
+                            for (int i = 0; i < roomList.size(); i++) {
+                                if (roomList.get(i).getRoomNumber() == room.getRoomNumber()) {
+                                    roomList.remove(roomList.get(i));
+                                    System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), "removed succesfully.");
+
+                                }
+                            }
+                        }
+                        System.out.println("Back (Enter)");
+                        input.nextLine();
+
+                        break;
+
+                    case "4": // view bookings.
+                        viewBookingsforRoom(room);
                         break;
 
                     case "0":
@@ -919,11 +967,67 @@ public class HotelLogistics {
                     default:
                         System.out.println("Not correct anwser, please enter 0-2");
                         validate = false;
-
                         break;
                 }
 
             } while (!validate);
+        } while (true);
+    }
+
+    public void viewBookingsforRoom(Room room) {
+        do {
+            String menuChoice;
+            boolean validateInput;
+            int intChoice = 0;
+
+            ArrayList<BookingConfirm> metodlist = new ArrayList<>();
+
+            for (BookingConfirm booking : room.getRoomBookingList()) {
+                if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
+                    metodlist.add(booking);
+                }
+            }
+
+            if (metodlist.isEmpty()) {
+                System.out.println("no current or future bookings found for room" + room.getRoomNumber() +
+                        ". \n Back (Enter)"
+                );
+                input.nextLine();
+                return;
+
+            } else {
+                for (int i = 0; i < metodlist.size(); i++) {
+                    System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
+                }
+                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                do {
+                    menuChoice = input.nextLine();
+                    if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
+                        return;
+                    } else {
+                        try {
+                            intChoice = Integer.parseInt(menuChoice);  // String -> int
+                            validateInput = true;
+                            if (intChoice < 1 || intChoice > metodlist.size()) {
+                                validateInput = false;
+                                System.out.println("Choice did not match an alternative. Try again:");
+
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Choice did not match an alternative. Try again:");
+                            validateInput = false;
+                        }
+                        if (validateInput) {
+                            for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+                                if (metodlist.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
+                                    viewBooking(room.getRoomBookingList().get(i));   //Method call
+                                }
+                            }
+                        }
+                    }
+                } while (!validateInput);
+            }
+
         } while (true);
     }
 
@@ -1055,11 +1159,8 @@ public class HotelLogistics {
             System.out.println("BOOKING FAILED!7 " + e.getMessage());
         }
 
-
         //============================ EXAMPLES OF SETTING ACCOUNT AS ADMIN ============================================
 
         accountList.get(0).setFullRights(true);
-
     }
-
 }
