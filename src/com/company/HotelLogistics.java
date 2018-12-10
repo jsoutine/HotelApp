@@ -91,8 +91,7 @@ public class HotelLogistics {
                         adminCustomers(loggedInAccount);
                         break;
                     case "2":
-                        System.out.println("3.2. Rooms");
-                        adminEditRoomInfo(roomList.get(2));
+                        adminRooms(loggedInAccount);
                         break;
                     case "3":
                         System.out.println("Method still under construction");
@@ -389,6 +388,67 @@ public class HotelLogistics {
         } else {
             System.out.println("(Y)es or (N)o hasn't been entered. Try again!");
         }
+    }
+
+    //3.2. (listRooms)
+
+    public void adminRooms(Account loggedInAccount) {
+        String menuChoice;
+        boolean validateInput;
+        int roomSelect;  // selects room
+
+        do {
+            System.out.println("3.2 ALL ROOMS IN THE SYSTEM");
+
+            for (Room room : roomList) {
+                System.out.println(room);
+            }
+
+            System.out.printf("%n1-%s. Select room from above%n", roomList.size());
+
+            System.out.printf("%s%n%s%n%s%n",
+                    "A.    Add a room",
+                    "E.    Edit prices",
+                    "0.    Back");
+
+            do {
+                menuChoice = input.nextLine();
+                menuChoice = menuChoice.toUpperCase();
+
+                switch (menuChoice) {
+                    case "A":
+                        System.out.println("This method does not exist yet. Press 0 to go back.");
+                        validateInput = false;
+                        break;
+
+                    case "E":
+                        System.out.println("This method does not exist yet. Press 0 to go back.");
+                        validateInput = false;
+                        break;
+
+                    case "0":
+                    case "O":
+                        return;
+
+                    default:
+                        try {
+                            roomSelect = Integer.parseInt(menuChoice);  // String -> int
+                            validateInput = false; //tvärtom
+                            if (roomSelect < 1 || roomSelect > roomList.size()) {
+                                System.out.printf("There are only %d rooms to select from. Try again or press \"0\" to go back.%n", roomList.size());
+                            } else {
+                                System.out.println("Cool choice");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.printf("Please enter an option, or valid number between 1 and %d. Try again or press \"0\" to go back.%n", roomList.size());
+                            validateInput = false;
+                        }
+                }
+
+            } while (!validateInput); // loops the room menu
+
+        } while (true); //Always loop, until menuChoice = 0 -> Return
+
     }
 
     //3.2.4 (edit price)

@@ -40,27 +40,14 @@ public class HotelApp {
 
             switch (selection) {
                 case "1":
-                    //do {
-                        System.out.print("Please enter your user ID: ");
-                        answerID = myApp.input.nextLine();
-                       /* try {
-                            intAnswer = Integer.parseInt(answerID);
-                            validateInput = true;
-                        } catch (NumberFormatException e) {
-                            System.out.println("\nYour user ID is the number you received while creating your account. Try again. \n");
-                            validateInput = false;
-                        }
-                    } while (!validateInput);*/
+                    System.out.print("Please enter your user ID: ");
+                    answerID = myApp.input.nextLine();
 
                     System.out.print("Please enter your password: ");
                     password = myApp.input.nextLine();
                     logistics.logIn(answerID, password);
-                  /*  if (password.equals("custom")) { //This shit ain't pretty, vi ändrar det tillsammans. -J
-                        validMenu = true;
-                    } else {
-                        validMenu = false;
-                    }*/
-                  validMenu = false;
+
+                    validMenu = false;
                     break;
 
                 case "2":
@@ -96,11 +83,6 @@ public class HotelApp {
 
         } while (!validMenu);
 
-        /*int id = 0;                     //Account identifier
-        String password = "admin";     //Account password
-        logistics.logIn(id, password);  //Method call
-
-        System.out.println("Just a print to see if log out returns to main.");*/
 
     }
 }
