@@ -435,7 +435,7 @@ public class HotelLogistics {
                     default:
                         try {
                             roomSelect = Integer.parseInt(menuChoice);  // String -> int
-                            validateInput = true; //tvärtom
+                            validateInput = true;
                             if (roomSelect < 1 || roomSelect > roomList.size()) {
                                 System.out.printf("There are only %d rooms to select from. Try again or press \"0\" to go back.%n", roomList.size());
                             } else {
@@ -905,8 +905,7 @@ public class HotelLogistics {
         if (daysUntil < 6 && periodDays < 10) {  //If last minute
             lastMinute = true;
             booking.setPrice(booking.getPrice() * 0.75);
-        }
-        else {
+        } else {
             lastMinute = false;
         }
         return lastMinute;
@@ -978,8 +977,31 @@ public class HotelLogistics {
 
     //4.2.1.
     public void viewBooking(Booking booking) {
+        String cancel;
+        boolean validate = false;
+
         System.out.println("4.2.1. BOOKING");
         System.out.println(booking);
+
+        do {
+        System.out.printf("%n%s%n%s%n%s%n", "Would you like to cancel this booking?", "1. Yes", "2. No");
+        cancel = input.nextLine();
+
+            switch (cancel) {
+                case "1":
+                    System.out.println("Your booking would now have been cancelled if the method was complete");
+                    validate = true;
+                    break;
+                case "2":
+                    System.out.println("Booking still valid.");
+                    validate = true;
+                    break;
+                default:
+                    System.out.println("Please enter an option of \"1\" or \"2\". ");
+                    break;
+            }
+        }while (!validate);
+
         System.out.println("Back (Enter)");
         input.nextLine();
     }
@@ -988,7 +1010,7 @@ public class HotelLogistics {
     public void adminEditRoomInfo(Room room) {
         System.out.println("3.2.3 EDIT ROOM: " + room);
 
-        String anwser;
+        String answer;
         int intAnwser;
         boolean validate = false;
 
@@ -1001,59 +1023,58 @@ public class HotelLogistics {
                     "4: View bookings for this room",
                     "0. Back");
             do {
-                anwser = input.nextLine();
+                answer = input.nextLine();
 
-                switch (anwser) {
+                switch (answer) {
                     case "1":
-                        System.out.println("Edit number of beds for room " + room.getRoomNumber() +
-                                " , or 0 to cancel. ");
+                        System.out.println("Edit the number of beds for room " + room.getRoomNumber() +
+                                ", or press \"0\" to cancel. ");
 
                         do {
-                            System.out.println("Type in new number of beds for this room: ");
+                            System.out.println("Type in the new number of beds for this room: ");
 
-                            anwser = input.nextLine();
-                            if (anwser.equals("0") || anwser.equalsIgnoreCase("o")) {
+                            answer = input.nextLine();
+                            if (answer.equals("0") || answer.equalsIgnoreCase("o")) {
                                 System.out.println("Edit number has been cancelled. \n " +
-                                        "back (enter)");
+                                        "Back (enter)");
                                 input.nextLine();
-                                validate= true;
+                                validate = true;
                             } else {
 
                                 try {
-                                    intAnwser = Integer.parseInt(anwser);
+                                    intAnwser = Integer.parseInt(answer);
                                     room.setBeds(intAnwser);
                                     validate = true;
 
                                 } catch (NumberFormatException e) {
-                                    System.out.println("Answer must be digits.");
+                                    System.out.println("Answer must be digits. ");
                                     validate = false;
 
                                 } catch (IllegalArgumentException b) {
                                     System.out.println(b.getMessage());
                                     validate = false;
                                 }
-                              }
                             }
-                            while (!validate) ;
-                            System.out.println("The new number of bed(s) in room " + room.getRoomNumber()
-                                    + " is now " + anwser);
+                        }
+                        while (!validate);
+                        System.out.println("The new number of bed(s) in room " + room.getRoomNumber()
+                                + " is now " + answer + ".");
                         break;
                     case "2":
-                        System.out.println("Edit standard for room numnber " + room.getRoomNumber());
-
+                        System.out.println("Edit standard for room number " + room.getRoomNumber());
 
                         do {
-                            System.out.println("Type in new standard for the room or 0 to cancel ");
-                            anwser = input.nextLine();
+                            System.out.println("Type in new standard for the room, or press \"0\" to cancel ");
+                            answer = input.nextLine();
 
-                            if (anwser.equals("0") || anwser.equalsIgnoreCase("o")) {
+                            if (answer.equals("0") || answer.equalsIgnoreCase("o")) {
                                 System.out.println("Edit number has been cancelled. \n " +
-                                        "back (enter)");
+                                        "Back (enter).");
                                 input.nextLine();
                                 validate = true;
                             } else {
                                 try {
-                                    intAnwser = Integer.parseInt(anwser);
+                                    intAnwser = Integer.parseInt(answer);
                                     room.setStandard(intAnwser);
                                     validate = true;
 
@@ -1069,8 +1090,8 @@ public class HotelLogistics {
                             }
 
                         } while (!validate);
-                        System.out.println("the new standard for room number " + room.getRoomNumber()
-                                + " is now: " + anwser);
+                        System.out.println("The new standard for room number " + room.getRoomNumber()
+                                + " is now: " + answer + ".");
 
                         break;
 
@@ -1080,11 +1101,11 @@ public class HotelLogistics {
                         do {
                             validate = true;
 
-                            anwser = input.nextLine();
-                            if (anwser.equalsIgnoreCase("y")) {
+                            answer = input.nextLine();
+                            if (answer.equalsIgnoreCase("y")) {
                                 acceptRemove = true;
                                 validate = true;
-                            } else if (anwser.equalsIgnoreCase("n")) {
+                            } else if (answer.equalsIgnoreCase("n")) {
                                 acceptRemove = false;
                                 validate = true;
 
@@ -1137,7 +1158,7 @@ public class HotelLogistics {
 
                     default:
 
-      System.out.println("Not correct anwser, please enter 0-4");
+                        System.out.println("Not correct anwser, please enter 0-4");
                         validate = false;
                         break;
                 }
@@ -1149,198 +1170,198 @@ public class HotelLogistics {
     public void viewBookingsForRoom(Room room) {
         System.out.println("3.2.3.3. BOOKINGS FOR ROOM NUMBER " + room.getRoomNumber());
 
-            do {
-                String menuChoice;
-                boolean validateInput;
-                int intChoice = 0;
+        do {
+            String menuChoice;
+            boolean validateInput;
+            int intChoice = 0;
 
-                ArrayList<BookingConfirm> metodlist = new ArrayList<>();
+            ArrayList<BookingConfirm> metodlist = new ArrayList<>();
 
-                for (BookingConfirm booking : room.getRoomBookingList()) {
-                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
-                        metodlist.add(booking);
-                    }
+            for (BookingConfirm booking : room.getRoomBookingList()) {
+                if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
+                    metodlist.add(booking);
                 }
+            }
 
-                if (metodlist.isEmpty()) {
-                    System.out.println("no current or future bookings found for room " + room.getRoomNumber() +
-                            ". \n Back (Enter)"
-                    );
-                    input.nextLine();
-                    return;
-
-
-                } else {
-                    for (int i = 0; i < metodlist.size(); i++) {
-                        System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
-                    }
-                    System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
-                    do {
-                        menuChoice = input.nextLine();
-                        if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
-                            return;
-                        } else {
-                            try {
-                                intChoice = Integer.parseInt(menuChoice);  // String -> int
-                                validateInput = true;
-                                if (intChoice < 1 || intChoice > metodlist.size()) {
-                                    validateInput = false;
-                                    System.out.println("Choice did not match an alternative. Try again:");
+            if (metodlist.isEmpty()) {
+                System.out.println("No current or future bookings found for room " + room.getRoomNumber() +
+                        ". \nBack (Enter)"
+                );
+                input.nextLine();
+                return;
 
 
-                                }
-                            } catch (NumberFormatException e) {
-                                System.out.println("Choice did not match an alternative. Try again:");
+            } else {
+                for (int i = 0; i < metodlist.size(); i++) {
+                    System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
+                }
+                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                do {
+                    menuChoice = input.nextLine();
+                    if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
+                        return;
+                    } else {
+                        try {
+                            intChoice = Integer.parseInt(menuChoice);  // String -> int
+                            validateInput = true;
+                            if (intChoice < 1 || intChoice > metodlist.size()) {
                                 validateInput = false;
+                                System.out.println("Choice did not match an alternative. Try again:");
+
+
                             }
-                            if (validateInput) {
-                                for (int i = 0; i < room.getRoomBookingList().size(); i++) {
-                                    if (metodlist.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
-                                        viewBooking(room.getRoomBookingList().get(i));   //Method call
-                                    }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Choice did not match an alternative. Try again:");
+                            validateInput = false;
+                        }
+                        if (validateInput) {
+                            for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+                                if (metodlist.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
+                                    viewBooking(room.getRoomBookingList().get(i));   //Method call
                                 }
                             }
                         }
-                    } while (!validateInput);
-                }
+                    }
+                } while (!validateInput);
+            }
 
-            } while (true);
+        } while (true);
+    }
+
+    public void createObjects() {
+        //=================================== ADDING CUSTOMERS =====================================================
+
+        customerList.add(new AccountCustomer("Ron Burgundy", "045125033", "custom"));
+        customerList.add(new AccountCustomer("Anton Göransson", "0703545036", "custom"));
+        customerList.add(new AccountCustomer("Arnold Svensson", "0704565656", "custom"));
+        customerList.add(new AccountCustomer("Erik Larsson", "0704576556", "custom"));
+        customerList.add(new AccountCustomer("Elin Hansson", "0707676768", "custom"));
+        customerList.add(new AccountCustomer("Lena Karlsson", "044343434", "custom"));
+
+        //=================================== ADDING ADMINS =====================================================
+
+        adminList.add(new AccountAdmin("Admin", "044545454", "admin"));
+
+        //=========================== EXAMPLES OF ADDING ROOMS =====================================================
+        //============================ EXAMPLES OF ADDING ROOMS =====================================================
+
+
+        roomList.add(new Room(1, 1));               //1
+        roomList.add(new Room(1, 1));               //2
+        roomList.add(new Room(1, 2));               //3
+        roomList.add(new Room(1, 2));               //4
+
+        //================================== 4 ST SINGELROOM. STANDARD 1-2 =========================================
+        //===================================2 ST STANDARD 1 & 2ST STANDARD 2=======================================
+
+        roomList.add(new Room(2, 1));               //5
+        roomList.add(new Room(2, 1));               //6
+        roomList.add(new Room(2, 1));               //7
+        roomList.add(new Room(2, 2));               //8
+        roomList.add(new Room(2, 2));               //9
+        roomList.add(new Room(2, 2));               //10
+        roomList.add(new Room(2, 2));               //11
+        roomList.add(new Room(2, 2));               //12
+        roomList.add(new Room(2, 3));               //13
+        roomList.add(new Room(2, 3));               //14
+        roomList.add(new Room(2, 3));               //15
+        roomList.add(new Room(2, 4));               //16
+        roomList.add(new Room(2, 4));               //17
+        roomList.add(new Room(2, 5));               //18
+        roomList.add(new Room(2, 5));               //19
+
+        //===================================== 15 ST DOUBLE ROOM STANDARD 1-5=======================================
+        //========== 3 ST STANDARD 1, 5 ST STANDARD 2, 3 ST STANDARD 3, 2 ST STANDARD 4, 2 ST STANDARD 5=============
+
+        roomList.add(new Room(4, 1));               //20
+        roomList.add(new Room(4, 2));               //21
+        roomList.add(new Room(4, 2));               //22
+        roomList.add(new Room(4, 3));               //23
+        roomList.add(new Room(4, 4));               //24
+        roomList.add(new Room(4, 5));               //25
+
+        //===================================== 6 ST 4 BEDS ROOM STANDARD 2-4========================================
+        //========= 1 ST STANDARD 1, 2 ST STANDARD 2, 1 ST STANDARD 3, 1 ST STANDARD 4, 1 ST STANDARD 5 =============
+        //======================================SUM ROOMS = 25 =====================================================
+
+        //============================ CREATE STANDARD PRICE OBJECT ============================================
+
+        standardList.add(new StandardPrice(1, 999));
+        standardList.add(new StandardPrice(2, 1499));
+        standardList.add(new StandardPrice(3, 1999));
+        standardList.add(new StandardPrice(4, 2999));
+        standardList.add(new StandardPrice(5, 4999));
+
+        //============================ CREATE BEDS OBJECT =======================================================
+
+        bedConstantList.add(new BedPrices(1, 1));
+        bedConstantList.add(new BedPrices(2, 1.2));
+        bedConstantList.add(new BedPrices(4, 1.7));
+
+        //============================ EXAMPLE OF ADDING BOOKINGS ======================================================
+
+        LocalDate fromDate1 = LocalDate.of(2019, 3, 12);
+        LocalDate toDate1 = LocalDate.of(2019, 4, 11);
+
+        try {    //                room       ,   customer
+            double price1 = calculateBookingPrice(fromDate1, toDate1, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate1, toDate1, customerList.get(1), price1);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED!1 " + e.getMessage());
         }
 
-        public void createObjects () {
-            //=================================== ADDING CUSTOMERS =====================================================
+        LocalDate fromDate2 = LocalDate.of(2019, 2, 12);
+        LocalDate toDate2 = LocalDate.of(2019, 3, 11);
+        try {
+            double price2 = calculateBookingPrice(fromDate2, toDate2, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate2, toDate2, customerList.get(2), price2);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED!2 " + e.getMessage());
+        }
 
-            customerList.add(new AccountCustomer("Ron Burgundy", "045125033", "custom"));
-            customerList.add(new AccountCustomer("Anton Göransson", "0703545036", "custom"));
-            customerList.add(new AccountCustomer("Arnold Svensson", "0704565656", "custom"));
-            customerList.add(new AccountCustomer("Erik Larsson", "0704576556", "custom"));
-            customerList.add(new AccountCustomer("Elin Hansson", "0707676768", "custom"));
-            customerList.add(new AccountCustomer("Lena Karlsson", "044343434", "custom"));
+        LocalDate fromDate3 = LocalDate.of(2019, 7, 12);
+        LocalDate toDate3 = LocalDate.of(2019, 7, 17);
+        try {
+            double price3 = calculateBookingPrice(fromDate3, toDate3, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate3, toDate3, customerList.get(3), price3);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED!3 " + e.getMessage());
+        }
 
-            //=================================== ADDING ADMINS =====================================================
+        LocalDate fromDate4 = LocalDate.of(2019, 5, 12);
+        LocalDate toDate4 = LocalDate.of(2019, 5, 18);
+        try {
+            double price4 = calculateBookingPrice(fromDate4, toDate4, roomList.get(2));
+            bookingDates(roomList.get(2), fromDate4, toDate4, customerList.get(4), price4);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED!4 " + e.getMessage());
+        }
 
-            adminList.add(new AccountAdmin("Admin", "044545454", "admin"));
+        LocalDate fromDate5 = LocalDate.of(2019, 6, 12);
+        LocalDate toDate5 = LocalDate.of(2019, 6, 17);
+        try {
+            double price5 = calculateBookingPrice(fromDate4, toDate4, roomList.get(2));
+            bookingDates(roomList.get(2), fromDate5, toDate5, customerList.get(5), price5);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED!5 " + e.getMessage());
+        }
 
-            //=========================== EXAMPLES OF ADDING ROOMS =====================================================
-            //============================ EXAMPLES OF ADDING ROOMS =====================================================
+        LocalDate fromDate6 = LocalDate.of(2019, 5, 18);
+        LocalDate toDate6 = LocalDate.of(2019, 5, 25);
+        try {
+            double price6 = calculateBookingPrice(fromDate6, toDate6, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate6, toDate6, customerList.get(4), price6);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED!6 " + e.getMessage());
+        }
 
-
-            roomList.add(new Room(1, 1));               //1
-            roomList.add(new Room(1, 1));               //2
-            roomList.add(new Room(1, 2));               //3
-            roomList.add(new Room(1, 2));               //4
-
-            //================================== 4 ST SINGELROOM. STANDARD 1-2 =========================================
-            //===================================2 ST STANDARD 1 & 2ST STANDARD 2=======================================
-
-            roomList.add(new Room(2, 1));               //5
-            roomList.add(new Room(2, 1));               //6
-            roomList.add(new Room(2, 1));               //7
-            roomList.add(new Room(2, 2));               //8
-            roomList.add(new Room(2, 2));               //9
-            roomList.add(new Room(2, 2));               //10
-            roomList.add(new Room(2, 2));               //11
-            roomList.add(new Room(2, 2));               //12
-            roomList.add(new Room(2, 3));               //13
-            roomList.add(new Room(2, 3));               //14
-            roomList.add(new Room(2, 3));               //15
-            roomList.add(new Room(2, 4));               //16
-            roomList.add(new Room(2, 4));               //17
-            roomList.add(new Room(2, 5));               //18
-            roomList.add(new Room(2, 5));               //19
-
-            //===================================== 15 ST DOUBLE ROOM STANDARD 1-5=======================================
-            //========== 3 ST STANDARD 1, 5 ST STANDARD 2, 3 ST STANDARD 3, 2 ST STANDARD 4, 2 ST STANDARD 5=============
-
-            roomList.add(new Room(4, 1));               //20
-            roomList.add(new Room(4, 2));               //21
-            roomList.add(new Room(4, 2));               //22
-            roomList.add(new Room(4, 3));               //23
-            roomList.add(new Room(4, 4));               //24
-            roomList.add(new Room(4, 5));               //25
-
-            //===================================== 6 ST 4 BEDS ROOM STANDARD 2-4========================================
-            //========= 1 ST STANDARD 1, 2 ST STANDARD 2, 1 ST STANDARD 3, 1 ST STANDARD 4, 1 ST STANDARD 5 =============
-            //======================================SUM ROOMS = 25 =====================================================
-
-            //============================ CREATE STANDARD PRICE OBJECT ============================================
-
-            standardList.add(new StandardPrice(1, 999));
-            standardList.add(new StandardPrice(2, 1499));
-            standardList.add(new StandardPrice(3, 1999));
-            standardList.add(new StandardPrice(4, 2999));
-            standardList.add(new StandardPrice(5, 4999));
-
-            //============================ CREATE BEDS OBJECT =======================================================
-
-            bedConstantList.add(new BedPrices(1, 1));
-            bedConstantList.add(new BedPrices(2, 1.2));
-            bedConstantList.add(new BedPrices(4, 1.7));
-
-            //============================ EXAMPLE OF ADDING BOOKINGS ======================================================
-
-            LocalDate fromDate1 = LocalDate.of(2019, 3, 12);
-            LocalDate toDate1 = LocalDate.of(2019, 4, 11);
-
-            try {    //                room       ,   customer
-                double price1 = calculateBookingPrice(fromDate1, toDate1, roomList.get(0));
-                bookingDates(roomList.get(0), fromDate1, toDate1, customerList.get(1), price1);
-            } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED!1 " + e.getMessage());
-            }
-
-            LocalDate fromDate2 = LocalDate.of(2019, 2, 12);
-            LocalDate toDate2 = LocalDate.of(2019, 3, 11);
-            try {
-                double price2 = calculateBookingPrice(fromDate2, toDate2, roomList.get(0));
-                bookingDates(roomList.get(0), fromDate2, toDate2, customerList.get(2), price2);
-            } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED!2 " + e.getMessage());
-            }
-
-            LocalDate fromDate3 = LocalDate.of(2019, 7, 12);
-            LocalDate toDate3 = LocalDate.of(2019, 7, 17);
-            try {
-                double price3 = calculateBookingPrice(fromDate3, toDate3, roomList.get(0));
-                bookingDates(roomList.get(0), fromDate3, toDate3, customerList.get(3), price3);
-            } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED!3 " + e.getMessage());
-            }
-
-            LocalDate fromDate4 = LocalDate.of(2019, 5, 12);
-            LocalDate toDate4 = LocalDate.of(2019, 5, 18);
-            try {
-                double price4 = calculateBookingPrice(fromDate4, toDate4, roomList.get(2));
-                bookingDates(roomList.get(2), fromDate4, toDate4, customerList.get(4), price4);
-            } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED!4 " + e.getMessage());
-            }
-
-            LocalDate fromDate5 = LocalDate.of(2019, 6, 12);
-            LocalDate toDate5 = LocalDate.of(2019, 6, 17);
-            try {
-                double price5 = calculateBookingPrice(fromDate4, toDate4, roomList.get(2));
-                bookingDates(roomList.get(2), fromDate5, toDate5, customerList.get(5), price5);
-            } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED!5 " + e.getMessage());
-            }
-
-            LocalDate fromDate6 = LocalDate.of(2019, 5, 18);
-            LocalDate toDate6 = LocalDate.of(2019, 5, 25);
-            try {
-                double price6 = calculateBookingPrice(fromDate6, toDate6, roomList.get(0));
-                bookingDates(roomList.get(0), fromDate6, toDate6, customerList.get(4), price6);
-            } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED!6 " + e.getMessage());
-            }
-
-            LocalDate fromDate7 = LocalDate.of(2019, 2, 1);
-            LocalDate toDate7 = LocalDate.of(2019, 2, 6);
-            try {
-                double price7 = calculateBookingPrice(fromDate7, toDate7, roomList.get(0));
-                bookingDates(roomList.get(0), fromDate7, toDate7, customerList.get(4), price7);
-            } catch (IllegalArgumentException e) {
-                System.out.println("BOOKING FAILED!7 " + e.getMessage());
-            }
+        LocalDate fromDate7 = LocalDate.of(2019, 2, 1);
+        LocalDate toDate7 = LocalDate.of(2019, 2, 6);
+        try {
+            double price7 = calculateBookingPrice(fromDate7, toDate7, roomList.get(0));
+            bookingDates(roomList.get(0), fromDate7, toDate7, customerList.get(4), price7);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED!7 " + e.getMessage());
         }
     }
+}
