@@ -65,8 +65,10 @@ public class HotelApp {
                         System.out.println("No results" + "\n Back (Enter)");
                     } else {
                         int countElements = 0;
+                        boolean lastMinute;
                         for (Booking booking : matchingResults) {
-                            System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
+                            lastMinute = logistics.lastMinute(booking);
+                                System.out.printf("%-4s%s%s%n", Integer.toString(++countElements).concat("."), booking, ((lastMinute) ? " (Last minute price!)" : ""));
                         }
                         System.out.println("You need to register to make any of the suggested bookings. \nBack(Enter)");
                     }
