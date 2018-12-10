@@ -18,7 +18,7 @@ public class HotelApp {
 
         logistics.createObjects();
 
-        //============================ EXAMPLE OF LOG IN STRUCTURE =====================================================
+        //============================ EXAMPLE OF LOG IN STRUCTURE ===================================================
 
         String selection;
         int intAnswer = 0;
@@ -40,27 +40,14 @@ public class HotelApp {
 
             switch (selection) {
                 case "1":
-                    //do {
-                        System.out.print("Please enter your user ID: ");
-                        answerID = myApp.input.nextLine();
-                       /* try {
-                            intAnswer = Integer.parseInt(answerID);
-                            validateInput = true;
-                        } catch (NumberFormatException e) {
-                            System.out.println("\nYour user ID is the number you received while creating your account. Try again. \n");
-                            validateInput = false;
-                        }
-                    } while (!validateInput);*/
+                    System.out.print("Please enter your user ID: ");
+                    answerID = myApp.input.nextLine();
 
                     System.out.print("Please enter your password: ");
                     password = myApp.input.nextLine();
                     logistics.logIn(answerID, password);
-                  /*  if (password.equals("custom")) { //This shit ain't pretty, vi ändrar det tillsammans. -J
-                        validMenu = true;
-                    } else {
-                        validMenu = false;
-                    }*/
-                  validMenu = false;
+
+                    validMenu = false;
                     break;
 
                 case "2":
@@ -81,13 +68,11 @@ public class HotelApp {
                         for (Booking booking : matchingResults) {
                             System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
                         }
-                        System.out.println(("Add something about guest has to become registred user to make any of the suggested bookings. \nBack(Enter)"));
-
+                        System.out.println("You need to register to make any of the suggested bookings. \nBack(Enter)");
                     }
                     myApp.input.nextLine();
                     validMenu = false;
                     break;
-
                 case "4":
                     return;
 
@@ -98,11 +83,6 @@ public class HotelApp {
 
         } while (!validMenu);
 
-        /*int id = 0;                     //Account identifier
-        String password = "admin";     //Account password
-        logistics.logIn(id, password);  //Method call
-
-        System.out.println("Just a print to see if log out returns to main.");*/
 
     }
 }
