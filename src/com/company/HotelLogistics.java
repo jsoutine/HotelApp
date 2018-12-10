@@ -20,23 +20,24 @@ public class HotelLogistics {
 
     //2.1.
     public void logIn(String id, String password) {
-        boolean match = true;
+        boolean match = false;
         if (id.matches("C\\d+") || id.matches("c\\d+")) {
             for (AccountCustomer customer : customerList) {
                 if (customer.getAccountID().equalsIgnoreCase(id) && customer.getPassword().equals(password) && !customer.isCancelledAccount()) {
+                    match = true;
                     System.out.println("\nWelcome " + customer.getName() + "\n");
                     customerMainMenu(customer);
-                    match = true;
+                    return;
                 } else {
                     match = false;
                 }
             }
-            return;
         } else if (id.matches("A\\d+") || id.matches("a\\d+")) {
             for (AccountAdmin admin : adminList) {
                 if (admin.getAccountID().equalsIgnoreCase(id) && admin.getPassword().equals(password) && !admin.isCancelledAccount()) {
-                    adminMainMenu(admin);
                     match = true;
+                    adminMainMenu(admin);
+                    return;
                 } else {
                     match = false;
                 }
@@ -45,7 +46,8 @@ public class HotelLogistics {
             match = false;
         }
         if (!match) {
-            System.out.println("Login failed. Check user id and password.\n");
+            System.out.println("Login failed. Check user id and password.\nBack (Enter)");
+            input.nextLine();
         }
     }
 
@@ -713,24 +715,14 @@ public class HotelLogistics {
         int bookingChoice = 0;
         boolean validateInput;
         boolean cancel = false;
-        long periodDays;
-        long daysUntil;
         boolean lastMinute;
 
         if (matchingResults.isEmpty()) {
             System.out.println("No results" + "\n0. Back");
         } else {
             int countElements = 0;
-
             for (Booking booking : matchingResults) {
-                periodDays = ChronoUnit.DAYS.between(booking.getFromDate(), booking.getToDate());
-                daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), booking.getFromDate());
-                if (daysUntil < 6 && periodDays < 10) {  //If last minute
-                    lastMinute = true;
-                    booking.setPrice(booking.getPrice() * 0.75);
-                } else {
-                    lastMinute = false;
-                }
+                lastMinute = lastMinute(booking);
                 System.out.printf("%-4s%s%s%n", Integer.toString(++countElements).concat("."), booking, ((lastMinute) ? " (Last minute price!)" : ""));
             }
             System.out.println("1-n: Make a booking from the list" + "\n0. Back");
@@ -902,6 +894,22 @@ public class HotelLogistics {
         }
         price = periodDays * standardPrice * bedsConstant;   //nights x standard x beds
         return price;
+    }
+
+    public boolean lastMinute(Booking booking) {
+        long periodDays;
+        long daysUntil;
+        boolean lastMinute;
+        periodDays = ChronoUnit.DAYS.between(booking.getFromDate(), booking.getToDate());
+        daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), booking.getFromDate());
+        if (daysUntil < 6 && periodDays < 10) {  //If last minute
+            lastMinute = true;
+            booking.setPrice(booking.getPrice() * 0.75);
+        }
+        else {
+            lastMinute = false;
+        }
+        return lastMinute;
     }
 
     //4.2.  &&  3.3.)
@@ -1098,6 +1106,7 @@ public class HotelLogistics {
 
                     case "4": // view bookings.
                         viewBookingsForRoom(room);
+                        validate = true;
                         break;
 
                     case "0":
@@ -1106,7 +1115,8 @@ public class HotelLogistics {
                         return;
 
                     default:
-                        System.out.println(" Not correct anwser, please enter 0-2 ");
+
+      System.out.println("Not correct anwser, please enter 0-4");
                         validate = false;
                         break;
                 }
@@ -1138,6 +1148,7 @@ public class HotelLogistics {
                     input.nextLine();
                     return;
 
+
                 } else {
                     for (int i = 0; i < metodlist.size(); i++) {
                         System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
@@ -1154,6 +1165,7 @@ public class HotelLogistics {
                                 if (intChoice < 1 || intChoice > metodlist.size()) {
                                     validateInput = false;
                                     System.out.println("Choice did not match an alternative. Try again:");
+
 
                                 }
                             } catch (NumberFormatException e) {
@@ -1188,11 +1200,9 @@ public class HotelLogistics {
 
             adminList.add(new AccountAdmin("Admin", "044545454", "admin"));
 
-            //=================================== ADDING GUEST =====================================================
-
-            AccountGuest Guest = new AccountGuest("Guest");
-
+            //=========================== EXAMPLES OF ADDING ROOMS =====================================================
             //============================ EXAMPLES OF ADDING ROOMS =====================================================
+
 
             roomList.add(new Room(1, 1));               //1
             roomList.add(new Room(1, 1));               //2
