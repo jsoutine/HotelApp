@@ -49,6 +49,10 @@ public class Booking {
         return price;
     }
 
+    public void setPrice (double price) {
+        this.price = price;
+    }
+
     /*public int getBookingID() {
         return bookingID;
     }*/

@@ -669,6 +669,7 @@ public class HotelLogistics {
                 daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), booking.getFromDate());
                 if (daysUntil < 6 && periodDays < 10) {  //If last minute
                     lastMinute = true;
+                    booking.setPrice(booking.getPrice() * 0.75);
                 }
                 else{
                     lastMinute = false;
@@ -835,7 +836,6 @@ public class HotelLogistics {
         double price;
         double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);
-        long daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), fromDate);
         double standardPrice = standardList.get(room.getStandard() - 1).getPrice();  //May throw IndexOutOfBoundsException if no match??
         for (BedPrices beds : bedConstantList) {
             if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
@@ -844,9 +844,6 @@ public class HotelLogistics {
             }
         }
         price = periodDays * standardPrice * bedsConstant;   //nights x standard x beds
-        if (daysUntil < 6 && periodDays < 10) {  //If last minute
-            price = price * 0.75;
-        }
         return price;
     }
 
