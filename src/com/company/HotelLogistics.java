@@ -985,7 +985,7 @@ public class HotelLogistics {
 
         boolean validate = false;
         do {
-            System.out.printf("%s%n%s%s%n%s%n%s%n%s%n",
+            System.out.printf("%s%n%s%n%s%n%s%n%s%n%s%n",
                     "Edit room info: ",
                     "1: Edit beds",
                     "2: Edit standard ",
@@ -1307,6 +1307,5 @@ public class HotelLogistics {
             } catch (IllegalArgumentException e) {
                 System.out.println("BOOKING FAILED!7 " + e.getMessage());
             }
-
         }
     }
