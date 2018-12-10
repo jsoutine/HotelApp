@@ -42,6 +42,25 @@ public class Room {
         return standard;
     }
 
+
+    public void setBeds (int beds) {
+        if(beds == 1 || beds == 2 || beds == 4) {
+            this.beds = beds;
+        }else{
+            throw new IllegalArgumentException(
+                    "Number of beds in a room can only be 1, 2 or 4.");
+        };
+    }
+
+    public void setStandard (int standard) {
+        if (standard > 0 && standard < 6) {
+            this.standard = standard;
+        } else {
+            throw new IllegalArgumentException(
+                    "Standards only rank 1-5.");
+        }
+    }
+
     @Override
     public String toString(){
         return String.format ("%s%-4d%s%-2d%s%-2d", "Room number: ", roomNumber, "Beds: ", beds, "Standard: ", standard);

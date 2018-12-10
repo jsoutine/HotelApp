@@ -1,6 +1,8 @@
 package com.company;
 
 
+import com.sun.jdi.IntegerType;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -92,6 +94,7 @@ public class HotelLogistics {
                         break;
                     case "2":
                         System.out.println("3.2. Rooms");
+                        editRoomInfo(roomList.get(2));
                         break;
                     case "3":
                         System.out.println("Method still under construction");
@@ -214,8 +217,183 @@ public class HotelLogistics {
         input.nextLine();
     }
 
-    //3.2.4 (edit price)
+    public void editCustomerInfo(AccountCustomer loggedInAccount) {
+        int choice;
 
+        System.out.println("---EDIT USER INFORMATION---");
+        System.out.println("1. Name");
+        System.out.println("2. Phonenumber");
+        System.out.println("3. Password");
+        System.out.println("4. Remove account");
+        System.out.println("0. Back");
+        choice = input.nextInt();
+
+        switch (choice) {
+            case 1:
+                changeName(loggedInAccount);
+                break;
+            case 2:
+                changePhoneNr(loggedInAccount);
+                break;
+            case 3:
+                changePassword(loggedInAccount);
+                break;
+            case 4:
+                removeAccount(loggedInAccount);
+                break;
+            default:
+                System.out.println("Faulty input recognized. Try Again!");
+                editCustomerInfo(loggedInAccount);
+                break;
+        }
+    }
+
+    private void changeName(AccountCustomer loggedInAccount) {
+        int choice;
+
+        System.out.println("---CHANGE NAME---");
+        System.out.println("Name currently assigned: " + loggedInAccount.getName());
+        System.out.println("1. Change name");
+        System.out.println("0. Back");
+        choice = input.nextInt();
+
+        switch (choice) {
+            case 1:
+                System.out.println("Enter new name: ");
+                String newName = input.nextLine();
+                newName = input.nextLine();
+                loggedInAccount.setName(newName);
+                System.out.println("New name: " + loggedInAccount.getName());
+                System.out.println("Are you happy with the newly entered name?");
+                System.out.println("(Y)es or (N)o");
+                String yesOrNo = input.next();
+                if (yesOrNo.equalsIgnoreCase("Y")) {
+                    System.out.println("Very well, then let's return to the previous menu");
+                    editCustomerInfo(loggedInAccount);
+                } else if (yesOrNo.equalsIgnoreCase("N")) {
+                    System.out.println("Returning to previous menu!");
+                    changeName(loggedInAccount);
+                }
+                break;
+            case 0:
+                editCustomerInfo(loggedInAccount);
+                break;
+            default:
+                System.out.println("Faulty input recognized. Let's try again!");
+                changeName(loggedInAccount);
+                break;
+        }
+    }
+
+    private void changePhoneNr(AccountCustomer loggedInAccount) {
+
+        String choice;
+
+        System.out.println("---CHANGE PHONENUMBER---");
+        System.out.println("Phonenumber currently assigned: " + loggedInAccount.getPhoneNumber());
+        System.out.println("1. Change current phonenumber");
+        System.out.println("0. Back");
+
+        choice = input.nextLine();
+        choice = input.nextLine();
+
+        switch (choice) {
+            case "1":
+                System.out.println("Required format: Start with 0, then enter a 9-digit number sequence.");
+                System.out.println("Enter new phonenumber: ");
+                String newNr = input.nextLine();
+                String regexStr = "^[0-9]{10}$";
+
+                if (newNr.matches(regexStr)) {
+                    loggedInAccount.setPhoneNumber(newNr);
+                    System.out.println("New phonenumber: " + loggedInAccount.getPhoneNumber());
+                    System.out.println("Are you happy with your newly entered phonenumber?");
+                    System.out.println("(Y)es or (N)o");
+                    String yesOrNo = input.next();
+                    if (yesOrNo.equalsIgnoreCase("Y")) {
+                        System.out.println("Very well, then lets return to the previous menu");
+                        editCustomerInfo(loggedInAccount);
+                    } else if (yesOrNo.equalsIgnoreCase("N")) {
+                        changePhoneNr(loggedInAccount);
+                    }
+                } else {
+                    System.out.println("Format not followed. Try again!");
+                    //changePhoneNr(loggedInAccount);
+                }
+                break;
+
+            case "0":
+                editCustomerInfo(loggedInAccount);
+                break;
+
+            default:
+                System.out.println("Faulty input recognized. Let's try again!");
+                changePhoneNr(loggedInAccount);
+                break;
+        }
+    }
+
+    private void changePassword(AccountCustomer loggedInAccount) {
+        System.out.println("---CHANGE PASSWORD---");
+        System.out.println("Current password: " + loggedInAccount.getPassword());
+        System.out.println("1. Change current password");
+        System.out.println("0. Back");
+        int choice = input.nextInt();
+
+        switch (choice) {
+            case 1:
+                System.out.println("Enter new password: ");
+                String newPwd = input.nextLine();
+                newPwd = input.nextLine();
+
+                System.out.println("New password: " + newPwd);
+                System.out.println("Are you happy with your newly entered password?");
+                System.out.println("(Y)es or (N)o");
+                String yesOrNo = input.next();
+
+                if (yesOrNo.equalsIgnoreCase("Y")) {
+                    System.out.println("Very well, then let's return to the previous menu");
+                    editCustomerInfo(loggedInAccount);
+                    loggedInAccount.setPassword(newPwd);
+                } else if (yesOrNo.equalsIgnoreCase("N")) {
+                    changePassword(loggedInAccount);
+                }
+                break;
+
+            case 0:
+                editCustomerInfo(loggedInAccount);
+                break;
+            default:
+                System.out.println("Faulty input recognized. Let's try again!");
+                changePassword(loggedInAccount);
+                break;
+        }
+    }
+
+    private void removeAccount(AccountCustomer loggedInAccount) {
+
+        System.out.println("Do you truly wish to delete your account?");
+        System.out.println("(Y)es or (N)o");
+        String yesOrNo = input.next();
+        if (yesOrNo.equalsIgnoreCase("Y")) {
+            System.out.println("Enter your password to verify deletion of account: ");
+            String pwCheck = input.nextLine();
+            pwCheck = input.nextLine();
+            if (pwCheck.matches(loggedInAccount.getPassword())) {
+                loggedInAccount.setCancelledAccount(true);
+            } else {
+                System.out.println("Wrong password has been entered. Try again!");
+                removeAccount(loggedInAccount);
+            }
+        } else if (yesOrNo.equalsIgnoreCase("N")) {
+            System.out.println("Returning to previous menu!");
+            editCustomerInfo(loggedInAccount);
+        } else {
+            System.out.println("(Y)es or (N)o hasn't been entered. Try again!");
+        }
+    }
+
+    //3.2.4 (edit price)
 
    /*
    public void editprices() {
@@ -284,13 +462,16 @@ public class HotelLogistics {
                 menuChoice = input.nextLine();
                 switch (menuChoice) {
                     case "1":
-                        System.out.println("4.1.");
+                        //System.out.println("4.1.");
+                        makeBooking(loggedInAccount);
                         break;
                     case "2":
-                        System.out.println("4.2.");
+                        //System.out.println("4.2.");
+                        viewBookings(loggedInAccount);
                         break;
                     case "3":
-                        System.out.println("4.3.");
+                        //System.out.println("4.3.");
+                        editCustomerInfo(loggedInAccount);
                         break;
                     case "0":
                         logout = logOut();
@@ -741,6 +922,199 @@ public class HotelLogistics {
         input.nextLine();
     }
 
+    // 3.2.3
+    public void editRoomInfo(Room room) {
+        System.out.println("3.2.3 EDIT ROOM: " + room);
+
+        String anwser;
+        int intAnwser;
+
+        boolean validate = false;
+        do {
+            System.out.printf("%s%n%s%s%n%s%n%s%n%s%n",
+                    "Edit room info: ",
+                    "1: Edit beds",
+                    "2: Edit standard ",
+                    "3: Remove room",
+                    "4: View bookings",
+                    "0. Back");
+            do {
+                anwser = input.nextLine();
+
+                switch (anwser) {
+                    case "1":
+                        System.out.println("Edit number of beds for room " + room.getRoomNumber());
+                        do {
+                            System.out.println("Type in new number of beds for this room: ");
+                            anwser = input.nextLine();
+                            try {
+                                intAnwser = Integer.parseInt(anwser);
+                                room.setBeds(intAnwser);
+                                validate = true;
+
+                            } catch (NumberFormatException e) {
+                                System.out.println("Answer must be digits.");
+                                validate = false;
+
+                            } catch (IllegalArgumentException b) {
+                                System.out.println(b.getMessage());
+                                validate = false;
+                            }
+
+                        } while (!validate);
+                        break;
+                    case "2":
+                        System.out.println("Edit standard for the room" + room.getStandard());
+
+                        do {
+                            System.out.println("Type in new standard for the room ");
+                            anwser = input.nextLine();
+
+                            try {
+                                intAnwser = Integer.parseInt(anwser);
+                                room.setStandard(intAnwser);
+                                validate = true;
+
+                            } catch (NumberFormatException a) {
+                                System.out.println("Answer must be digits.");
+                                validate = false;
+
+                            } catch (IllegalArgumentException b) {
+                                System.out.println(b.getMessage());
+                                validate = false;
+
+                            }
+                        } while (!validate);
+                        break;
+
+                    case "3":
+                        boolean acceptRemove = false;
+                        System.out.println("Are you sure that you would like to remove this room? y/n");
+                        do {
+                            validate = true;
+
+                            anwser = input.nextLine();
+                            if (anwser.equalsIgnoreCase("y")) {
+                                acceptRemove = true;
+                                validate = true;
+                            } else if (anwser.equalsIgnoreCase("n")) {
+                                acceptRemove = false;
+                                validate = true;
+
+                            } else {
+                                System.out.println("Invalid anwser. Type y/n");
+                                validate = false;
+                            }
+
+                        } while (validate == false);
+
+                        if (acceptRemove) {
+
+                            if (room.getRoomBookingList().isEmpty()) {
+                                acceptRemove = true;
+
+                            } else if (acceptRemove) {
+                                for (BookingConfirm booking : room.getRoomBookingList()) {
+                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now()))
+                                        ;
+                                    acceptRemove = false;
+                                    System.out.println("There are current or future bookings for this room.\n" +
+                                            " Please remomve all current or future bookings for this room before removing it. ");
+                                    break;
+                                }
+                            }
+                        }
+                        if (!acceptRemove) {
+                            System.out.println("Removing room cancelled.");
+                        } else {
+                            for (int i = 0; i < roomList.size(); i++) {
+                                if (roomList.get(i).getRoomNumber() == room.getRoomNumber()) {
+                                    roomList.remove(roomList.get(i));
+                                    System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), "removed succesfully.");
+
+                                }
+                            }
+                        }
+                        System.out.println("Back (Enter)");
+                        input.nextLine();
+
+                        break;
+
+                    case "4": // view bookings.
+                        viewBookingsforRoom(room);
+                        break;
+
+                    case "0":
+                        System.out.println("Back (Enter)");
+                        input.nextLine();
+                        return;
+
+                    default:
+                        System.out.println("Not correct anwser, please enter 0-2");
+                        validate = false;
+                        break;
+                }
+
+            } while (!validate);
+        } while (true);
+    }
+
+    public void viewBookingsforRoom(Room room) {
+        do {
+            String menuChoice;
+            boolean validateInput;
+            int intChoice = 0;
+
+            ArrayList<BookingConfirm> metodlist = new ArrayList<>();
+
+            for (BookingConfirm booking : room.getRoomBookingList()) {
+                if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
+                    metodlist.add(booking);
+                }
+            }
+
+            if (metodlist.isEmpty()) {
+                System.out.println("no current or future bookings found for room" + room.getRoomNumber() +
+                        ". \n Back (Enter)"
+                );
+                input.nextLine();
+                return;
+
+            } else {
+                for (int i = 0; i < metodlist.size(); i++) {
+                    System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
+                }
+                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                do {
+                    menuChoice = input.nextLine();
+                    if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
+                        return;
+                    } else {
+                        try {
+                            intChoice = Integer.parseInt(menuChoice);  // String -> int
+                            validateInput = true;
+                            if (intChoice < 1 || intChoice > metodlist.size()) {
+                                validateInput = false;
+                                System.out.println("Choice did not match an alternative. Try again:");
+
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Choice did not match an alternative. Try again:");
+                            validateInput = false;
+                        }
+                        if (validateInput) {
+                            for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+                                if (metodlist.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
+                                    viewBooking(room.getRoomBookingList().get(i));   //Method call
+                                }
+                            }
+                        }
+                    }
+                } while (!validateInput);
+            }
+
+        } while (true);
+    }
 
     public void createObjects() {
         //=================================== ADDING CUSTOMERS =====================================================
@@ -761,7 +1135,6 @@ public class HotelLogistics {
         AccountGuest Guest = new AccountGuest("Guest");
 
         //============================ EXAMPLES OF ADDING ROOMS =====================================================
-
 
         roomList.add(new Room(1, 1));               //1
         roomList.add(new Room(1, 1));               //2
@@ -880,5 +1253,4 @@ public class HotelLogistics {
 
 
     }
-
 }
