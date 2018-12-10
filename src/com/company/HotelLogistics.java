@@ -990,8 +990,8 @@ public class HotelLogistics {
 
         String anwser;
         int intAnwser;
-
         boolean validate = false;
+
         do {
             System.out.printf("%s%n%s%n%s%n%s%n%s%n%s%n",
                     "Edit room info: ",
@@ -1005,52 +1005,73 @@ public class HotelLogistics {
 
                 switch (anwser) {
                     case "1":
-                        System.out.println("Edit number of beds for room " + room.getRoomNumber());
+                        System.out.println("Edit number of beds for room " + room.getRoomNumber() +
+                                " , or 0 to cancel. ");
+
                         do {
                             System.out.println("Type in new number of beds for this room: ");
+
                             anwser = input.nextLine();
-                            System.out.println("The new number of bed(s) in room "+ room.getRoomNumber()
-                            + " is now " + anwser);
-                            try {
-                                intAnwser = Integer.parseInt(anwser);
-                                room.setBeds(intAnwser);
-                                validate = true;
+                            if (anwser.equals("0") || anwser.equalsIgnoreCase("o")) {
+                                System.out.println("Edit number has been cancelled. \n " +
+                                        "back (enter)");
+                                input.nextLine();
+                                validate= true;
+                            } else {
 
-                            } catch (NumberFormatException e) {
-                                System.out.println("Answer must be digits.");
-                                validate = false;
+                                try {
+                                    intAnwser = Integer.parseInt(anwser);
+                                    room.setBeds(intAnwser);
+                                    validate = true;
 
-                            } catch (IllegalArgumentException b) {
-                                System.out.println(b.getMessage());
-                                validate = false;
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Answer must be digits.");
+                                    validate = false;
+
+                                } catch (IllegalArgumentException b) {
+                                    System.out.println(b.getMessage());
+                                    validate = false;
+                                }
+                              }
                             }
-
-                        } while (!validate);
+                            while (!validate) ;
+                            System.out.println("The new number of bed(s) in room " + room.getRoomNumber()
+                                    + " is now " + anwser);
                         break;
                     case "2":
                         System.out.println("Edit standard for room numnber " + room.getRoomNumber());
 
+
                         do {
-                            System.out.println("Type in new standard for the room ");
+                            System.out.println("Type in new standard for the room or 0 to cancel ");
                             anwser = input.nextLine();
-                            System.out.println("the new standard for room number " + room.getRoomNumber()
-                            + " is now: " + anwser);
 
-                            try {
-                                intAnwser = Integer.parseInt(anwser);
-                                room.setStandard(intAnwser);
+                            if (anwser.equals("0") || anwser.equalsIgnoreCase("o")) {
+                                System.out.println("Edit number has been cancelled. \n " +
+                                        "back (enter)");
+                                input.nextLine();
                                 validate = true;
+                            } else {
+                                try {
+                                    intAnwser = Integer.parseInt(anwser);
+                                    room.setStandard(intAnwser);
+                                    validate = true;
 
-                            } catch (NumberFormatException a) {
-                                System.out.println("Answer must be digits.");
-                                validate = false;
+                                } catch (NumberFormatException a) {
+                                    System.out.println("Answer must be digits.");
+                                    validate = false;
 
-                            } catch (IllegalArgumentException b) {
-                                System.out.println(b.getMessage());
-                                validate = false;
+                                } catch (IllegalArgumentException b) {
+                                    System.out.println(b.getMessage());
+                                    validate = false;
 
+                                }
                             }
+
                         } while (!validate);
+                        System.out.println("the new standard for room number " + room.getRoomNumber()
+                                + " is now: " + anwser);
+
                         break;
 
                     case "3":
