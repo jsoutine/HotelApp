@@ -10,24 +10,24 @@ public class Booking {
     //private Account customer;
     private Room room;
     private double price;
+    //private boolean lastMinute;
     //private boolean confirmedBooking;  //To separate a confirmed booking from suggested bookings from search.
     //private int bookingID;
     //private static int bookingIdCount = 0;
     private static LocalDate today = LocalDate.now();
 
-    public Booking ( Room room, LocalDate fromDate, LocalDate toDate, double price) {
-        if (fromDate.isAfter(toDate)   ||   fromDate.isBefore(today)) {
+    public Booking(Room room, LocalDate fromDate, LocalDate toDate, double price) {
+        if (fromDate.isAfter(toDate) || fromDate.isBefore(today)) {
             throw new IllegalArgumentException(
                     "Unable to book: Your arrival date must be today or day to come, and your departure date must be after your arrival date.");
-        } else {
+        }else {
             this.fromDate = fromDate;
             this.toDate = toDate;
         }
-        //this.customer = customer;
-        this.room = room;
-        this.price = price;
-        //bookingID = ++bookingIdCount;
-    }
+
+        this.room =room;
+        this.price =price;
+}
 
     public LocalDate getFromDate() {
         return fromDate;
@@ -41,7 +41,7 @@ public class Booking {
         return customer;
     }*/
 
-    public Room getRoom(){
+    public Room getRoom() {
         return room;
     }
 
@@ -61,7 +61,7 @@ public class Booking {
 
     public String getTimeUntil() {
         Period diff2 = Period.between(today, fromDate);
-        return String.format("%d%s%d%s%d%s", diff2.getYears()," years, ", diff2.getMonths(), " months and ", diff2.getDays(), " days.");
+        return String.format("%d%s%d%s%d%s", diff2.getYears(), " years, ", diff2.getMonths(), " months and ", diff2.getDays(), " days.");
     }
 
     public String getDates() {
@@ -70,8 +70,8 @@ public class Booking {
     }
 
     @Override
-    public String toString(){                                       //Integer.toString(countElements2).concat(".")
-        String priceString = String.format("%.02f%s", price, " SEK");
+    public String toString() {                                       //Integer.toString(countElements2).concat(".")
+        String priceString = String.format("%.02f%s", price, " SEK ");
         return String.format("%-28s%s%-4d%s%-4d%s%-4d%s%13s", getDates(), "Room: ", room.getRoomNumber(), "Beds: ", room.getBeds(), "Standard: ", room.getStandard(), "Price: ", priceString);
     }
 }
