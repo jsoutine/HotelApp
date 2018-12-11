@@ -117,7 +117,7 @@ public class HotelLogistics {
 
     //3.1.
     public void adminCustomers(Account loggedInAccount) {  //UNDER CONSTRUCTION
-        ArrayList<Account> methodList = new ArrayList<>();
+        ArrayList<AccountCustomer> methodList = new ArrayList<>();
         String menuChoice;
         boolean validateInput;
         int intChoice = 0;  //for choosing a customer
@@ -546,8 +546,8 @@ public class HotelLogistics {
     }
 
     //Part of 4.1.
-    public ArrayList<Booking> searchBooking() {
-        ArrayList<Booking> matchingResults = new ArrayList<>();
+    public ArrayList<BookingSearch> searchBooking() {
+        ArrayList<BookingSearch> matchingResults = new ArrayList<>();
         LocalDate fromDate = LocalDate.of(2000, 1, 1);
         LocalDate toDate = LocalDate.of(2000, 1, 1);
         String answer;
@@ -682,7 +682,7 @@ public class HotelLogistics {
                 if (room.getBeds() == beds && room.getStandard() == standard) {
                     if (checkDates(room, fromDate, toDate)) {
                         double price = calculateBookingPrice(fromDate, toDate, room);
-                        matchingResults.add(new Booking(room, fromDate, toDate, price));
+                        matchingResults.add(new BookingSearch(room, fromDate, toDate, price));
                         //break;
                     }
                 }
@@ -693,7 +693,7 @@ public class HotelLogistics {
                     if (room.getBeds() >= beds) {      //HOW SHOULD WE FILTER SECOND HAND MATCHES?
                         if (checkDates(room, fromDate, toDate)) {
                             double price = calculateBookingPrice(fromDate, toDate, room);
-                            matchingResults.add(new Booking(room, fromDate, toDate, price));
+                            matchingResults.add(new BookingSearch(room, fromDate, toDate, price));
                         }
                     }
                 }
@@ -709,7 +709,7 @@ public class HotelLogistics {
     //4.1.
     public void makeBooking(AccountCustomer concernedAccount) {
         System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
-        ArrayList<Booking> matchingResults = searchBooking();  //Call to method searchBooking
+        ArrayList<BookingSearch> matchingResults = searchBooking();  //Call to method searchBooking
         String answer;
 
         int bookingChoice = 0;
@@ -721,9 +721,9 @@ public class HotelLogistics {
             System.out.println("No results" + "\n0. Back");
         } else {
             int countElements = 0;
-            for (Booking booking : matchingResults) {
-                lastMinute = lastMinute(booking);
-                System.out.printf("%-4s%s%s%n", Integer.toString(++countElements).concat("."), booking, ((lastMinute) ? " (Last minute price!)" : ""));
+            for (BookingSearch booking : matchingResults) {
+                lastMinute(booking);
+                System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
             }
             System.out.println("1-n: Make a booking from the list" + "\n0. Back");
         }
@@ -896,19 +896,15 @@ public class HotelLogistics {
         return price;
     }
 
-    public boolean lastMinute(Booking booking) {
+    public void lastMinute(BookingSearch booking) {
         long periodDays;
         long daysUntil;
-        boolean lastMinute;
         periodDays = ChronoUnit.DAYS.between(booking.getFromDate(), booking.getToDate());
         daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), booking.getFromDate());
         if (daysUntil < 6 && periodDays < 10) {  //If last minute
-            lastMinute = true;
+            booking.setLastMinute(true);
             booking.setPrice(booking.getPrice() * 0.75);
-        } else {
-            lastMinute = false;
         }
-        return lastMinute;
     }
 
     //4.2.  &&  3.3.)
@@ -977,8 +973,12 @@ public class HotelLogistics {
 
     //4.2.1.
     public void viewBooking(Booking booking) {
+
+        //Ska länka till metod removeBooking, när den metoden är klar.
+
         String cancel;
         boolean validate = false;
+
 
         System.out.println("4.2.1. BOOKING");
         System.out.println(booking);
@@ -1231,16 +1231,18 @@ public class HotelLogistics {
     public void createObjects() {
         //=================================== ADDING CUSTOMERS =====================================================
 
-        customerList.add(new AccountCustomer("Ron Burgundy", "045125033", "custom"));
-        customerList.add(new AccountCustomer("Anton Göransson", "0703545036", "custom"));
-        customerList.add(new AccountCustomer("Arnold Svensson", "0704565656", "custom"));
-        customerList.add(new AccountCustomer("Erik Larsson", "0704576556", "custom"));
-        customerList.add(new AccountCustomer("Elin Hansson", "0707676768", "custom"));
-        customerList.add(new AccountCustomer("Lena Karlsson", "044343434", "custom"));
+        customerList.add(new AccountCustomer("Ron Burgundy", "custom", "045125033"));
+        customerList.add(new AccountCustomer("Anton Göransson", "custom", "0703545036"));
+        customerList.add(new AccountCustomer("Arnold Svensson", "custom", "0705421876"));
+        customerList.add(new AccountCustomer("Erik Larsson", "custom", "0704576556"));
+        customerList.add(new AccountCustomer("Elin Hansson", "custom", "0707676768"));
+        customerList.add(new AccountCustomer("Lena Karlsson", "custom", "0707676768"));
+
+        //customerList.get(0).setCancelledAccount(true); //Set account to cancelled
 
         //=================================== ADDING ADMINS =====================================================
 
-        adminList.add(new AccountAdmin("Admin", "044545454", "admin"));
+        adminList.add(new AccountAdmin("Admin", "admin"));
 
         //=========================== EXAMPLES OF ADDING ROOMS =====================================================
         //============================ EXAMPLES OF ADDING ROOMS =====================================================
