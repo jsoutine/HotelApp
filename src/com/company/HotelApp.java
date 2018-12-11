@@ -59,10 +59,10 @@ public class HotelApp {
                     break;
 
                 case "3":
-                    System.out.println("2.3. Search for available rooms. Note: Need to register to book.");
+                    System.out.println("2.3. SEARCH FOR AVAILABLE ROOMS. Note: Need to register to book.");
                     ArrayList<BookingSearch> matchingResults = logistics.searchBooking(); //Method call
                     if (matchingResults.isEmpty()) {
-                        System.out.println("No results" + "\n Back (Enter)");
+                        System.out.println("No results" + "\nBack (Enter)");
                     } else {
                         int countElements = 0;
                         boolean lastMinute;
@@ -70,7 +70,7 @@ public class HotelApp {
                             logistics.lastMinute(booking);
                                 System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
                         }
-                        System.out.println("You need to register to make any of the suggested bookings. \nBack(Enter)");
+                        System.out.println("You need to register to make any of the suggested bookings above. \nBack(Enter)");
                     }
                     myApp.input.nextLine();
                     validMenu = false;
