@@ -435,7 +435,7 @@ public class HotelLogistics {
                     default:
                         try {
                             roomSelect = Integer.parseInt(menuChoice);  // String -> int
-                            validateInput = true; //tvärtom
+                            validateInput = true;
                             if (roomSelect < 1 || roomSelect > roomList.size()) {
                                 System.out.printf("There are only %d rooms to select from. Try again or press \"0\" to go back.%n", roomList.size());
                             } else {
@@ -973,9 +973,35 @@ public class HotelLogistics {
 
     //4.2.1.
     public void viewBooking(Booking booking) {
+
         //Ska länka till metod removeBooking, när den metoden är klar.
+
+        String cancel;
+        boolean validate = false;
+
+
         System.out.println("4.2.1. BOOKING");
         System.out.println(booking);
+
+        do {
+        System.out.printf("%n%s%n%s%n%s%n", "Would you like to cancel this booking?", "1. Yes", "2. No");
+        cancel = input.nextLine();
+
+            switch (cancel) {
+                case "1":
+                    System.out.println("Your booking would now have been cancelled if the method was complete");
+                    validate = true;
+                    break;
+                case "2":
+                    System.out.println("Booking still valid.");
+                    validate = true;
+                    break;
+                default:
+                    System.out.println("Please enter an option of \"1\" or \"2\". ");
+                    break;
+            }
+        }while (!validate);
+
         System.out.println("Back (Enter)");
         input.nextLine();
     }
@@ -984,12 +1010,12 @@ public class HotelLogistics {
     public void adminEditRoomInfo(Room room) {
         System.out.println("3.2.3 EDIT ROOM: " + room);
 
-        String anwser;
+        String answer;
         int intAnwser;
-
         boolean validate = false;
+
         do {
-            System.out.printf("%s%n%s%s%n%s%n%s%n%s%n",
+            System.out.printf("%s%n%s%n%s%n%s%n%s%n%s%n",
                     "Edit room info: ",
                     "1: Edit beds",
                     "2: Edit standard ",
@@ -997,52 +1023,76 @@ public class HotelLogistics {
                     "4: View bookings for this room",
                     "0. Back");
             do {
-                anwser = input.nextLine();
+                answer = input.nextLine();
 
-                switch (anwser) {
+                switch (answer) {
                     case "1":
-                        System.out.println("Edit number of beds for room " + room.getRoomNumber());
+                        System.out.println("Edit the number of beds for room " + room.getRoomNumber() +
+                                ", or press \"0\" to cancel. ");
+
                         do {
-                            System.out.println("Type in new number of beds for this room: ");
-                            anwser = input.nextLine();
-                            try {
-                                intAnwser = Integer.parseInt(anwser);
-                                room.setBeds(intAnwser);
+                            System.out.println("Type in the new number of beds for this room: ");
+
+                            answer = input.nextLine();
+                            if (answer.equals("0") || answer.equalsIgnoreCase("o")) {
+                                System.out.println("Edit number has been cancelled. \n " +
+                                        "Back (enter)");
+                                input.nextLine();
                                 validate = true;
+                            } else {
 
-                            } catch (NumberFormatException e) {
-                                System.out.println("Answer must be digits.");
-                                validate = false;
+                                try {
+                                    intAnwser = Integer.parseInt(answer);
+                                    room.setBeds(intAnwser);
+                                    validate = true;
 
-                            } catch (IllegalArgumentException b) {
-                                System.out.println(b.getMessage());
-                                validate = false;
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Answer must be digits. ");
+                                    validate = false;
+
+                                } catch (IllegalArgumentException b) {
+                                    System.out.println(b.getMessage());
+                                    validate = false;
+                                }
                             }
-
-                        } while (!validate);
+                        }
+                        while (!validate);
+                        System.out.println("The new number of bed(s) in room " + room.getRoomNumber()
+                                + " is now " + answer + ".");
                         break;
                     case "2":
-                        System.out.println("Edit standard for the room" + room.getStandard());
+                        System.out.println("Edit standard for room number " + room.getRoomNumber());
 
                         do {
-                            System.out.println("Type in new standard for the room ");
-                            anwser = input.nextLine();
+                            System.out.println("Type in new standard for the room, or press \"0\" to cancel ");
+                            answer = input.nextLine();
 
-                            try {
-                                intAnwser = Integer.parseInt(anwser);
-                                room.setStandard(intAnwser);
+                            if (answer.equals("0") || answer.equalsIgnoreCase("o")) {
+                                System.out.println("Edit number has been cancelled. \n " +
+                                        "Back (enter).");
+                                input.nextLine();
                                 validate = true;
+                            } else {
+                                try {
+                                    intAnwser = Integer.parseInt(answer);
+                                    room.setStandard(intAnwser);
+                                    validate = true;
 
-                            } catch (NumberFormatException a) {
-                                System.out.println("Answer must be digits.");
-                                validate = false;
+                                } catch (NumberFormatException a) {
+                                    System.out.println("Answer must be digits.");
+                                    validate = false;
 
-                            } catch (IllegalArgumentException b) {
-                                System.out.println(b.getMessage());
-                                validate = false;
+                                } catch (IllegalArgumentException b) {
+                                    System.out.println(b.getMessage());
+                                    validate = false;
 
+                                }
                             }
+
                         } while (!validate);
+                        System.out.println("The new standard for room number " + room.getRoomNumber()
+                                + " is now: " + answer + ".");
+
                         break;
 
                     case "3":
@@ -1051,11 +1101,11 @@ public class HotelLogistics {
                         do {
                             validate = true;
 
-                            anwser = input.nextLine();
-                            if (anwser.equalsIgnoreCase("y")) {
+                            answer = input.nextLine();
+                            if (answer.equalsIgnoreCase("y")) {
                                 acceptRemove = true;
                                 validate = true;
-                            } else if (anwser.equalsIgnoreCase("n")) {
+                            } else if (answer.equalsIgnoreCase("n")) {
                                 acceptRemove = false;
                                 validate = true;
 
@@ -1073,7 +1123,8 @@ public class HotelLogistics {
 
                             } else if (acceptRemove) {
                                 for (BookingConfirm booking : room.getRoomBookingList()) {
-                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now()));
+                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now()))
+                                        ;
                                     acceptRemove = false;
                                     System.out.println("There are current or future bookings for this room.\n" +
                                             " Please remomve all current or future bookings for this room before removing it. ");
@@ -1087,11 +1138,11 @@ public class HotelLogistics {
                             for (int i = 0; i < roomList.size(); i++) {
                                 if (roomList.get(i).getRoomNumber() == room.getRoomNumber()) {
                                     roomList.remove(roomList.get(i));
-                                    System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), "removed succesfully.");
+                                    System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), " removed succesfully.");
                                 }
                             }
                         }
-                        System.out.println("Back (Enter)");
+                        System.out.println("Back (Enter) ");
                         input.nextLine();
                         break;
 
@@ -1101,11 +1152,12 @@ public class HotelLogistics {
                         break;
 
                     case "0":
-                        System.out.println("Back (Enter)");
+                        System.out.println("Back (Enter) ");
                         input.nextLine();
                         return;
 
                     default:
+
                         System.out.println("Not correct anwser, please enter 0-4");
                         validate = false;
                         break;
@@ -1116,6 +1168,8 @@ public class HotelLogistics {
     }
 
     public void viewBookingsForRoom(Room room) {
+        System.out.println("3.2.3.3. BOOKINGS FOR ROOM NUMBER " + room.getRoomNumber());
+
         do {
             String menuChoice;
             boolean validateInput;
@@ -1130,17 +1184,18 @@ public class HotelLogistics {
             }
 
             if (metodlist.isEmpty()) {
-                System.out.println("no current or future bookings found for room" + room.getRoomNumber() +
-                        ". \n Back (Enter)"
+                System.out.println("No current or future bookings found for room " + room.getRoomNumber() +
+                        ". \nBack (Enter)"
                 );
                 input.nextLine();
                 return;
+
 
             } else {
                 for (int i = 0; i < metodlist.size(); i++) {
                     System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
                 }
-                System.out.printf("%-4s%s%n", "0.", "Back");
+                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
                 do {
                     menuChoice = input.nextLine();
                     if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
@@ -1152,6 +1207,7 @@ public class HotelLogistics {
                             if (intChoice < 1 || intChoice > metodlist.size()) {
                                 validateInput = false;
                                 System.out.println("Choice did not match an alternative. Try again:");
+
 
                             }
                         } catch (NumberFormatException e) {
@@ -1188,14 +1244,17 @@ public class HotelLogistics {
 
         adminList.add(new AccountAdmin("Admin", "admin"));
 
+        //=========================== EXAMPLES OF ADDING ROOMS =====================================================
         //============================ EXAMPLES OF ADDING ROOMS =====================================================
+
 
         roomList.add(new Room(1, 1));               //1
         roomList.add(new Room(1, 1));               //2
         roomList.add(new Room(1, 2));               //3
         roomList.add(new Room(1, 2));               //4
 
-        //================================== 4 ST SINGELROOM. STANDARD 1-3 =========================================
+        //================================== 4 ST SINGELROOM. STANDARD 1-2 =========================================
+        //===================================2 ST STANDARD 1 & 2ST STANDARD 2=======================================
 
         roomList.add(new Room(2, 1));               //5
         roomList.add(new Room(2, 1));               //6
@@ -1214,6 +1273,7 @@ public class HotelLogistics {
         roomList.add(new Room(2, 5));               //19
 
         //===================================== 15 ST DOUBLE ROOM STANDARD 1-5=======================================
+        //========== 3 ST STANDARD 1, 5 ST STANDARD 2, 3 ST STANDARD 3, 2 ST STANDARD 4, 2 ST STANDARD 5=============
 
         roomList.add(new Room(4, 1));               //20
         roomList.add(new Room(4, 2));               //21
@@ -1223,6 +1283,7 @@ public class HotelLogistics {
         roomList.add(new Room(4, 5));               //25
 
         //===================================== 6 ST 4 BEDS ROOM STANDARD 2-4========================================
+        //========= 1 ST STANDARD 1, 2 ST STANDARD 2, 1 ST STANDARD 3, 1 ST STANDARD 4, 1 ST STANDARD 5 =============
         //======================================SUM ROOMS = 25 =====================================================
 
         //============================ CREATE STANDARD PRICE OBJECT ============================================
@@ -1304,7 +1365,5 @@ public class HotelLogistics {
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!7 " + e.getMessage());
         }
-
-
     }
 }
