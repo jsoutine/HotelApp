@@ -7,13 +7,8 @@ import java.time.temporal.ChronoUnit;
 public class Booking {
     private LocalDate fromDate;
     private LocalDate toDate;
-    //private Account customer;
     private Room room;
     private double price;
-    //private boolean lastMinute;
-    //private boolean confirmedBooking;  //To separate a confirmed booking from suggested bookings from search.
-    //private int bookingID;
-    //private static int bookingIdCount = 0;
     private static LocalDate today = LocalDate.now();
 
     public Booking(Room room, LocalDate fromDate, LocalDate toDate, double price) {
@@ -36,10 +31,6 @@ public class Booking {
     public LocalDate getToDate() {
         return toDate;
     }
-
-   /* public Account getCustomer(){
-        return customer;
-    }*/
 
     public Room getRoom() {
         return room;

@@ -546,8 +546,8 @@ public class HotelLogistics {
     }
 
     //Part of 4.1.
-    public ArrayList<Booking> searchBooking() {
-        ArrayList<Booking> matchingResults = new ArrayList<>();
+    public ArrayList<BookingSearch> searchBooking() {
+        ArrayList<BookingSearch> matchingResults = new ArrayList<>();
         LocalDate fromDate = LocalDate.of(2000, 1, 1);
         LocalDate toDate = LocalDate.of(2000, 1, 1);
         String answer;
@@ -682,7 +682,7 @@ public class HotelLogistics {
                 if (room.getBeds() == beds && room.getStandard() == standard) {
                     if (checkDates(room, fromDate, toDate)) {
                         double price = calculateBookingPrice(fromDate, toDate, room);
-                        matchingResults.add(new Booking(room, fromDate, toDate, price));
+                        matchingResults.add(new BookingSearch(room, fromDate, toDate, price));
                         //break;
                     }
                 }
@@ -693,7 +693,7 @@ public class HotelLogistics {
                     if (room.getBeds() >= beds) {      //HOW SHOULD WE FILTER SECOND HAND MATCHES?
                         if (checkDates(room, fromDate, toDate)) {
                             double price = calculateBookingPrice(fromDate, toDate, room);
-                            matchingResults.add(new Booking(room, fromDate, toDate, price));
+                            matchingResults.add(new BookingSearch(room, fromDate, toDate, price));
                         }
                     }
                 }
@@ -709,7 +709,7 @@ public class HotelLogistics {
     //4.1.
     public void makeBooking(AccountCustomer concernedAccount) {
         System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
-        ArrayList<Booking> matchingResults = searchBooking();  //Call to method searchBooking
+        ArrayList<BookingSearch> matchingResults = searchBooking();  //Call to method searchBooking
         String answer;
 
         int bookingChoice = 0;
@@ -721,9 +721,9 @@ public class HotelLogistics {
             System.out.println("No results" + "\n0. Back");
         } else {
             int countElements = 0;
-            for (Booking booking : matchingResults) {
-                lastMinute = lastMinute(booking);
-                System.out.printf("%-4s%s%s%n", Integer.toString(++countElements).concat("."), booking, ((lastMinute) ? " (Last minute price!)" : ""));
+            for (BookingSearch booking : matchingResults) {
+                lastMinute(booking);
+                System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
             }
             System.out.println("1-n: Make a booking from the list" + "\n0. Back");
         }
@@ -896,20 +896,15 @@ public class HotelLogistics {
         return price;
     }
 
-    public boolean lastMinute(Booking booking) {
+    public void lastMinute(BookingSearch booking) {
         long periodDays;
         long daysUntil;
-        boolean lastMinute;
         periodDays = ChronoUnit.DAYS.between(booking.getFromDate(), booking.getToDate());
         daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), booking.getFromDate());
         if (daysUntil < 6 && periodDays < 10) {  //If last minute
-            lastMinute = true;
+            booking.setLastMinute(true);
             booking.setPrice(booking.getPrice() * 0.75);
         }
-        else {
-            lastMinute = false;
-        }
-        return lastMinute;
     }
 
     //4.2.  &&  3.3.)
@@ -978,6 +973,7 @@ public class HotelLogistics {
 
     //4.2.1.
     public void viewBooking(Booking booking) {
+        //Ska länka till metod removeBooking, när den metoden är klar.
         System.out.println("4.2.1. BOOKING");
         System.out.println(booking);
         System.out.println("Back (Enter)");

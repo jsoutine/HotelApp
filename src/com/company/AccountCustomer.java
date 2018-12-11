@@ -1,9 +1,7 @@
 package com.company;
 
 public class AccountCustomer extends Account{
-    //private boolean cancelledAccount;
     private String phoneNumber;
-    //private String password;
     private String accountID;
     private static int accountCounter;
     private String phoneValidate = "0\\d\\d\\d\\d\\d\\d\\d\\d+"; //Regular expression; At least 9 numeric digits, starting with 0 (Should use Pattern instead?)

@@ -1,8 +1,6 @@
 package com.company;
 
 public class AccountAdmin extends Account {
-    //private boolean cancelledAccount;
-    //private String password;
     private String accountID;
     private static int accountCounter;
 
@@ -14,7 +12,6 @@ public class AccountAdmin extends Account {
     public String getAccountID() {
         return accountID;
     }
-
 
     @Override
     public String toString() {
