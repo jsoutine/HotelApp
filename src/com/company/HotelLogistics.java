@@ -1006,8 +1006,7 @@ public class HotelLogistics {
 
         } else {
             for (int i = 0; i < room.getRoomBookingList().size(); i++) {
-
-
+                
                 if (i == 0) {
                     if (toDate.equals(room.getRoomBookingList().get(i).getFromDate()) ||    // Om index är 0 && Om utchek är samma dag som existerande incheck || utcheck är innan existerande incheck
                             toDate.isBefore(room.getRoomBookingList().get(i).getFromDate())) {
