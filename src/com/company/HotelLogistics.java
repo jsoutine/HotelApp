@@ -51,7 +51,6 @@ public class HotelLogistics {
         }
     }
 
-
     //3.4. & 4.5.
     public boolean logOut() {   //This method returns true if user choose to log out, and false if not.
         String menuChoice;
@@ -560,55 +559,55 @@ public class HotelLogistics {
                         System.out.println("Please enter 0-2");
                         break;
 
-
                 }
-
             }
 
         }
     }
-
-
     }
 */
-
     //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
     public void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
         boolean logout = false;
         do {
-            System.out.printf("%s%n%s%s%n%s%n%s%n%s%n%s%n",
-                    "4. CUSTOMER MAIN MENU",
-                    "Logged in as: ", loggedInAccount.getName(),
-                    "1. Make a booking, or view available",
-                    "2. View your bookings",
-                    "3. Edit account info",
-                    "0. Log out.");
-            do {
-                menuChoice = input.nextLine();
-                switch (menuChoice) {
-                    case "1":
-                        //System.out.println("4.1.");
-                        makeBooking(loggedInAccount);
-                        break;
-                    case "2":
-                        //System.out.println("4.2.");
-                        viewBookings(loggedInAccount);
-                        break;
-                    case "3":
-                        //System.out.println("4.3.");
-                        editCustomerInfo(loggedInAccount);
-                        break;
-                    case "0":
-                        logout = logOut();
-                        break;
-                    default:
-                        System.out.println("Invalid option. Type a a choice 0-3:");
-                        break;
+            if (loggedInAccount.isCancelledAccount()) {
+                logout=true;
+            } else {
+                //4.
+                System.out.printf("%s%n%s%s%n%s%n%s%n%s%n%s%n",
+                        "====CUSTOMER MAIN MENU====",
+                        "Logged in as: ", loggedInAccount.getName(),
+                        "1. Make a booking, or view available",
+                        "2. View your bookings",
+                        "3. Edit account info",
+                        "0. Log out.");
+                do {
+                    menuChoice = input.nextLine();
+                    switch (menuChoice) {
+                        case "1":
+                            //System.out.println("4.1.");
+                            makeBooking(loggedInAccount);
+                            break;
+                        case "2":
+                            //System.out.println("4.2.");
+                            viewBookings(loggedInAccount);
+                            break;
+                        case "3":
+                            //System.out.println("4.3.");
+                            editCustomerInfo(loggedInAccount);
+                            break;
+                        case "0":
+                            logout = logOut();
+                            break;
+                        default:
+                            System.out.println("Invalid option. Type a a choice 0-3:");
+                            break;
+                    }
                 }
+                while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("0"));
             }
-            while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("0"));
-        } while (!logout);
+        }while (!logout) ;
     }
 
     //Part of 4.1.
