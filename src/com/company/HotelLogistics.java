@@ -1019,14 +1019,16 @@ public class HotelLogistics {
                     case "Y":
                     case "y":
                         try {    // Maybe simplify, since basically: bookingDates(matchingResults)
-
-                            for (BookingSearch booking : addedBookings) {
-                                bookingDates(booking.getRoom(), booking.getFromDate(), booking.getToDate(), concernedAccount, booking.getPrice());
+                            boolean sameBookingID = false;
+                            for (int i = 0; i < addedBookings.size(); i++) {
+                                if (i != 0) {                     //Only the first room of a booking increments the bookingID.
+                                    sameBookingID = true;
+                                }
+                                bookingDates(addedBookings.get(i).getRoom(), addedBookings.get(i).getFromDate(),
+                                        addedBookings.get(i).getToDate(), concernedAccount, addedBookings.get(i).getPrice(), sameBookingID);
                             }
-                           /* bookingDates(matchingResults.get(bookingChoice - 1).getRoom(),
-                                    matchingResults.get(bookingChoice - 1).getFromDate(), matchingResults.get(bookingChoice - 1).getToDate(), concernedAccount, matchingResults.get(bookingChoice - 1).getPrice());*/
                             validateInput = true;
-                            System.out.println("Booking succesful! BABABABAB");
+                            System.out.println("Booking succesful!");
                         } catch (IllegalArgumentException e) {
                             System.out.println("BOOKING FAILED!\n" + e.getMessage());
                         }
@@ -1105,21 +1107,21 @@ public class HotelLogistics {
     }
 
     //Part of 4.1.
-    public void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
+    public void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingId) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
         if (room.getRoomBookingList().isEmpty()) {                                                  //Om bokningslistan för rummet är tom.
-            room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price));
-            System.out.println("Booking successful. Code 1");
+            room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));
+            //System.out.println("Booking successful. Code 1");
             return;
         } else if (room.getRoomBookingList().size() == 1) {                                        //Om bara finns en bokning i listan
             if (toDate.isEqual(room.getRoomBookingList().get(0).getFromDate()) ||                      // Om utchek är samma dag som existerande incheck
                     toDate.isBefore(room.getRoomBookingList().get(0).getFromDate())) {                 //Om utcheck är innan existerande incheck
-                room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price));     //Lägg till innan existerande bokning i listan
-                System.out.println("Booking successful. Code 2");
+                room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));     //Lägg till innan existerande bokning i listan
+                //System.out.println("Booking successful. Code 2");
                 return;
             } else if (fromDate.isEqual(room.getRoomBookingList().get(0).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
                     fromDate.isAfter(room.getRoomBookingList().get(0).getToDate())) {          //Om incheck är efter existerande utcheck.
-                room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price));             //Lägg till efter existerande bokning i listan.
-                System.out.println("Booking successful. Code 3");
+                room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));             //Lägg till efter existerande bokning i listan.
+                //System.out.println("Booking successful. Code 3");
                 return;
             } else {
                 throw new IllegalArgumentException(
@@ -1131,27 +1133,25 @@ public class HotelLogistics {
                 if (i == 0) {
                     if (toDate.equals(room.getRoomBookingList().get(i).getFromDate()) ||    // Om index är 0 && Om utchek är samma dag som existerande incheck || utcheck är innan existerande incheck
                             toDate.isBefore(room.getRoomBookingList().get(i).getFromDate())) {
-                        room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price));       //Lägg till innan existerande bokning i listan
-                        System.out.println("Booking successful. Code 4 " + " Iteration " + i);
+                        room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));       //Lägg till innan existerande bokning i listan
+                        //System.out.println("Booking successful. Code 4 " + " Iteration " + i);
                         return;
-                    //} else if (i == 0 && room.getRoomBookingList().size() > 1) {
                     } else if ((fromDate.equals(room.getRoomBookingList().get(i).getToDate())   ||    fromDate.isAfter(room.getRoomBookingList().get(i).getToDate()))    &&
                             (toDate.equals(room.getRoomBookingList().get(1).getFromDate())  ||    toDate.isBefore(room.getRoomBookingList().get(1).getFromDate()))) {
-                        room.getRoomBookingList().add(i +1, new BookingConfirm(room, fromDate, toDate, customer, price));
+                        room.getRoomBookingList().add(i +1, new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));
                         return;
                     }
                     /*else {
                         throw new IllegalArgumentException(
                                 "Room " + room.getRoomNumber() + " Dates: " + fromDate + " to " + toDate + ": In conflict with other booking. Iteration: " + i + " Code A");
                     }*/
-                    //START
                 } else if ((i > 0) && (i < room.getRoomBookingList().size() - 1)) {                                                                 // Om index är mer än 0 && index nite pekar på det sista objektet i listan.
                     if ((fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
                             fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) &&
                             (toDate.equals(room.getRoomBookingList().get(i + 1).getFromDate()) ||                      // Om utchek är samma dag som existerande incheck
                                     toDate.isBefore(room.getRoomBookingList().get(i + 1).getFromDate()))) {  //Om incheck är är efter existerande utcheck i, och före existerande incheck i+1.)
-                        room.getRoomBookingList().add(i + 1, new BookingConfirm(room, fromDate, toDate, customer, price));                       //Lägg till efter bokning "i" (Finns ledigt mellan bokning i och bokning i+1
-                        System.out.println("Booking successful. Code 5 " + " Iteration " + i);
+                        room.getRoomBookingList().add(i + 1, new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));                       //Lägg till efter bokning "i" (Finns ledigt mellan bokning i och bokning i+1
+                        //System.out.println("Booking successful. Code 5 " + " Iteration " + i);
                         return;
                     } /*else {
                         throw new IllegalArgumentException(
@@ -1160,8 +1160,8 @@ public class HotelLogistics {
                 } else if (i == room.getRoomBookingList().size() - 1) {                      // If index points to last item in list.
                     if (fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
                             fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) {   //Om incheckning är efter existerande utcheck i.
-                        room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price));
-                        System.out.println("Booking successful. Code 6 " + " Iteration " + i);
+                        room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));
+                        //System.out.println("Booking successful. Code 6 " + " Iteration " + i);
                         return;
                     } else {
                         throw new IllegalArgumentException(
@@ -1600,31 +1600,32 @@ public class HotelLogistics {
         bedConstantList.add(new BedPrices(4, 1.7));
 
         //============================ EXAMPLE OF ADDING BOOKINGS ======================================================
+        boolean sameBookingID = false;
 
         LocalDate fromDate1 = LocalDate.of(2019, 3, 12);
-        LocalDate toDate1 = LocalDate.of(2019, 4, 11);
+        LocalDate toDate1 = LocalDate.of(2019, 3, 21);
 
         try {    //                room       ,   customer
             double price1 = calculateSingleBookingPrice(fromDate1, toDate1, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate1, toDate1, customerList.get(1), price1);
+            bookingDates(roomList.get(0), fromDate1, toDate1, customerList.get(1), price1, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!1 " + e.getMessage());
         }
 
         LocalDate fromDate2 = LocalDate.of(2019, 2, 12);
-        LocalDate toDate2 = LocalDate.of(2019, 3, 11);
+        LocalDate toDate2 = LocalDate.of(2019, 2, 15);
         try {
             double price2 = calculateSingleBookingPrice(fromDate2, toDate2, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate2, toDate2, customerList.get(2), price2);
+            bookingDates(roomList.get(0), fromDate2, toDate2, customerList.get(2), price2, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
         LocalDate fromDate3 = LocalDate.of(2019, 7, 12);
-        LocalDate toDate3 = LocalDate.of(2019, 7, 17);
+        LocalDate toDate3 = LocalDate.of(2019, 7, 13);
         try {
             double price3 = calculateSingleBookingPrice(fromDate3, toDate3, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate3, toDate3, customerList.get(3), price3);
+            bookingDates(roomList.get(0), fromDate3, toDate3, customerList.get(3), price3, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -1633,7 +1634,7 @@ public class HotelLogistics {
         LocalDate toDate4 = LocalDate.of(2019, 5, 18);
         try {
             double price4 = calculateSingleBookingPrice(fromDate4, toDate4, roomList.get(2));
-            bookingDates(roomList.get(2), fromDate4, toDate4, customerList.get(4), price4);
+            bookingDates(roomList.get(2), fromDate4, toDate4, customerList.get(4), price4, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -1642,36 +1643,34 @@ public class HotelLogistics {
         LocalDate toDate5 = LocalDate.of(2019, 6, 17);
         try {
             double price5 = calculateSingleBookingPrice(fromDate4, toDate4, roomList.get(2));
-            bookingDates(roomList.get(2), fromDate5, toDate5, customerList.get(5), price5);
+            bookingDates(roomList.get(2), fromDate5, toDate5, customerList.get(5), price5, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
         LocalDate fromDate6 = LocalDate.of(2019, 5, 18);
-        LocalDate toDate6 = LocalDate.of(2019, 5, 25);
+        LocalDate toDate6 = LocalDate.of(2019, 5, 24);
         try {
             double price6 = calculateSingleBookingPrice(fromDate6, toDate6, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate6, toDate6, customerList.get(4), price6);
+            bookingDates(roomList.get(0), fromDate6, toDate6, customerList.get(4), price6, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
         LocalDate fromDate7 = LocalDate.of(2019, 2, 1);
-        LocalDate toDate7 = LocalDate.of(2019, 2, 6);
+        LocalDate toDate7 = LocalDate.of(2019, 2, 5);
         try {
             double price7 = calculateSingleBookingPrice(fromDate7, toDate7, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate7, toDate7, customerList.get(4), price7);
+            bookingDates(roomList.get(0), fromDate7, toDate7, customerList.get(4), price7, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
-        //=====================================================================================
-
-        LocalDate fromDate8 = LocalDate.of(2018, 12, 12);
-        LocalDate toDate8 = LocalDate.of(2018, 12, 13);
+        LocalDate fromDate8 = LocalDate.of(2019, 1, 10);
+        LocalDate toDate8 = LocalDate.of(2019, 1, 12);
         try {
             double price8 = calculateSingleBookingPrice(fromDate8, toDate8, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate8, toDate8, customerList.get(0), price8);
+            bookingDates(roomList.get(9), fromDate8, toDate8, customerList.get(0), price8, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -1680,7 +1679,7 @@ public class HotelLogistics {
         LocalDate toDate9 = LocalDate.of(2019, 2, 16);
         try {
             double price9 = calculateSingleBookingPrice(fromDate9, toDate9, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate9, toDate9, customerList.get(0), price9);
+            bookingDates(roomList.get(9), fromDate9, toDate9, customerList.get(0), price9, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -1689,16 +1688,16 @@ public class HotelLogistics {
         LocalDate toDate10 = LocalDate.of(2019, 1, 2);
         try {
             double price10 = calculateSingleBookingPrice(fromDate10, toDate10, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate10, toDate10, customerList.get(0), price10);
+            bookingDates(roomList.get(9), fromDate10, toDate10, customerList.get(0), price10, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
-        LocalDate fromDate11 = LocalDate.of(2018, 12, 20);
-        LocalDate toDate11 = LocalDate.of(2018, 12, 21);
+        LocalDate fromDate11 = LocalDate.of(2019, 2, 16);
+        LocalDate toDate11 = LocalDate.of(2019, 2, 18);
         try {
             double price11 = calculateSingleBookingPrice(fromDate11, toDate11, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate11, toDate11, customerList.get(0), price11);
+            bookingDates(roomList.get(9), fromDate11, toDate11, customerList.get(0), price11, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -1707,12 +1706,10 @@ public class HotelLogistics {
         LocalDate toDate12 = LocalDate.of(2019, 2, 21);
         try {
             double price12 = calculateSingleBookingPrice(fromDate12, toDate12, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate12, toDate12, customerList.get(0), price12);
+            bookingDates(roomList.get(9), fromDate12, toDate12, customerList.get(0), price12, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
-
-        //====================================================================================
     }
 }

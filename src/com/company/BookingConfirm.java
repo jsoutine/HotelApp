@@ -6,11 +6,19 @@ public class BookingConfirm extends Booking {
     private AccountCustomer customer;
     private int bookingID;
     private static int bookingIdCount = 0;
+    private boolean sameBookingID;
+    private int uniqueID;  //The unique room bookingID, not dependent on bookingID
+    private int uniqueIDcounter;
 
-    public BookingConfirm (Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price) {
+    public BookingConfirm (Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingID) {
         super(room, fromDate, toDate, price);
         this.customer = customer;
-        bookingID = ++bookingIdCount;
+        if (!sameBookingID) {    //The first room in a booking has sameBookingID = false.
+            bookingID = ++bookingIdCount;
+        }else {
+            bookingID = bookingIdCount;
+        }
+        uniqueID = ++uniqueIDcounter;
     }
 
     public int getBookingID() {
