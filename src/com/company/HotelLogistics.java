@@ -554,7 +554,7 @@ public class HotelLogistics {
                 "1. One room",
                 "2. More than one room",
                 "0. Back");
-        do{
+        do {
             answer = input.nextLine();
             if (answer.equals("1")) {
                 intAnswer = Integer.parseInt(answer);
@@ -571,7 +571,7 @@ public class HotelLogistics {
                 System.out.println("Invalid input. Please try again:");
                 validateInput = false;
             }
-        }while (!validateInput);
+        } while (!validateInput);
         return intAnswer;
     }
 
@@ -614,40 +614,40 @@ public class HotelLogistics {
             }
         }while (!validateInput);*/
 
-            System.out.printf("%s%s%n%s%n", ((oneRoom) ? "Step 1/4." : "Step 1/2."),
-                    " Enter date of desired arrival: (YY-MM-DD)", "0. Cancel");
-            do {
-                cancel = false;
-                answer = input.nextLine();
-                if (answer.matches("\\d\\d-\\d\\d-\\d\\d")) {
-                    String[] splitDate = answer.split("-");    //Could also use charAt. T.ex. YYMMDD
-                    try {
-                        year = Integer.parseInt("20" + splitDate[0]);
-                        month = Integer.parseInt(splitDate[1]);
-                        day = Integer.parseInt(splitDate[2]);
-                        fromDate = LocalDate.of(year, month, day);
-                        validateInput = true;
-                        //}catch (NumberFormatException e) {
-                        //    System.out.println("Invalid input. Please type numeric values:");
-                    } catch (DateTimeParseException e) {     //Or DateTimeException
-                        System.out.println("Invalid date. Please try again:");
-                        validateInput = false;
-                    } catch (DateTimeException e) {     //Or DateTimeException
-                        System.out.println(e.getMessage() + ". Please try again:");
-                        validateInput = false;
-                    }
-                    if (validateInput == true && fromDate.isBefore(LocalDate.now())) {
-                        System.out.println("Arrival date may not be a past date. Try again.");
-                        validateInput = false;
-                    }
-                } else if (answer.equals("0") || answer.equalsIgnoreCase("0")) {
+        System.out.printf("%s%s%n%s%n", ((oneRoom) ? "Step 1/4." : "Step 1/2."),
+                " Enter date of desired arrival: (YY-MM-DD)", "0. Cancel");
+        do {
+            cancel = false;
+            answer = input.nextLine();
+            if (answer.matches("\\d\\d-\\d\\d-\\d\\d")) {
+                String[] splitDate = answer.split("-");    //Could also use charAt. T.ex. YYMMDD
+                try {
+                    year = Integer.parseInt("20" + splitDate[0]);
+                    month = Integer.parseInt(splitDate[1]);
+                    day = Integer.parseInt(splitDate[2]);
+                    fromDate = LocalDate.of(year, month, day);
                     validateInput = true;
-                    cancel = true;
-                } else {
-                    System.out.println("Invalid input. Please try again:");
+                    //}catch (NumberFormatException e) {
+                    //    System.out.println("Invalid input. Please type numeric values:");
+                } catch (DateTimeParseException e) {     //Or DateTimeException
+                    System.out.println("Invalid date. Please try again:");
+                    validateInput = false;
+                } catch (DateTimeException e) {     //Or DateTimeException
+                    System.out.println(e.getMessage() + ". Please try again:");
                     validateInput = false;
                 }
-            } while (!validateInput);
+                if (validateInput == true && fromDate.isBefore(LocalDate.now())) {
+                    System.out.println("Arrival date may not be a past date. Try again.");
+                    validateInput = false;
+                }
+            } else if (answer.equals("0") || answer.equalsIgnoreCase("0")) {
+                validateInput = true;
+                cancel = true;
+            } else {
+                System.out.println("Invalid input. Please try again:");
+                validateInput = false;
+            }
+        } while (!validateInput);
         if (!cancel) {
             System.out.printf("%s%s%n%s%n", ((oneRoom) ? "Step 2/4." : "Step 2/2."),
                     " Enter date of desired departure: (YY-MM-DD)", "0. Cancel");
@@ -734,28 +734,38 @@ public class HotelLogistics {
                 }
             } while (!validateInput);
         }
-        if (!cancel) {
-            System.out.println("SEARCH RESULT:");
-            for (Room room : roomList) {
-                if (room.getBeds() == beds && room.getStandard() == standard) {
-                    if (checkDates(room, fromDate, toDate)) {
-                        double price = calculateSingleBookingPrice(fromDate, toDate, room);
-                        matchingResults.add(new BookingSearch(room, fromDate, toDate, price));
-                        //break;
-                    }
-                }
-            }
-            if (!oneRoom || matchingResults.isEmpty()) {
-                if (oneRoom) {
-                    System.out.println("Unfortunately no perfect matches. Here are some other alternatives that might be of interest: ");
-                }
+        if (!cancel) {     // SE ÖVER IGEN!!!!!!!!!!!!!!!!!!!!!!!!
+            if (oneRoom) {
+                System.out.println("SEARCH RESULT:");
                 for (Room room : roomList) {
-                    if (room.getBeds() >= beds) {
+                    if (room.getBeds() == beds && room.getStandard() == standard) {
                         if (checkDates(room, fromDate, toDate)) {
                             double price = calculateSingleBookingPrice(fromDate, toDate, room);
                             matchingResults.add(new BookingSearch(room, fromDate, toDate, price));
+                            //break;
                         }
                     }
+                }
+                if (!oneRoom || matchingResults.isEmpty()) {
+                    if (oneRoom) {
+                        System.out.println("Unfortunately no perfect matches. Here are some other alternatives that might be of interest: ");
+                    }
+                    for (Room room : roomList) {
+                        if (room.getBeds() >= beds) {
+                            if (checkDates(room, fromDate, toDate)) {
+                                double price = calculateSingleBookingPrice(fromDate, toDate, room);
+                                matchingResults.add(new BookingSearch(room, fromDate, toDate, price));
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (Room room : roomList) {
+                    if (checkDates(room, fromDate, toDate)) {
+                        double price = calculateSingleBookingPrice(fromDate, toDate, room);
+                        matchingResults.add(new BookingSearch(room, fromDate, toDate, price));
+                    }
+
                 }
             }
         }
@@ -772,31 +782,36 @@ public class HotelLogistics {
         ArrayList<BookingSearch> matchingResults = new ArrayList<>();
         ArrayList<BookingSearch> addedBookings = new ArrayList<>();
         String answer;
+        int countElements;
         int bookingChoice = 0;
         boolean validateInput;
-        boolean proceed;
+        boolean proceed = false;
         boolean cancel = false;
         //boolean lastMinute;
         boolean oneRoom = false;
 
         int numberOfRooms = numberOfRoomsBooking(); //Method call
-        if (numberOfRooms == 0){
+        if (numberOfRooms == 0) {
             cancel = true;
-        }else if (numberOfRooms == 1) {
+        } else if (numberOfRooms == 1) {
             oneRoom = true;
         }
 
         if (!cancel) {
             matchingResults = searchBooking(oneRoom);  //Call to method searchBooking to add matching booking object to ArrayList, depending on one room, or more than one room.
+            for (BookingSearch booking : matchingResults) {
+                lastMinute(booking);                 //Determine if last minute. If so; adjust to lat minute prices.
+            }
+        }
 
+        if (!cancel) {
             do {
 
                 if (matchingResults.isEmpty()) {
                     System.out.println("No results" + "\n0. Back");
                 } else {
-                    int countElements = 0;
+                    countElements = 0;
                     for (BookingSearch booking : matchingResults) {
-                        lastMinute(booking);
                         System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
                     }
                     if (oneRoom) {   //If booking one room
@@ -804,9 +819,9 @@ public class HotelLogistics {
                     } else {      //If booking more than one room
                         System.out.printf("%s%s%s%s%s%n%s%n%s%s%s%n%s%n",
                                 "Added rooms: ", addedBookings.size(), ". Sum: ", calculateSumBookingPrice(addedBookings), " SEK.",
-                                "1-n: Add a booking from the list. You will thereafter be able to add more rooms to the booking.",
-                                "P. Proceed to make booking of ", addedBookings.size(), "added items.",
-                                "0. Cancel. No booking will be made");
+                                "1-n: Add a room from the list to your booking.",
+                                "P. Proceed to make booking of ", addedBookings.size(), " added rooms.",
+                                "0. Cancel. No booking will be made.");
                     }
                 }
 
@@ -815,6 +830,49 @@ public class HotelLogistics {
                     if (answer.equals("0") || answer.equalsIgnoreCase("O")) {
                         validateInput = true;
                         cancel = true;
+                        proceed = true;
+                    } else if (!oneRoom && answer.equalsIgnoreCase("P")) {
+                        if (addedBookings.isEmpty()) {
+                            System.out.println("No rooms have been added to your booking. \nContinue (Enter)");
+                            input.nextLine();
+                            validateInput = true;
+                        } else {
+                            System.out.printf("%s%n%s%n%s%n", "Proceed to confirm and finish this booking?",
+                                    "Y. Yes, proceed.",
+                                    "N. No, continue to add rooms to booking, or cancel booking.");
+                            do {
+                                answer = input.nextLine();
+                                switch (answer) {
+                                    case "Y":
+                                    case "y":
+                                        countElements = 0;
+                                        for (BookingSearch booking : matchingResults) {
+                                            if (booking.isAdded()) {
+                                                countElements++;
+                                            }
+                                        }
+                                        if (countElements == 0) {
+                                            System.out.println("No rooms are added to this booking. Booking will not be possible.");
+                                            validateInput = true;
+                                            proceed = false;
+                                        } else {
+                                            validateInput = true;
+                                            proceed = true;
+                                        }
+                                        break;
+                                    case "N":
+                                    case "n":
+                                        validateInput = true;
+                                        proceed = false;
+                                        break;
+                                    default:
+                                        System.out.println("Invalid input. Try again:");
+                                        validateInput = false;
+                                        break;
+                                }
+                            } while (!validateInput);
+                        }
+
                     } else {
                         try {
                             bookingChoice = Integer.parseInt(answer);  // String -> int
@@ -822,71 +880,90 @@ public class HotelLogistics {
                             if (bookingChoice < 1 || bookingChoice > matchingResults.size()) {
                                 validateInput = false;
                                 System.out.println("Choice did not match an alternative. Try again:");
-                                //} else {
-                                //    validateNumeric = true;
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("Choice did not match an alternative. Try again:");
                             validateInput = false;
                         }
+
+                        if (!oneRoom && validateInput) {
+                            if (matchingResults.get(bookingChoice - 1).isAdded()) {
+                                System.out.println("This room is alredy added to your booking. \nBack (Enter)");
+                                input.nextLine();
+                                validateInput = true;
+                                proceed = false;
+                            } else {
+                                System.out.printf("%s%n%s%n%s%n%s%n%s%n%s%n",
+                                        "ADDING TO BOOKING:", matchingResults.get(bookingChoice - 1),
+                                        "Add this to booking?",
+                                        "Y. Yes, add this to my booking.",
+                                        "N. No, do not add this to my booking. Go back to booking suggestions.",
+                                        "O. Cancel booking. No booking will be made.");
+                                do {
+                                    answer = input.nextLine();
+                                    if (answer.equalsIgnoreCase("Y")) {
+                                        proceed = false;
+                                        validateInput = true;
+
+                                        matchingResults.get(bookingChoice - 1).setAdded(true);  //Could add to addedList directly.
+                                        addedBookings.add(matchingResults.get(bookingChoice - 1));  //Added bookings transfered to list addedBookings, for the confirmation step later.
+                                        System.out.println("Booking added.");
+
+                                    } else if (answer.equalsIgnoreCase("N")) {
+                                        proceed = false;
+                                        validateInput = true;
+                                        System.out.println("Booking not added.");
+
+                                    } else if (answer.equals("0") || answer.equalsIgnoreCase("O")) {
+                                        proceed = true;
+                                        cancel = true;
+                                        validateInput = true;
+                                    } else {
+                                        proceed = false;
+                                        validateInput = false;
+                                        System.out.println("Invalid input. Please try again:");
+                                    }
+                                } while (!validateInput);
+                            }
+                        }
                     }
                 } while (!validateInput);
-
-                if(!cancel && !oneRoom) {
-                    System.out.printf("%s%n%s%n%s%n%s%n%s%n%s%n",
-                            "ADDING TO BOOKING:", matchingResults.get(bookingChoice - 1),
-                            "Add this to booking? You will thereafter be able to add more bookings, or choose to submit or cancel the booking process.",
-                            "Y. Yes, add this to my booking.",
-                            "N. No, do not add this to my booking. Go back to booking suggestions.",
-                            "O. Cancel booking. No booking will be made.");
-
-                    do{
-                        answer = input.nextLine();
-                        if (answer.equalsIgnoreCase("Y")) {
-                            proceed = true;
-                            System.out.println("Booking added. \nContinue (Enter)");
-                            input.nextLine();
-
-                            validateInput = true;
-                        } else if (answer.equalsIgnoreCase("N")) {
-                            proceed = true;
-                            System.out.println("Booking not added. \nContinue (Enter)");
-                            input.nextLine();
-
-                            validateInput = true;
-                        } else if (answer.equals("0") || answer.equalsIgnoreCase("O")) {
-                            proceed = false;
-                            cancel = true;
-
-                            validateInput = true;
-                        } else {
-                            proceed = false;
-                            System.out.println("Invalid input. Please try again:");
-                            validateInput = false;
-                        }
-                    }while (!validateInput);
-                    if(!cancel) {
-                        System.out.println("Continue (Enter");
-                        input.nextLine();
-                    }
-                }
             } while (!proceed); //Maybe add !cancel
-
         }
 
-        if (!cancel) {
-            System.out.printf("%s%n%s%n%s%n%s%n", "Make a booking for: ", matchingResults.get(bookingChoice - 1), "Y. Yes", "N. No. Cancel booking process.");
+        if (!cancel) {   //Confirm booking
+            if (oneRoom) {
+                matchingResults.get(bookingChoice - 1).setAdded(true);
+            }
+            for (BookingSearch booking : addedBookings) {  //For nicer display, don't show added here, because every item is added at this step.
+                booking.setAdded(false);
+            }
+
+            System.out.println("Make booking for:");
+            countElements = 0;
+            for (BookingSearch booking : addedBookings) {
+                //lastMinute(booking);
+                System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
+            }
+            System.out.printf("%s%n%s%n", "Y. Yes, confirm this booking.", "N. No. Cancel booking process.");
+
+            //System.out.printf("%s%n%s%n%s%n%s%n", "Make a booking for: ", matchingResults.get(bookingChoice - 1), "Y. Yes", "N. No. Cancel booking process.");
             do {
                 answer = input.nextLine();
                 switch (answer) {
                     case "Y":
                     case "y":
                         try {    // Maybe simplify, since basically: bookingDates(matchingResults)
-                            bookingDates(matchingResults.get(bookingChoice - 1).getRoom(),
-                                    matchingResults.get(bookingChoice - 1).getFromDate(), matchingResults.get(bookingChoice - 1).getToDate(), concernedAccount, matchingResults.get(bookingChoice - 1).getPrice());
+
+                            for (BookingSearch booking : addedBookings) {
+                                bookingDates(booking.getRoom(), booking.getFromDate(), booking.getToDate(), concernedAccount, booking.getPrice());
+                            }
+                           /* bookingDates(matchingResults.get(bookingChoice - 1).getRoom(),
+                                    matchingResults.get(bookingChoice - 1).getFromDate(), matchingResults.get(bookingChoice - 1).getToDate(), concernedAccount, matchingResults.get(bookingChoice - 1).getPrice());*/
                             validateInput = true;
+                            System.out.println("Booking succesful! BABABABAB");
                         } catch (IllegalArgumentException e) {
-                            System.out.println("BOOKING FAILED!1 " + e.getMessage());
+                            System.out.println("BOOKING FAILED!\n" + e.getMessage());
                         }
                         validateInput = true;
                         System.out.println("Back (Enter)");
@@ -907,6 +984,7 @@ public class HotelLogistics {
         }
         if (cancel) {
             System.out.println("Booking stage cancelled. No booking made" + "\nBack (Enter)");
+            input.nextLine();
         }
     }
 
@@ -925,18 +1003,27 @@ public class HotelLogistics {
             } else {
                 match = false;
             }
+
         } else {
             for (int i = 0; i < room.getRoomBookingList().size(); i++) {
 
-                if ((i == 0) && (toDate.equals(room.getRoomBookingList().get(0).getFromDate()) ||    // Om index är 0 && Om utchek är samma dag som existerande incheck || utcheck är innan existerande incheck
-                        toDate.isBefore(room.getRoomBookingList().get(0).getFromDate()))) {
-                    match = true;
-                    break;
-                } else if ((i > 0) && (i < room.getRoomBookingList().size() - 1)) {                                                                 // Om index är mer än 0 && index nite pekar på det sista objektet i listan.
-                    if ((fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
-                            fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) &&
-                            (toDate.equals(room.getRoomBookingList().get(i + 1).getFromDate()) ||                      // Om utchek är samma dag som existerande incheck
-                                    toDate.isBefore(room.getRoomBookingList().get(i + 1).getFromDate()))) {  //Om incheck är är efter existerande utcheck i, och före existerande incheck i+1.)
+
+                if (i == 0) {
+                    if (toDate.equals(room.getRoomBookingList().get(i).getFromDate()) ||    // Om index är 0 && Om utchek är samma dag som existerande incheck || utcheck är innan existerande incheck
+                            toDate.isBefore(room.getRoomBookingList().get(i).getFromDate())) {
+                     match = true;
+                     break;
+                    } else if ((fromDate.equals(room.getRoomBookingList().get(i).getToDate())   ||    fromDate.isAfter(room.getRoomBookingList().get(i).getToDate()))    &&
+                            (toDate.equals(room.getRoomBookingList().get(1).getFromDate())  ||    toDate.isBefore(room.getRoomBookingList().get(1).getFromDate()))) {
+                        match = true;
+                        break;
+                    }
+
+                } else if ((i > 0) && (i < room.getRoomBookingList().size() - 1)) {                      // Om index är mer än 0 && index inte pekar på det sista objektet i listan.
+                    if ((fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||                // Om inchek är samma dag som existerande utcheck.
+                            fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) &&           // Om inckeck är efter existerande utceck &&
+                            (toDate.equals(room.getRoomBookingList().get(i + 1).getFromDate()) ||        // Om utchek är samma dag som nästa existerande incheck
+                                    toDate.isBefore(room.getRoomBookingList().get(i + 1).getFromDate()))) {  //Om utcheck är före nästa existerande incheck
                         match = true;
                         break;
                     }
@@ -972,16 +1059,28 @@ public class HotelLogistics {
                 return;
             } else {
                 throw new IllegalArgumentException(
-                        "Room not available at chosen date/dates. Only one booking in system, which collides with this.");
+                        "Room " + room.getRoomNumber() + " Dates: " + fromDate + " to " + toDate + ": Not available at chosen date/dates. \nOnly one booking for this room in system, which collides with booking.");
             }
         } else {
             for (int i = 0; i < room.getRoomBookingList().size(); i++) {
 
-                if ((i == 0) && (toDate.equals(room.getRoomBookingList().get(0).getFromDate()) ||    // Om index är 0 && Om utchek är samma dag som existerande incheck || utcheck är innan existerande incheck
-                        toDate.isBefore(room.getRoomBookingList().get(0).getFromDate()))) {
-                    room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price));       //Lägg till innan existerande bokning i listan
-                    System.out.println("Booking successful. Code 4 " + " Iteration " + i);
-                    return;
+                if (i == 0) {
+                    if (toDate.equals(room.getRoomBookingList().get(i).getFromDate()) ||    // Om index är 0 && Om utchek är samma dag som existerande incheck || utcheck är innan existerande incheck
+                            toDate.isBefore(room.getRoomBookingList().get(i).getFromDate())) {
+                        room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price));       //Lägg till innan existerande bokning i listan
+                        System.out.println("Booking successful. Code 4 " + " Iteration " + i);
+                        return;
+                    //} else if (i == 0 && room.getRoomBookingList().size() > 1) {
+                    } else if ((fromDate.equals(room.getRoomBookingList().get(i).getToDate())   ||    fromDate.isAfter(room.getRoomBookingList().get(i).getToDate()))    &&
+                            (toDate.equals(room.getRoomBookingList().get(1).getFromDate())  ||    toDate.isBefore(room.getRoomBookingList().get(1).getFromDate()))) {
+                        room.getRoomBookingList().add(i +1, new BookingConfirm(room, fromDate, toDate, customer, price));
+                        return;
+                    }
+                    /*else {
+                        throw new IllegalArgumentException(
+                                "Room " + room.getRoomNumber() + " Dates: " + fromDate + " to " + toDate + ": In conflict with other booking. Iteration: " + i + " Code A");
+                    }*/
+                    //START
                 } else if ((i > 0) && (i < room.getRoomBookingList().size() - 1)) {                                                                 // Om index är mer än 0 && index nite pekar på det sista objektet i listan.
                     if ((fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
                             fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) &&
@@ -990,7 +1089,10 @@ public class HotelLogistics {
                         room.getRoomBookingList().add(i + 1, new BookingConfirm(room, fromDate, toDate, customer, price));                       //Lägg till efter bokning "i" (Finns ledigt mellan bokning i och bokning i+1
                         System.out.println("Booking successful. Code 5 " + " Iteration " + i);
                         return;
-                    }
+                    } /*else {
+                        throw new IllegalArgumentException(
+                                "Room " + room.getRoomNumber() + " Dates: " + fromDate + " to " + toDate + ": In conflict with other booking. Iteration: " + i + " Code B");
+                    }*/
                 } else if (i == room.getRoomBookingList().size() - 1) {                      // If index points to last item in list.
                     if (fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
                             fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) {   //Om incheckning är efter existerande utcheck i.
@@ -999,7 +1101,7 @@ public class HotelLogistics {
                         return;
                     } else {
                         throw new IllegalArgumentException(
-                                "In conflict with other booking.");
+                                "Room " + room.getRoomNumber() + " Dates: " + fromDate + " to " + toDate + ": In conflict with other booking. Iteration: " + i + " Code C");
                     }
                 }
             }
@@ -1021,7 +1123,7 @@ public class HotelLogistics {
         return price;
     }
 
-    public double calculateSumBookingPrice (ArrayList<BookingSearch> bookingList) {  //Used to calculate the sum of an entire booking.
+    public double calculateSumBookingPrice(ArrayList<BookingSearch> bookingList) {  //Used to calculate the sum of an entire booking.
         int sum = 0;
         for (Booking booking : bookingList) {
             sum += booking.getPrice();
@@ -1117,8 +1219,8 @@ public class HotelLogistics {
         System.out.println(booking);
 
         do {
-        System.out.printf("%n%s%n%s%n%s%n", "Would you like to cancel this booking?", "1. Yes", "2. No");
-        cancel = input.nextLine();
+            System.out.printf("%n%s%n%s%n%s%n", "Would you like to cancel this booking?", "1. Yes", "2. No");
+            cancel = input.nextLine();
 
             switch (cancel) {
                 case "1":
@@ -1133,7 +1235,7 @@ public class HotelLogistics {
                     System.out.println("Please enter an option of \"1\" or \"2\". ");
                     break;
             }
-        }while (!validate);
+        } while (!validate);
 
         System.out.println("Back (Enter)");
         input.nextLine();
@@ -1451,7 +1553,7 @@ public class HotelLogistics {
             double price2 = calculateSingleBookingPrice(fromDate2, toDate2, roomList.get(0));
             bookingDates(roomList.get(0), fromDate2, toDate2, customerList.get(2), price2);
         } catch (IllegalArgumentException e) {
-            System.out.println("BOOKING FAILED!2 " + e.getMessage());
+            System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
         LocalDate fromDate3 = LocalDate.of(2019, 7, 12);
@@ -1460,7 +1562,7 @@ public class HotelLogistics {
             double price3 = calculateSingleBookingPrice(fromDate3, toDate3, roomList.get(0));
             bookingDates(roomList.get(0), fromDate3, toDate3, customerList.get(3), price3);
         } catch (IllegalArgumentException e) {
-            System.out.println("BOOKING FAILED!3 " + e.getMessage());
+            System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
         LocalDate fromDate4 = LocalDate.of(2019, 5, 12);
@@ -1469,7 +1571,7 @@ public class HotelLogistics {
             double price4 = calculateSingleBookingPrice(fromDate4, toDate4, roomList.get(2));
             bookingDates(roomList.get(2), fromDate4, toDate4, customerList.get(4), price4);
         } catch (IllegalArgumentException e) {
-            System.out.println("BOOKING FAILED!4 " + e.getMessage());
+            System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
         LocalDate fromDate5 = LocalDate.of(2019, 6, 12);
@@ -1478,7 +1580,7 @@ public class HotelLogistics {
             double price5 = calculateSingleBookingPrice(fromDate4, toDate4, roomList.get(2));
             bookingDates(roomList.get(2), fromDate5, toDate5, customerList.get(5), price5);
         } catch (IllegalArgumentException e) {
-            System.out.println("BOOKING FAILED!5 " + e.getMessage());
+            System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
         LocalDate fromDate6 = LocalDate.of(2019, 5, 18);
@@ -1487,7 +1589,7 @@ public class HotelLogistics {
             double price6 = calculateSingleBookingPrice(fromDate6, toDate6, roomList.get(0));
             bookingDates(roomList.get(0), fromDate6, toDate6, customerList.get(4), price6);
         } catch (IllegalArgumentException e) {
-            System.out.println("BOOKING FAILED!6 " + e.getMessage());
+            System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
         LocalDate fromDate7 = LocalDate.of(2019, 2, 1);
@@ -1496,7 +1598,57 @@ public class HotelLogistics {
             double price7 = calculateSingleBookingPrice(fromDate7, toDate7, roomList.get(0));
             bookingDates(roomList.get(0), fromDate7, toDate7, customerList.get(4), price7);
         } catch (IllegalArgumentException e) {
-            System.out.println("BOOKING FAILED!7 " + e.getMessage());
+            System.out.println("BOOKING FAILED! " + e.getMessage());
         }
+
+        //=====================================================================================
+
+        LocalDate fromDate8 = LocalDate.of(2018, 12, 12);
+        LocalDate toDate8 = LocalDate.of(2018, 12, 13);
+        try {
+            double price8 = calculateSingleBookingPrice(fromDate8, toDate8, roomList.get(9));
+            bookingDates(roomList.get(9), fromDate8, toDate8, customerList.get(0), price8);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED! " + e.getMessage());
+        }
+
+        LocalDate fromDate9 = LocalDate.of(2019, 2, 15);
+        LocalDate toDate9 = LocalDate.of(2019, 2, 16);
+        try {
+            double price9 = calculateSingleBookingPrice(fromDate9, toDate9, roomList.get(9));
+            bookingDates(roomList.get(9), fromDate9, toDate9, customerList.get(0), price9);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED! " + e.getMessage());
+        }
+
+        LocalDate fromDate10 = LocalDate.of(2019, 1, 1);
+        LocalDate toDate10 = LocalDate.of(2019, 1, 2);
+        try {
+            double price10 = calculateSingleBookingPrice(fromDate10, toDate10, roomList.get(9));
+            bookingDates(roomList.get(9), fromDate10, toDate10, customerList.get(0), price10);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED! " + e.getMessage());
+        }
+
+        LocalDate fromDate11 = LocalDate.of(2018, 12, 20);
+        LocalDate toDate11 = LocalDate.of(2018, 12, 21);
+        try {
+            double price11 = calculateSingleBookingPrice(fromDate11, toDate11, roomList.get(9));
+            bookingDates(roomList.get(9), fromDate11, toDate11, customerList.get(0), price11);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED! " + e.getMessage());
+        }
+
+        LocalDate fromDate12 = LocalDate.of(2019, 2, 20);
+        LocalDate toDate12 = LocalDate.of(2019, 2, 21);
+        try {
+            double price12 = calculateSingleBookingPrice(fromDate12, toDate12, roomList.get(9));
+            bookingDates(roomList.get(9), fromDate12, toDate12, customerList.get(0), price12);
+        } catch (IllegalArgumentException e) {
+            System.out.println("BOOKING FAILED! " + e.getMessage());
+        }
+
+
+        //====================================================================================
     }
 }

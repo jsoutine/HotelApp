@@ -59,8 +59,21 @@ public class HotelApp {
                     break;
 
                 case "3":
+                    int numberOfRooms;
+                    boolean oneRoom = false;
                     System.out.println("2.3. SEARCH FOR AVAILABLE ROOMS. Note: Need to register to book.");
-                    ArrayList<BookingSearch> matchingResults = logistics.searchBooking(); //Method call
+                    numberOfRooms = logistics.numberOfRoomsBooking(); //Method call
+                    if (numberOfRooms == 0) {
+                        validMenu = true;
+                    } else if (numberOfRooms == 1) {
+                        oneRoom = true;
+                    }
+                    else {
+                        oneRoom = false;
+                    }
+                    ArrayList<BookingSearch> matchingResults = logistics.searchBooking(oneRoom); //Method call
+
+
                     if (matchingResults.isEmpty()) {
                         System.out.println("No results" + "\nBack (Enter)");
                     } else {
@@ -76,11 +89,13 @@ public class HotelApp {
                     validMenu = false;
                     break;
                 case "4":
-                    return;
-
+                    System.out.println("Exits program.");
+                    validMenu = true;
+                    break;
                 default:
                     System.out.println("Please enter a valid selection");
                     validMenu = false;
+                    break;
             }
 
         } while (!validMenu);

@@ -30,6 +30,6 @@ public class BookingSearch extends Booking {
 
     @Override
     public String toString() {
-        return String.format("%s%s%s", super.toString(), ((lastMinute) ? " (Last minute price!)" : ""), ((added) ? "ADDED" : ""));
+        return String.format("%s%s%s", super.toString(), ((lastMinute) ? " (Last minute price!)" : ""), ((added) ? "  ADDED" : ""));
     }
 }
