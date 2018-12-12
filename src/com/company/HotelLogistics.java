@@ -1156,6 +1156,7 @@ public class HotelLogistics {
                         input.nextLine();
                         return;
 
+
                     default:
 
                         System.out.println("Not correct anwser, please enter 0-4");
