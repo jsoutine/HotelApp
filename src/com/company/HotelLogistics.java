@@ -217,179 +217,245 @@ public class HotelLogistics {
     }
 
     public void editCustomerInfo(AccountCustomer loggedInAccount) {
-        int choice;
-
-        System.out.println("---EDIT USER INFORMATION---");
-        System.out.println("1. Name");
-        System.out.println("2. Phonenumber");
-        System.out.println("3. Password");
-        System.out.println("4. Remove account");
-        System.out.println("0. Back");
-        choice = input.nextInt();
-
-        switch (choice) {
-            case 1:
-                changeName(loggedInAccount);
-                break;
-            case 2:
-                changePhoneNr(loggedInAccount);
-                break;
-            case 3:
-                changePassword(loggedInAccount);
-                break;
-            case 4:
-                removeAccount(loggedInAccount);
-                break;
-            default:
-                System.out.println("Faulty input recognized. Try Again!");
-                editCustomerInfo(loggedInAccount);
-                break;
-        }
-    }
-
-    private void changeName(AccountCustomer loggedInAccount) {
-        int choice;
-
-        System.out.println("---CHANGE NAME---");
-        System.out.println("Name currently assigned: " + loggedInAccount.getName());
-        System.out.println("1. Change name");
-        System.out.println("0. Back");
-        choice = input.nextInt();
-
-        switch (choice) {
-            case 1:
-                System.out.println("Enter new name: ");
-                String newName = input.nextLine();
-                newName = input.nextLine();
-                loggedInAccount.setName(newName);
-                System.out.println("New name: " + loggedInAccount.getName());
-                System.out.println("Are you happy with the newly entered name?");
-                System.out.println("(Y)es or (N)o");
-                String yesOrNo = input.next();
-                if (yesOrNo.equalsIgnoreCase("Y")) {
-                    System.out.println("Very well, then let's return to the previous menu");
-                    editCustomerInfo(loggedInAccount);
-                } else if (yesOrNo.equalsIgnoreCase("N")) {
-                    System.out.println("Returning to previous menu!");
-                    changeName(loggedInAccount);
-                }
-                break;
-            case 0:
-                editCustomerInfo(loggedInAccount);
-                break;
-            default:
-                System.out.println("Faulty input recognized. Let's try again!");
-                changeName(loggedInAccount);
-                break;
-        }
-    }
-
-    private void changePhoneNr(AccountCustomer loggedInAccount) {
-
+        boolean validateInput = false;
         String choice;
 
-        System.out.println("---CHANGE PHONENUMBER---");
-        System.out.println("Phonenumber currently assigned: " + loggedInAccount.getPhoneNumber());
-        System.out.println("1. Change current phonenumber");
-        System.out.println("0. Back");
+        do {
+            if (loggedInAccount.isCancelledAccount()) {
+                validateInput = true;
+            } else {
+                System.out.println("====EDIT USER INFORMATION====");
+                System.out.println("1. Name");
+                System.out.println("2. Phonenumber");
+                System.out.println("3. Password");
+                System.out.println("4. Remove account");
+                System.out.println("0. Back");
 
-        choice = input.nextLine();
-        choice = input.nextLine();
-
-        switch (choice) {
-            case "1":
-                System.out.println("Required format: Start with 0, then enter a 9-digit number sequence.");
-                System.out.println("Enter new phonenumber: ");
-                String newNr = input.nextLine();
-                String regexStr = "^[0-9]{10}$";
-
-                if (newNr.matches(regexStr)) {
-                    loggedInAccount.setPhoneNumber(newNr);
-                    System.out.println("New phonenumber: " + loggedInAccount.getPhoneNumber());
-                    System.out.println("Are you happy with your newly entered phonenumber?");
-                    System.out.println("(Y)es or (N)o");
-                    String yesOrNo = input.next();
-                    if (yesOrNo.equalsIgnoreCase("Y")) {
-                        System.out.println("Very well, then lets return to the previous menu");
-                        editCustomerInfo(loggedInAccount);
-                    } else if (yesOrNo.equalsIgnoreCase("N")) {
-                        changePhoneNr(loggedInAccount);
+                do {
+                    System.out.println("Enter choice: ");
+                    choice = input.nextLine();
+                    switch (choice) {
+                        case "1":
+                            editAccountName(loggedInAccount);
+                            break;
+                        case "2":
+                            editAccountPhoneNr(loggedInAccount);
+                            break;
+                        case "3":
+                            editAccountPassword(loggedInAccount);
+                            break;
+                        case "4":
+                            removeAccount(loggedInAccount);
+                            break;
+                        case "0":
+                            customerMainMenu(loggedInAccount);
+                            break;
+                        default:
+                            System.out.println("Faulty input recognized. Try Again! \nPress (Enter)");
+                            break;
                     }
-                } else {
-                    System.out.println("Format not followed. Try again!");
-                    //changePhoneNr(loggedInAccount);
-                }
-                break;
+                } while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
+            }
 
-            case "0":
-                editCustomerInfo(loggedInAccount);
-                break;
-
-            default:
-                System.out.println("Faulty input recognized. Let's try again!");
-                changePhoneNr(loggedInAccount);
-                break;
-        }
+        }while (!validateInput);
     }
 
-    private void changePassword(AccountCustomer loggedInAccount) {
-        System.out.println("---CHANGE PASSWORD---");
-        System.out.println("Current password: " + loggedInAccount.getPassword());
-        System.out.println("1. Change current password");
-        System.out.println("0. Back");
-        int choice = input.nextInt();
+    private void editAccountName(AccountCustomer loggedInAccount) {
+        boolean validateinput = true;
+        do {
+            System.out.println("---CHANGE NAME---");
+            System.out.println("Name currently assigned: " + loggedInAccount.getName());
+            System.out.println("1. Change name");
+            System.out.println("0. Back");
 
-        switch (choice) {
-            case 1:
-                System.out.println("Enter new password: ");
-                String newPwd = input.nextLine();
-                newPwd = input.nextLine();
+            String choice = input.nextLine();
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.println("Enter new name: ");
+                        validateinput = true;
+                        choice = input.nextLine();
 
-                System.out.println("New password: " + newPwd);
-                System.out.println("Are you happy with your newly entered password?");
-                System.out.println("(Y)es or (N)o");
-                String yesOrNo = input.next();
+                        if (choice.equals("0")) {
+                            editAccountName(loggedInAccount);
+                        } else if (choice.matches("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-]*[\\s]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-].*")) {
+                            loggedInAccount.setName(choice);
+                            System.out.println("New name: " + loggedInAccount.getName());
+                            System.out.println("Are you happy with the newly entered name?");
+                            System.out.println("y/n");
+                            String yesOrNo = input.nextLine();
+                            if (yesOrNo.equalsIgnoreCase("Y")) {
+                                System.out.println("Very well, then let's return to the previous menu \nBack (Enter)");
+                                validateinput = true;
+                                input.nextLine();
 
-                if (yesOrNo.equalsIgnoreCase("Y")) {
-                    System.out.println("Very well, then let's return to the previous menu");
-                    editCustomerInfo(loggedInAccount);
-                    loggedInAccount.setPassword(newPwd);
-                } else if (yesOrNo.equalsIgnoreCase("N")) {
-                    changePassword(loggedInAccount);
-                }
-                break;
+                            } else if (yesOrNo.equalsIgnoreCase("N")) {
+                                System.out.println("Returning to previous menu!\nEnter name again by pressing (Enter)");
+                                validateinput = false;
+                                input.nextLine();
+                            }
 
-            case 0:
-                editCustomerInfo(loggedInAccount);
-                break;
-            default:
-                System.out.println("Faulty input recognized. Let's try again!");
-                changePassword(loggedInAccount);
-                break;
-        }
+                        } else if (!choice.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-]*[\\s]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-].*")) {
+                            System.out.println("Format not followed. Try again!");
+                            editAccountName(loggedInAccount);
+                            validateinput = false;
+                        }
+                    } while (!validateinput);
+                    break;
+                case "0":
+                case "o":
+                case "O":
+                    System.out.println("Name change has been cancelled. No changes made.\nBack (Enter)");
+                    input.nextLine();
+                    break;
+                default:
+                    System.out.println("Faulty input recognized. Let's try again!");
+                    editAccountName(loggedInAccount);
+                    break;
+
+
+            }
+        } while (!validateinput);
+    }
+
+    private void editAccountPhoneNr(AccountCustomer loggedInAccount) {
+        boolean validateInput = true;
+        do {
+            System.out.println("---CHANGE PHONENUMBER---");
+            System.out.println("Phonenumber currently assigned: " + loggedInAccount.getPhoneNumber());
+            System.out.println("1. Change current phonenumber");
+            System.out.println("0. Back");
+            String choice = input.nextLine();
+
+            switch (choice) {
+                case "1":
+                    String regexStr = "^[0-9]*$";
+                    System.out.println("Required format: Start with 0, then enter a 9-digit number sequence.");
+
+                    do {
+                        System.out.println("Enter new phonenumber: ");
+                        String newNr = input.nextLine();
+
+                        if (newNr.matches(regexStr)) {
+                            System.out.println("New phonenumber: " + newNr);
+                            System.out.println("Are you happy with your newly entered phonenumber?");
+                            System.out.println("y/n");
+                            String yesOrNo = input.nextLine();
+                            if (yesOrNo.equalsIgnoreCase("Y")) {
+                                loggedInAccount.setPhoneNumber(newNr);
+                                System.out.println("Very well, then lets return to the previous menu! \n(Enter)");
+                                validateInput = true;
+                                input.nextLine();
+
+                            } else if (yesOrNo.equalsIgnoreCase("N")) {
+                                System.out.println("Then let's try again! \n(Enter)");
+                                validateInput = false;
+                                input.nextLine();
+                            }
+                        } else {
+                            System.out.println("Format not followed. Try again!");
+                        }
+                    } while (!validateInput);
+                    break;
+
+                case "O":
+                case "o":
+                case "0":
+                    validateInput = true;
+                    break;
+
+                default:
+                    System.out.println("Faulty input recognized. Let's try again!");
+                    validateInput = false;
+                    break;
+            }
+        } while (!validateInput);
+    }
+
+    private void editAccountPassword(AccountCustomer loggedInAccount) {
+        boolean validateInput = true;
+        do {
+            System.out.println("---CHANGE PASSWORD---");
+            System.out.println("Current password: " + loggedInAccount.getPassword());
+            System.out.println("1. Change current password");
+            System.out.println("0. Back");
+            String choice = input.nextLine();
+
+            switch (choice) {
+                case "1":
+                    do {
+                        System.out.println("Enter new password: ");
+                        String newPwd = input.nextLine();
+
+                        if (newPwd.equals(loggedInAccount.getPassword())) {
+                            System.out.println("Password entered is the same as your old one. Try a new one!");
+                            editAccountPassword(loggedInAccount);
+                        } else if (!newPwd.equals(loggedInAccount.getPassword())) {
+                            System.out.println("New password: " + newPwd);
+                            System.out.println("Are you happy with your newly entered password?");
+                            System.out.println("y/n");
+                            String yesOrNo = input.nextLine();
+
+                            if (yesOrNo.equalsIgnoreCase("Y")) {
+                                System.out.println("Very well, then let's return to the previous menu \nPress (Enter)");
+                                loggedInAccount.setPassword(newPwd);
+                                validateInput = true;
+                                input.nextLine();
+
+                            } else if (yesOrNo.equalsIgnoreCase("N")) {
+                                System.out.println("Then lets try again! \nPress (Enter)");
+                                validateInput = false;
+                                input.nextLine();
+
+                            } else {
+                                System.out.println("Faulty input has been entered. Try again! \nPress (Enter)");
+                                validateInput = false;
+                                input.nextLine();
+                            }
+                        }
+                    } while (!validateInput);
+                    break;
+
+                case "O":
+                case "o":
+                case "0":
+                    validateInput = true;
+                    break;
+                default:
+                    System.out.println("Faulty input recognized. Let's try again!");
+                    validateInput = false;
+                    break;
+            }
+        } while (!validateInput);
     }
 
     private void removeAccount(AccountCustomer loggedInAccount) {
+        boolean validateInput = false;
+        do {
+            System.out.println("Do you truly wish to delete your account?");
+            System.out.println("y/n");
+            String yesOrNo = input.nextLine();
 
-        System.out.println("Do you truly wish to delete your account?");
-        System.out.println("(Y)es or (N)o");
-        String yesOrNo = input.next();
-        if (yesOrNo.equalsIgnoreCase("Y")) {
-            System.out.println("Enter your password to verify deletion of account: ");
-            String pwCheck = input.nextLine();
-            pwCheck = input.nextLine();
-            if (pwCheck.matches(loggedInAccount.getPassword())) {
-                loggedInAccount.setCancelledAccount(true);
+            if (yesOrNo.equalsIgnoreCase("Y")) {
+                System.out.println("Enter your password to verify deletion of account: ");
+                String pwCheck = input.nextLine();
+                if (pwCheck.matches(loggedInAccount.getPassword())) {
+                    loggedInAccount.setCancelledAccount(true);
+                    validateInput = true;
+
+                } else {
+                    System.out.println("Wrong password has been entered. Try again! \nPress (Enter)");
+                    validateInput = false;
+
+                }
+            } else if (yesOrNo.equalsIgnoreCase("N")) {
+                System.out.println("Returning to previous menu! \nPress (Enter)");
+                validateInput = false;
+
             } else {
-                System.out.println("Wrong password has been entered. Try again!");
-                removeAccount(loggedInAccount);
+                System.out.println("(Y)es or (N)o hasn't been entered. Try again!");
             }
-        } else if (yesOrNo.equalsIgnoreCase("N")) {
-            System.out.println("Returning to previous menu!");
-            editCustomerInfo(loggedInAccount);
-        } else {
-            System.out.println("(Y)es or (N)o hasn't been entered. Try again!");
-        }
+        } while (!validateInput);
     }
 
     //3.2. (listRooms)
