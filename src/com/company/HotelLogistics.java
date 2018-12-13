@@ -224,7 +224,7 @@ public class HotelLogistics {
             if (loggedInAccount.isCancelledAccount()) {
                 validateInput = true;
             } else {
-                System.out.println("4.3====EDIT USER INFORMATION====");
+                System.out.println("4.3\n====EDIT USER INFORMATION====");
                 System.out.println("Name:        " + loggedInAccount.getName());
                 System.out.println("Phonenumber: " + loggedInAccount.getPhoneNumber());
                 System.out.println("Password:    " + loggedInAccount.getPassword());
@@ -305,11 +305,9 @@ public class HotelLogistics {
                                         input.nextLine();
 
                                     } else if (yesOrNo.equalsIgnoreCase("N")) {
-
-                                        System.out.println("Enter name again by pressing (Enter)");
                                         validateinput = false;
                                         validateYorN = true;
-                                        choice = input.nextLine();
+
 
                                     } else {
                                         System.out.println("Neither Y or N where selected. Try again!");
@@ -338,13 +336,15 @@ public class HotelLogistics {
                     editAccountName(loggedInAccount);
                     break;
 
-
             }
         } while (!validateExitToChangeName);
     }
 
     private void editAccountPhoneNr(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
+        boolean yOrN = true;
+        boolean validateExitChangePW = true;
+
         do {
             System.out.println("4.3.2\n====CHANGE PHONENUMBER====");
             System.out.println("Phonenumber currently assigned: " + loggedInAccount.getPhoneNumber());
@@ -361,25 +361,48 @@ public class HotelLogistics {
                         System.out.println("Enter new phonenumber: ");
                         String newNr = input.nextLine();
 
-                        if (newNr.matches(regexStr)) {
-                            System.out.println("New phonenumber: " + newNr);
-                            System.out.println("Are you happy with your newly entered phonenumber?");
-                            System.out.println("y/n");
-                            String yesOrNo = input.nextLine();
-                            if (yesOrNo.equalsIgnoreCase("Y")) {
-                                loggedInAccount.setPhoneNumber(newNr);
-                                System.out.println("Very well, then lets return to the previous menu! \n(Enter)");
-                                validateInput = true;
-                                input.nextLine();
+                        if (newNr.equals("0")){
+                            editAccountPassword(loggedInAccount);
 
-                            } else if (yesOrNo.equalsIgnoreCase("N")) {
-                                System.out.println("Then lets try again! \n(Enter)");
+                        }else{
+
+                            if (newNr.matches(regexStr)) {
+                                System.out.println("New phonenumber: " + newNr);
+                                System.out.println("Are you happy with your newly entered phonenumber?");
+
+                                do {
+                                    System.out.println("y/n or press 0 to go back to menu!");
+                                    String yesOrNo = input.nextLine();
+
+                                    if (yesOrNo.equalsIgnoreCase("Y")) {
+                                        loggedInAccount.setPhoneNumber(newNr);
+                                        System.out.println("Very well, then lets return to the previous menu! \n(Enter)");
+                                        validateInput = true;
+                                        yOrN = true;
+                                        validateExitChangePW = true;
+                                        input.nextLine();
+
+                                    } else if (yesOrNo.equalsIgnoreCase("N")) {
+                                        System.out.println("Then lets try again!");
+                                        validateInput = false;
+                                        yOrN = true;
+
+                                    } else if (yesOrNo.equalsIgnoreCase("0")){
+                                        validateExitChangePW = false;
+                                        yOrN = true;
+                                        validateInput = true;
+                                    }
+                                    else{
+                                        System.out.println("Neither y nor n have been entered. Try again!");
+                                        validateInput = false;
+                                        yOrN = false;
+                                    }
+                                }while (!yOrN);
+                            } else {
+                                System.out.println("Format not followed. Try again!");
                                 validateInput = false;
-                                input.nextLine();
+                                validateExitChangePW = false;
                             }
-                        } else {
-                            System.out.println("Format not followed. Try again!");
-                            validateInput = false;
                         }
                     } while (!validateInput);
                     break;
@@ -395,7 +418,7 @@ public class HotelLogistics {
                     validateInput = false;
                     break;
             }
-        } while (!validateInput);
+        } while (!validateExitChangePW);
     }
 
     private void editAccountPassword(AccountCustomer loggedInAccount) {
@@ -440,7 +463,6 @@ public class HotelLogistics {
 
                             } else if (yesOrNo.equalsIgnoreCase("0")) {
                                 System.out.println("Back option (0) chosen. Returning to 'Change password' menu!\nPress (Enter)");
-                                validateInput = true;
                                 validateChangePW = false;
                                 input.nextLine();
 
