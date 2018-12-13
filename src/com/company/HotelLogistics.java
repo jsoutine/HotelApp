@@ -27,7 +27,7 @@ public class HotelLogistics {
                     match = true;
                     System.out.println("\nWelcome " + customer.getName() + "\n");
                     customerMainMenu(customer);
-                    return;
+                    break;
                 } else {
                     match = false;
                 }
@@ -37,7 +37,7 @@ public class HotelLogistics {
                 if (admin.getAccountID().equalsIgnoreCase(id) && admin.getPassword().equals(password) && !admin.isCancelledAccount()) {
                     match = true;
                     adminMainMenu(admin);
-                    return;
+                    break;
                 } else {
                     match = false;
                 }
