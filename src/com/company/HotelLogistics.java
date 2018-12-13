@@ -344,6 +344,7 @@ public class HotelLogistics {
         boolean validateInput = true;
         boolean yOrN = true;
         boolean validateExitChangePW = true;
+        String newNr;
 
         do {
             System.out.println("4.3.2\n====CHANGE PHONENUMBER====");
@@ -354,17 +355,32 @@ public class HotelLogistics {
 
             switch (choice) {
                 case "1":
-                    String regexStr = "^[0-9]{10}$";
+                    //String regexStr = "^[0-9]{10}$";
                     System.out.println("Required format: Start with 0, then enter a 9-digit number sequence.");
 
-                    do {
-                        System.out.println("Enter new phonenumber: ");
-                        String newNr = input.nextLine();
+                    //do {
 
-                        if (newNr.equals("0")){
-                            editAccountPassword(loggedInAccount);
+                        do {
+                            System.out.println("Enter new phonenumber: ");
+                            newNr = input.nextLine();
 
-                        }else{
+                            try {
+                                loggedInAccount.setPhoneNumber(newNr);
+                                validateInput = true;
+                                System.out.println("New phone number set! (New number: " + loggedInAccount.getPhoneNumber() + ")");
+                            } catch (IllegalArgumentException e) {
+                                System.out.println(e.getMessage() + "Try again:");
+                                validateInput = false;
+                            }
+                        }while(!validateInput);
+                        System.out.println("Back (Enter)");
+                        input.nextLine();
+                        validateExitChangePW = false;
+
+                       // if (newNr.equals("0")){
+                         //   editAccountPassword(loggedInAccount);
+
+                      /*  }else{
 
                             if (newNr.matches(regexStr)) {
                                 System.out.println("New phonenumber: " + newNr);
@@ -404,11 +420,9 @@ public class HotelLogistics {
                                 validateExitChangePW = false;
                             }
                         }
-                    } while (!validateInput);
+                    } while (!validateInput);*/
                     break;
 
-                case "O":
-                case "o":
                 case "0":
                     validateInput = true;
                     break;
@@ -530,6 +544,10 @@ public class HotelLogistics {
                 validateInput = false;
             }
         } while (!validateInput);
+    }
+
+    private void addRoom (){
+        
     }
 
     //3.2. (listRooms)
