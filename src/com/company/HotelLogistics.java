@@ -257,7 +257,8 @@ public class HotelLogistics {
                             System.out.println("Faulty input recognized. Try Again! \nPress (Enter)");
                             break;
                     }
-                } while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
+                }
+                while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
             }
 
         } while (!validateInput);
@@ -485,7 +486,7 @@ public class HotelLogistics {
                         input.nextLine();
 
                     }
-                }while (!validatePW);
+                } while (!validatePW);
             } else if (yesOrNo.equalsIgnoreCase("N")) {
                 System.out.println("Returning to previous menu! \nPress (Enter)");
                 validateInput = true;
@@ -1114,12 +1115,12 @@ public class HotelLogistics {
     }
 
     //4.2.1.1.
-    public void removeBooking(BookingConfirm thisBooking){
+    public void removeBooking(BookingConfirm thisBooking) {
 
         ArrayList<BookingConfirm> sameBookingId = new ArrayList<>();
-        int countElements = 0;
-        
+        int countElements;
 
+        for (Room room : roomList){}
     }
 
     // 3.2.3.
