@@ -27,7 +27,7 @@ public class HotelLogistics {
                     match = true;
                     System.out.println("\nWelcome " + customer.getName() + "\n");
                     customerMainMenu(customer);
-                    return;
+                    break;
                 } else {
                     match = false;
                 }
@@ -37,7 +37,7 @@ public class HotelLogistics {
                 if (admin.getAccountID().equalsIgnoreCase(id) && admin.getPassword().equals(password) && !admin.isCancelledAccount()) {
                     match = true;
                     adminMainMenu(admin);
-                    return;
+                    break;
                 } else {
                     match = false;
                 }
@@ -216,7 +216,7 @@ public class HotelLogistics {
     }
 
     //4.3
-    private void editCustomerInfo(AccountCustomer loggedInAccount) {
+    public void editCustomerInfo(AccountCustomer loggedInAccount) {
         boolean validateInput = false;
         String choice;
 
@@ -258,12 +258,13 @@ public class HotelLogistics {
                             System.out.println("Faulty input recognized. Try Again!");
                             break;
                     }
-                } while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
+                }
+                while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
             }
         } while (!validateInput);
     }
 
-    private void editAccountName(AccountCustomer loggedInAccount) {
+    public void editAccountName(AccountCustomer loggedInAccount) {
         boolean validateinput = true;
         boolean validateYorN;
         boolean validateExitToChangeName = true;
@@ -340,7 +341,7 @@ public class HotelLogistics {
         } while (!validateExitToChangeName);
     }
 
-    private void editAccountPhoneNr(AccountCustomer loggedInAccount) {
+    public void editAccountPhoneNr(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
         boolean yOrN = true;
         boolean validateExitChangePW = true;
@@ -421,7 +422,7 @@ public class HotelLogistics {
         } while (!validateExitChangePW);
     }
 
-    private void editAccountPassword(AccountCustomer loggedInAccount) {
+    public void editAccountPassword(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
         boolean validateChangePW = true;
         do {
@@ -491,7 +492,7 @@ public class HotelLogistics {
         } while (!validateChangePW);
     }
 
-    private void removeAccount(AccountCustomer loggedInAccount) {
+    public void removeAccount(AccountCustomer loggedInAccount) {
         boolean validateInput;
         boolean validatePW;
 
@@ -580,14 +581,15 @@ public class HotelLogistics {
                                 System.out.printf("There are only %d rooms to select from. Try again or press \"0\" to go back.%n", roomList.size());
                             } else {
                                 adminEditRoomInfo(roomList.get(roomSelect - 1));
+                                validateInput = true;
                             }
                         } catch (NumberFormatException e) {
                             System.out.printf("Please enter an option, or valid number between 1 and %d. Try again or press \"0\" to go back.%n", roomList.size());
-                            validateInput = true;
+                            validateInput = false;
                         }
                 }
 
-            } while (validateInput); // loops the room menu
+            } while (!validateInput); // loops the room menu
 
         } while (true); //Always loop, until menuChoice = 0 -> Return
 
@@ -1124,15 +1126,20 @@ public class HotelLogistics {
         System.out.println(booking);
 
         do {
-            System.out.printf("%n%s%n%s%n%s%n", "Would you like to cancel this booking?", "1. Yes", "2. No");
+            System.out.printf("%n%s%n%s%n%s%n",
+                    "Would you like to cancel this booking?",
+                    "Y. Yes, remove booking.",
+                    "N. No, don't remove booking. Go back to bookings.");
+
             cancel = input.nextLine();
+            cancel = cancel.toUpperCase();
 
             switch (cancel) {
-                case "1":
+                case "Y":
                     System.out.println("Your booking would now have been cancelled if the method was complete");
                     validate = true;
                     break;
-                case "2":
+                case "N":
                     System.out.println("Booking still valid.");
                     validate = true;
                     break;
@@ -1144,6 +1151,15 @@ public class HotelLogistics {
 
         System.out.println("Back (Enter)");
         input.nextLine();
+    }
+
+    //4.2.1.1.
+    public void removeBooking(BookingConfirm thisBooking) {
+
+        ArrayList<BookingConfirm> sameBookingId = new ArrayList<>();
+        int countElements;
+
+        for (Room room : roomList){}
     }
 
     // 3.2.3.
@@ -1295,6 +1311,7 @@ public class HotelLogistics {
                         System.out.println("Back (Enter) ");
                         input.nextLine();
                         return;
+
 
                     default:
 

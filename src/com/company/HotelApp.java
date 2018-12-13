@@ -76,6 +76,7 @@ public class HotelApp {
                     validMenu = false;
                     break;
                 case "4":
+                    validateInput = true;
                     return;
 
                 default:
