@@ -73,7 +73,6 @@ public class HotelApp {
                     }
                     ArrayList<BookingSearch> matchingResults = logistics.searchBooking(oneRoom); //Method call
 
-
                     if (matchingResults.isEmpty()) {
                         System.out.println("No results" + "\nBack (Enter)");
                     } else {

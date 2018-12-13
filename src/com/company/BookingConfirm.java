@@ -25,6 +25,10 @@ public class BookingConfirm extends Booking {
         return bookingID;
     }
 
+    public int getUniqueID() {
+        return uniqueID;
+    }
+
     public AccountCustomer getCustomer() {
         return customer;
     }

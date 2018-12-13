@@ -13,7 +13,7 @@ public class HotelLogistics {
     private ArrayList<AccountCustomer> customerList = new ArrayList<>();  //Lista över kunder.
     private ArrayList<AccountAdmin> adminList = new ArrayList<>();
     private ArrayList<Room> roomList = new ArrayList<>();        //Lista över rummen
-    private ArrayList<BedPrices> bedConstantList = new ArrayList<>();
+    private ArrayList<BedPrice> bedConstantList = new ArrayList<>();
     private ArrayList<StandardPrice> standardList = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
 
@@ -654,31 +654,6 @@ public class HotelLogistics {
         boolean validateInput;
         boolean cancel;
 
-        /*System.out.printf("%s%n%s%n%s%n%s%n",
-                "Are you planning on booking one room, or more than one room?",
-                "1. One room",
-                "2. More than one room",
-                "0. Back");
-        do{
-            cancel = false;
-            answer = input.nextLine();
-            if (answer.equals("1")) {
-                oneRoom = true;
-                System.out.println("You wish to book one room.");
-                validateInput = true;
-            } else if (answer.equals("2")) {
-                oneRoom = false;
-                validateInput = true;
-                System.out.println("You wish to book more than one room.");
-            } else if (answer.equals("0") || answer.equalsIgnoreCase("O")) {
-                cancel = true;
-                validateInput = true;
-            } else {
-                System.out.println("Invalid input. Please try again:");
-                validateInput = false;
-            }
-        }while (!validateInput);*/
-
         System.out.printf("%s%s%n%s%n", ((oneRoom) ? "Step 1/4." : "Step 1/2."),
                 " Enter date of desired arrival: (YY-MM-DD)", "0. Cancel");
         do {
@@ -1177,7 +1152,7 @@ public class HotelLogistics {
         double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);
         double standardPrice = standardList.get(room.getStandard() - 1).getPrice();  //May throw IndexOutOfBoundsException if no match??
-        for (BedPrices beds : bedConstantList) {
+        for (BedPrice beds : bedConstantList) {
             if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
                 bedsConstant = beds.getConstant();
                 break;
@@ -1489,7 +1464,6 @@ public class HotelLogistics {
                 input.nextLine();
                 return;
 
-
             } else {
                 for (int i = 0; i < metodlist.size(); i++) {
                     System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
@@ -1595,9 +1569,9 @@ public class HotelLogistics {
 
         //============================ CREATE BEDS OBJECT =======================================================
 
-        bedConstantList.add(new BedPrices(1, 1));
-        bedConstantList.add(new BedPrices(2, 1.2));
-        bedConstantList.add(new BedPrices(4, 1.7));
+        bedConstantList.add(new BedPrice(1, 1));
+        bedConstantList.add(new BedPrice(2, 1.2));
+        bedConstantList.add(new BedPrice(4, 1.7));
 
         //============================ EXAMPLE OF ADDING BOOKINGS ======================================================
         boolean sameBookingID = false;
