@@ -505,14 +505,15 @@ public class HotelLogistics {
                                 System.out.printf("There are only %d rooms to select from. Try again or press \"0\" to go back.%n", roomList.size());
                             } else {
                                 adminEditRoomInfo(roomList.get(roomSelect - 1));
+                                validateInput = true;
                             }
                         } catch (NumberFormatException e) {
                             System.out.printf("Please enter an option, or valid number between 1 and %d. Try again or press \"0\" to go back.%n", roomList.size());
-                            validateInput = true;
+                            validateInput = false;
                         }
                 }
 
-            } while (validateInput); // loops the room menu
+            } while (!validateInput); // loops the room menu
 
         } while (true); //Always loop, until menuChoice = 0 -> Return
 
@@ -1069,6 +1070,15 @@ public class HotelLogistics {
 
         System.out.println("Back (Enter)");
         input.nextLine();
+    }
+
+    //4.2.1.1.
+    public void removeBooking(BookingConfirm thisBooking){
+
+        ArrayList<BookingConfirm> sameBookingId = new ArrayList<>();
+        int countElements = 0;
+        
+
     }
 
     // 3.2.3.
