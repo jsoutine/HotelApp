@@ -216,7 +216,7 @@ public class HotelLogistics {
     }
 
     //4.3
-    private void editCustomerInfo(AccountCustomer loggedInAccount) {
+    public void editCustomerInfo(AccountCustomer loggedInAccount) {
         boolean validateInput = false;
         String choice;
 
@@ -264,7 +264,7 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-    private void editAccountName(AccountCustomer loggedInAccount) {
+    public void editAccountName(AccountCustomer loggedInAccount) {
         boolean validateinput = true;
         boolean validateYorN;
         boolean validateExitToChangeName = true;
@@ -344,7 +344,7 @@ public class HotelLogistics {
         } while (!validateExitToChangeName);
     }
 
-    private void editAccountPhoneNr(AccountCustomer loggedInAccount) {
+    public void editAccountPhoneNr(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
         do {
             System.out.println("4.3.2\n====CHANGE PHONENUMBER====");
@@ -399,7 +399,7 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-    private void editAccountPassword(AccountCustomer loggedInAccount) {
+    public void editAccountPassword(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
         boolean validateChangePW = true;
         do {
@@ -470,7 +470,7 @@ public class HotelLogistics {
         } while (!validateChangePW);
     }
 
-    private void removeAccount(AccountCustomer loggedInAccount) {
+    public void removeAccount(AccountCustomer loggedInAccount) {
         boolean validateInput;
         boolean validatePW;
 
@@ -1104,15 +1104,20 @@ public class HotelLogistics {
         System.out.println(booking);
 
         do {
-            System.out.printf("%n%s%n%s%n%s%n", "Would you like to cancel this booking?", "1. Yes", "2. No");
+            System.out.printf("%n%s%n%s%n%s%n",
+                    "Would you like to cancel this booking?",
+                    "Y. Yes, remove booking.",
+                    "N. No, don't remove booking. Go back to bookings.");
+
             cancel = input.nextLine();
+            cancel = cancel.toUpperCase();
 
             switch (cancel) {
-                case "1":
+                case "Y":
                     System.out.println("Your booking would now have been cancelled if the method was complete");
                     validate = true;
                     break;
-                case "2":
+                case "N":
                     System.out.println("Booking still valid.");
                     validate = true;
                     break;
