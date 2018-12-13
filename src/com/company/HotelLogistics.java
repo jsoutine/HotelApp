@@ -423,7 +423,7 @@ public class HotelLogistics {
                         } else if (!newPwd.equals(loggedInAccount.getPassword())) {
                             System.out.println("New password: " + newPwd);
                             System.out.println("Are you happy with your newly entered password?");
-                            System.out.println("y/n");
+                            System.out.println("y/n or press 0 to go back to menu!");
                             String yesOrNo = input.nextLine();
 
                             if (yesOrNo.equalsIgnoreCase("Y")) {
@@ -439,13 +439,13 @@ public class HotelLogistics {
                                 validateChangePW = false;
                                 input.nextLine();
 
-                            } else if (yesOrNo.equalsIgnoreCase("0")){
+                            } else if (yesOrNo.equalsIgnoreCase("0")) {
                                 System.out.println("Back option (0) chosen. Returning to 'Change password' menu!\nPress (Enter)");
                                 validateInput = true;
                                 validateChangePW = false;
                                 input.nextLine();
 
-                            }else{
+                            } else {
                                 System.out.println("Faulty input has been entered. Try again!");
                                 validateInput = false;
                                 validateChangePW = false;
@@ -498,7 +498,7 @@ public class HotelLogistics {
                         input.nextLine();
 
                     }
-                }while (!validatePW);
+                } while (!validatePW);
             } else if (yesOrNo.equalsIgnoreCase("N")) {
                 System.out.println("4.3.4.1\nReturning to previous menu! \nPress (Enter)");
                 validateInput = true;
