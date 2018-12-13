@@ -252,15 +252,14 @@ public class HotelLogistics {
                             removeAccount(loggedInAccount);
                             break;
                         case "0":
-                            customerMainMenu(loggedInAccount);
+                            validateInput = true;
                             break;
                         default:
-                            System.out.println("Faulty input recognized. Try Again! \nPress (Enter)");
+                            System.out.println("Faulty input recognized. Try Again!");
                             break;
                     }
                 } while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
             }
-
         } while (!validateInput);
     }
 
