@@ -27,7 +27,7 @@ public class HotelLogistics {
                     match = true;
                     System.out.println("\nWelcome " + customer.getName() + "\n");
                     customerMainMenu(customer);
-                    return;
+                    break;
                 } else {
                     match = false;
                 }
@@ -37,7 +37,7 @@ public class HotelLogistics {
                 if (admin.getAccountID().equalsIgnoreCase(id) && admin.getPassword().equals(password) && !admin.isCancelledAccount()) {
                     match = true;
                     adminMainMenu(admin);
-                    return;
+                    break;
                 } else {
                     match = false;
                 }
@@ -215,6 +215,7 @@ public class HotelLogistics {
         input.nextLine();
     }
 
+    //4.3
     public void editCustomerInfo(AccountCustomer loggedInAccount) {
         boolean validateInput = false;
         String choice;
@@ -223,7 +224,11 @@ public class HotelLogistics {
             if (loggedInAccount.isCancelledAccount()) {
                 validateInput = true;
             } else {
-                System.out.println("====EDIT USER INFORMATION====");
+                System.out.println("4.3\n====EDIT USER INFORMATION====");
+                System.out.println("Name:        " + loggedInAccount.getName());
+                System.out.println("Phonenumber: " + loggedInAccount.getPhoneNumber());
+                System.out.println("Password:    " + loggedInAccount.getPassword());
+                System.out.println("=============================");
                 System.out.println("1. Name");
                 System.out.println("2. Phonenumber");
                 System.out.println("3. Password");
@@ -247,22 +252,24 @@ public class HotelLogistics {
                             removeAccount(loggedInAccount);
                             break;
                         case "0":
-                            customerMainMenu(loggedInAccount);
+                            validateInput = true;
                             break;
                         default:
-                            System.out.println("Faulty input recognized. Try Again! \nPress (Enter)");
+                            System.out.println("Faulty input recognized. Try Again!");
                             break;
                     }
-                } while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
+                }
+                while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
             }
-
-        }while (!validateInput);
+        } while (!validateInput);
     }
 
-    private void editAccountName(AccountCustomer loggedInAccount) {
+    public void editAccountName(AccountCustomer loggedInAccount) {
         boolean validateinput = true;
+        boolean validateYorN;
+        boolean validateExitToChangeName = true;
         do {
-            System.out.println("---CHANGE NAME---");
+            System.out.println("4.3.1\n====CHANGE NAME====");
             System.out.println("Name currently assigned: " + loggedInAccount.getName());
             System.out.println("1. Change name");
             System.out.println("0. Back");
@@ -272,38 +279,56 @@ public class HotelLogistics {
                 case "1":
                     do {
                         System.out.println("Enter new name: ");
-                        validateinput = true;
                         choice = input.nextLine();
 
                         if (choice.equals("0")) {
                             editAccountName(loggedInAccount);
                         } else if (choice.matches("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-]*[\\s]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-].*")) {
-                            loggedInAccount.setName(choice);
-                            System.out.println("New name: " + loggedInAccount.getName());
+                            System.out.println("New name: " + choice);
                             System.out.println("Are you happy with the newly entered name?");
-                            System.out.println("y/n");
-                            String yesOrNo = input.nextLine();
-                            if (yesOrNo.equalsIgnoreCase("Y")) {
-                                System.out.println("Very well, then let's return to the previous menu \nBack (Enter)");
-                                validateinput = true;
-                                input.nextLine();
 
-                            } else if (yesOrNo.equalsIgnoreCase("N")) {
-                                System.out.println("Returning to previous menu!\nEnter name again by pressing (Enter)");
-                                validateinput = false;
-                                input.nextLine();
-                            }
+                            do {
+                                System.out.println("y/n");
+                                String yesOrNo = input.nextLine();
+                                if (yesOrNo.equals("0")) {
+                                    System.out.println("Returning to 'CHANGE NAME' menu!");
+                                    validateExitToChangeName = false;
+                                    validateYorN = true;
+
+                                } else {
+
+                                    if (yesOrNo.equalsIgnoreCase("Y")) {
+                                        System.out.println("Very well, then lets return to the main menu \nBack (Enter)");
+                                        loggedInAccount.setName(choice);
+                                        validateinput = true;
+                                        validateYorN = true;
+                                        validateExitToChangeName = true;
+                                        input.nextLine();
+
+                                    } else if (yesOrNo.equalsIgnoreCase("N")) {
+                                        validateinput = false;
+                                        validateYorN = true;
+
+
+                                    } else {
+                                        System.out.println("Neither Y or N where selected. Try again!");
+                                        validateinput = false;
+                                        validateYorN = false;
+                                    }
+                                }
+                            } while (!validateYorN);
 
                         } else if (!choice.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-]*[\\s]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-].*")) {
-                            System.out.println("Format not followed. Try again!");
-                            editAccountName(loggedInAccount);
+                            System.out.println("Format not followed. Try again! \nPress (Enter)");
                             validateinput = false;
+                            validateExitToChangeName = true;
                         }
                     } while (!validateinput);
                     break;
                 case "0":
                 case "o":
                 case "O":
+                    validateExitToChangeName = true;
                     System.out.println("Name change has been cancelled. No changes made.\nBack (Enter)");
                     input.nextLine();
                     break;
@@ -312,15 +337,17 @@ public class HotelLogistics {
                     editAccountName(loggedInAccount);
                     break;
 
-
             }
-        } while (!validateinput);
+        } while (!validateExitToChangeName);
     }
 
-    private void editAccountPhoneNr(AccountCustomer loggedInAccount) {
+    public void editAccountPhoneNr(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
+        boolean yOrN = true;
+        boolean validateExitChangePW = true;
+
         do {
-            System.out.println("---CHANGE PHONENUMBER---");
+            System.out.println("4.3.2\n====CHANGE PHONENUMBER====");
             System.out.println("Phonenumber currently assigned: " + loggedInAccount.getPhoneNumber());
             System.out.println("1. Change current phonenumber");
             System.out.println("0. Back");
@@ -328,31 +355,55 @@ public class HotelLogistics {
 
             switch (choice) {
                 case "1":
-                    String regexStr = "^[0-9]*$";
+                    String regexStr = "^[0-9]{10}$";
                     System.out.println("Required format: Start with 0, then enter a 9-digit number sequence.");
 
                     do {
                         System.out.println("Enter new phonenumber: ");
                         String newNr = input.nextLine();
 
-                        if (newNr.matches(regexStr)) {
-                            System.out.println("New phonenumber: " + newNr);
-                            System.out.println("Are you happy with your newly entered phonenumber?");
-                            System.out.println("y/n");
-                            String yesOrNo = input.nextLine();
-                            if (yesOrNo.equalsIgnoreCase("Y")) {
-                                loggedInAccount.setPhoneNumber(newNr);
-                                System.out.println("Very well, then lets return to the previous menu! \n(Enter)");
-                                validateInput = true;
-                                input.nextLine();
+                        if (newNr.equals("0")){
+                            editAccountPassword(loggedInAccount);
 
-                            } else if (yesOrNo.equalsIgnoreCase("N")) {
-                                System.out.println("Then let's try again! \n(Enter)");
+                        }else{
+
+                            if (newNr.matches(regexStr)) {
+                                System.out.println("New phonenumber: " + newNr);
+                                System.out.println("Are you happy with your newly entered phonenumber?");
+
+                                do {
+                                    System.out.println("y/n or press 0 to go back to menu!");
+                                    String yesOrNo = input.nextLine();
+
+                                    if (yesOrNo.equalsIgnoreCase("Y")) {
+                                        loggedInAccount.setPhoneNumber(newNr);
+                                        System.out.println("Very well, then lets return to the previous menu! \n(Enter)");
+                                        validateInput = true;
+                                        yOrN = true;
+                                        validateExitChangePW = true;
+                                        input.nextLine();
+
+                                    } else if (yesOrNo.equalsIgnoreCase("N")) {
+                                        System.out.println("Then lets try again!");
+                                        validateInput = false;
+                                        yOrN = true;
+
+                                    } else if (yesOrNo.equalsIgnoreCase("0")){
+                                        validateExitChangePW = false;
+                                        yOrN = true;
+                                        validateInput = true;
+                                    }
+                                    else{
+                                        System.out.println("Neither y nor n have been entered. Try again!");
+                                        validateInput = false;
+                                        yOrN = false;
+                                    }
+                                }while (!yOrN);
+                            } else {
+                                System.out.println("Format not followed. Try again!");
                                 validateInput = false;
-                                input.nextLine();
+                                validateExitChangePW = false;
                             }
-                        } else {
-                            System.out.println("Format not followed. Try again!");
                         }
                     } while (!validateInput);
                     break;
@@ -368,13 +419,14 @@ public class HotelLogistics {
                     validateInput = false;
                     break;
             }
-        } while (!validateInput);
+        } while (!validateExitChangePW);
     }
 
-    private void editAccountPassword(AccountCustomer loggedInAccount) {
+    public void editAccountPassword(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
+        boolean validateChangePW = true;
         do {
-            System.out.println("---CHANGE PASSWORD---");
+            System.out.println("4.3.3\n====CHANGE PASSWORD====");
             System.out.println("Current password: " + loggedInAccount.getPassword());
             System.out.println("1. Change current password");
             System.out.println("0. Back");
@@ -387,29 +439,39 @@ public class HotelLogistics {
                         String newPwd = input.nextLine();
 
                         if (newPwd.equals(loggedInAccount.getPassword())) {
-                            System.out.println("Password entered is the same as your old one. Try a new one!");
-                            editAccountPassword(loggedInAccount);
+                            System.out.println("Password entered is the same as your old one. Try a new one! \nPress (Enter)");
+                            validateInput = false;
+                            input.nextLine();
+
                         } else if (!newPwd.equals(loggedInAccount.getPassword())) {
                             System.out.println("New password: " + newPwd);
                             System.out.println("Are you happy with your newly entered password?");
-                            System.out.println("y/n");
+                            System.out.println("y/n or press 0 to go back to menu!");
                             String yesOrNo = input.nextLine();
 
                             if (yesOrNo.equalsIgnoreCase("Y")) {
-                                System.out.println("Very well, then let's return to the previous menu \nPress (Enter)");
+                                System.out.println("Very well, then lets return to the previous menu \nPress (Enter)");
                                 loggedInAccount.setPassword(newPwd);
                                 validateInput = true;
+                                validateChangePW = true;
                                 input.nextLine();
 
                             } else if (yesOrNo.equalsIgnoreCase("N")) {
-                                System.out.println("Then lets try again! \nPress (Enter)");
+                                System.out.println("Then lets try again!\nPress (Enter)");
                                 validateInput = false;
+                                validateChangePW = false;
+                                input.nextLine();
+
+                            } else if (yesOrNo.equalsIgnoreCase("0")) {
+                                System.out.println("Back option (0) chosen. Returning to 'Change password' menu!\nPress (Enter)");
+                                validateChangePW = false;
                                 input.nextLine();
 
                             } else {
-                                System.out.println("Faulty input has been entered. Try again! \nPress (Enter)");
+                                System.out.println("Faulty input has been entered. Try again!");
                                 validateInput = false;
-                                input.nextLine();
+                                validateChangePW = false;
+
                             }
                         }
                     } while (!validateInput);
@@ -419,40 +481,54 @@ public class HotelLogistics {
                 case "o":
                 case "0":
                     validateInput = true;
+                    validateChangePW = true;
                     break;
                 default:
                     System.out.println("Faulty input recognized. Let's try again!");
                     validateInput = false;
+                    validateChangePW = false;
                     break;
             }
-        } while (!validateInput);
+        } while (!validateChangePW);
     }
 
-    private void removeAccount(AccountCustomer loggedInAccount) {
-        boolean validateInput = false;
+    public void removeAccount(AccountCustomer loggedInAccount) {
+        boolean validateInput;
+        boolean validatePW;
+
+        System.out.println("4.3.4====REMOVE ACCOUNT====");
         do {
-            System.out.println("Do you truly wish to delete your account?");
+            System.out.println("Do you truly wish to remove your account?");
             System.out.println("y/n");
             String yesOrNo = input.nextLine();
 
             if (yesOrNo.equalsIgnoreCase("Y")) {
-                System.out.println("Enter your password to verify deletion of account: ");
-                String pwCheck = input.nextLine();
-                if (pwCheck.matches(loggedInAccount.getPassword())) {
-                    loggedInAccount.setCancelledAccount(true);
-                    validateInput = true;
+                do {
+                    System.out.println("Enter your password to verify deletion of account: ");
+                    String pwCheck = input.nextLine();
+                    if (pwCheck.matches(loggedInAccount.getPassword())) {
+                        loggedInAccount.setCancelledAccount(true);
+                        validateInput = true;
+                        validatePW = true;
+                        System.out.println("4.3.4.2\nAccount has now been removed!\nPress (Enter) to return to login screen");
+                        input.nextLine();
 
-                } else {
-                    System.out.println("Wrong password has been entered. Try again! \nPress (Enter)");
-                    validateInput = false;
+                    } else {
+                        System.out.println("Wrong password has been entered. Try again! \nPress (Enter)");
+                        validateInput = false;
+                        validatePW = false;
+                        input.nextLine();
 
-                }
+                    }
+                } while (!validatePW);
             } else if (yesOrNo.equalsIgnoreCase("N")) {
-                System.out.println("Returning to previous menu! \nPress (Enter)");
-                validateInput = false;
+                System.out.println("4.3.4.1\nReturning to previous menu! \nPress (Enter)");
+                validateInput = true;
+                input.nextLine();
 
             } else {
                 System.out.println("(Y)es or (N)o hasn't been entered. Try again!");
+                validateInput = false;
             }
         } while (!validateInput);
     }
@@ -461,7 +537,7 @@ public class HotelLogistics {
 
     public void adminRooms(Account loggedInAccount) {
         String menuChoice;
-        boolean validateInput = false;
+        boolean validateInput;
         int roomSelect;  // selects room
 
         do {
@@ -505,14 +581,15 @@ public class HotelLogistics {
                                 System.out.printf("There are only %d rooms to select from. Try again or press \"0\" to go back.%n", roomList.size());
                             } else {
                                 adminEditRoomInfo(roomList.get(roomSelect - 1));
+                                validateInput = true;
                             }
                         } catch (NumberFormatException e) {
                             System.out.printf("Please enter an option, or valid number between 1 and %d. Try again or press \"0\" to go back.%n", roomList.size());
-                            validateInput = true;
+                            validateInput = false;
                         }
                 }
 
-            } while (validateInput); // loops the room menu
+            } while (!validateInput); // loops the room menu
 
         } while (true); //Always loop, until menuChoice = 0 -> Return
 
@@ -520,63 +597,63 @@ public class HotelLogistics {
 
     //3.2.4 (edit price)
 
-   /*
-   public void editprices() {
+    /*
+    public void editprices() {
 
 
-        int choice;
+         int choice;
 
-        do {
-            System.out.printf("%s%n%s%n%s%n%s%n%s%n",
-                    "Edit price for",
-                    "Type a choice:",
-                    "1. standards",
-                    "2. beds.",
-                    "0. Back.");
-            choice = input.nextInt();
+         do {
+             System.out.printf("%s%n%s%n%s%n%s%n%s%n",
+                     "Edit price for",
+                     "Type a choice:",
+                     "1. standards",
+                     "2. beds.",
+                     "0. Back.");
+             choice = input.nextInt();
 
-            do {
-                switch (choice) {
-                    case 1:
+             do {
+                 switch (choice) {
+                     case 1:
 
-                        System.out.printf("%s%n%s%n",
-                                "choose standard 1-5",
-                                "Type a choice:");
+                         System.out.printf("%s%n%s%n",
+                                 "choose standard 1-5",
+                                 "Type a choice:");
 
-                        break;
-                    case 2:
-                        System.out.printf("%s%n%s%n",
-                                "choose beds 1, 2 or 4",
-                                "Type a choice:");
+                         break;
+                     case 2:
+                         System.out.printf("%s%n%s%n",
+                                 "choose beds 1, 2 or 4",
+                                 "Type a choice:");
 
-                        break;
+                         break;
 
-                    case 0:
-                        return;
-                    break;
+                     case 0:
+                         return;
+                     break;
 
-                    default:
-                        System.out.println("Please enter 0-2");
-                        break;
+                     default:
+                         System.out.println("Please enter 0-2");
+                         break;
 
-                }
-            }
+                 }
+             }
 
-        }
-    }
-    }
-*/
+         }
+     }
+     }
+ */
     //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
     public void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
         boolean logout = false;
         do {
             if (loggedInAccount.isCancelledAccount()) {
-                logout=true;
+                logout = true;
             } else {
                 //4.
                 System.out.printf("%s%n%s%s%n%s%n%s%n%s%n%s%n",
-                        "====CUSTOMER MAIN MENU====",
+                        "4\n====CUSTOMER MAIN MENU====",
                         "Logged in as: ", loggedInAccount.getName(),
                         "1. Make a booking, or view available",
                         "2. View your bookings",
@@ -607,7 +684,7 @@ public class HotelLogistics {
                 }
                 while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("0"));
             }
-        }while (!logout) ;
+        } while (!logout);
     }
 
     public int numberOfRoomsBooking() {  //This method is needed as a separate method since it's return value are used in different methods in the booking chain.
@@ -1258,15 +1335,20 @@ public class HotelLogistics {
         System.out.println(booking);
 
         do {
-            System.out.printf("%n%s%n%s%n%s%n", "Would you like to cancel this booking?", "1. Yes", "2. No");
+            System.out.printf("%n%s%n%s%n%s%n",
+                    "Would you like to cancel this booking?",
+                    "Y. Yes, remove booking.",
+                    "N. No, don't remove booking. Go back to bookings.");
+
             cancel = input.nextLine();
+            cancel = cancel.toUpperCase();
 
             switch (cancel) {
-                case "1":
+                case "Y":
                     System.out.println("Your booking would now have been cancelled if the method was complete");
                     validate = true;
                     break;
-                case "2":
+                case "N":
                     System.out.println("Booking still valid.");
                     validate = true;
                     break;
@@ -1278,6 +1360,15 @@ public class HotelLogistics {
 
         System.out.println("Back (Enter)");
         input.nextLine();
+    }
+
+    //4.2.1.1.
+    public void removeBooking(BookingConfirm thisBooking) {
+
+        ArrayList<BookingConfirm> sameBookingId = new ArrayList<>();
+        int countElements;
+
+        for (Room room : roomList){}
     }
 
     // 3.2.3.
@@ -1429,6 +1520,7 @@ public class HotelLogistics {
                         System.out.println("Back (Enter) ");
                         input.nextLine();
                         return;
+
 
                     default:
 
