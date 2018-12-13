@@ -1,11 +1,11 @@
 package com.company;
 
-public class BedPrices {
+public class BedPrice {
 
     private double constant;
     private int numberOfBeds;
 
-    public BedPrices(int numberOfBeds, double constant) {
+    public BedPrice(int numberOfBeds, double constant) {
         if (constant >= 1) {
             this.constant = constant;
         } else {
