@@ -175,7 +175,7 @@ public class HotelLogistics {
                 menuChoice = input.nextLine();
                 //=============================== ADD CUSTOMER ====================================================
                 if (menuChoice.equalsIgnoreCase("A")) {
-                    System.out.println("INVOKE ADD CUSTOMER METHOD??");
+                    addCustomer();
                     validateInput = true;
                     //=========================== CANCELLED ACCOUNTS ===================================================
                 } else if (menuChoice.equalsIgnoreCase("C")) {
