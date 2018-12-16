@@ -215,8 +215,8 @@ public class HotelLogistics {
     //3.1.1.
     public void addCustomer() {
 
-        String firstName = "";
-        String lastName = "";
+        String firstName;
+        String lastName;
         String name;
         String phoneNumber = "";
         String password;
@@ -232,6 +232,10 @@ public class HotelLogistics {
                 "Please fill in the following information below. ");
 
         do {
+
+            firstName = "";
+            lastName = "";
+            phoneNumber = "";
 
             while (firstName.matches(".*\\d+.*") || firstName.isEmpty()) {
                 System.out.print("First name: ");
@@ -251,7 +255,7 @@ public class HotelLogistics {
                     System.out.println("Your name can't contain numbers. Try again. \n");
                 }
             }
-            
+
             while (!phoneNumber.matches(phoneValidate)) {
 
                 System.out.print("Phone number: ");
