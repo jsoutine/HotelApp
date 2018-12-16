@@ -1593,7 +1593,7 @@ public class HotelLogistics {
             switch (cancel) {
                 case "Y":
                     System.out.println("This will lead to removeBooking");
-                    //removeBooking(booking);
+                    //removeBooking();
                     validate = true;
                     break;
                 case "N":
