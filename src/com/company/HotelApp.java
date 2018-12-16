@@ -51,7 +51,7 @@ public class HotelApp {
                     break;
 
                 case "2":
-                    //myApp.input.nextLine();
+                    myApp.input.nextLine();
                     logistics.addCustomer();
                     validMenu = false;
                     break;
