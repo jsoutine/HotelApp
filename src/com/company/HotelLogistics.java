@@ -215,8 +215,8 @@ public class HotelLogistics {
     //3.1.1.
     public void addCustomer() {
 
-        String firstName;
-        String lastName;
+        String firstName = "";
+        String lastName = "";
         String name;
         String phoneNumber = "";
         String password;
@@ -232,11 +232,26 @@ public class HotelLogistics {
                 "Please fill in the following information below. ");
 
         do {
-            System.out.print("First name: ");
-            firstName = input.nextLine();
-            System.out.print("Last name: ");
-            lastName = input.nextLine();
 
+            while (firstName.matches(".*\\d+.*") || firstName.isEmpty()) {
+                System.out.print("First name: ");
+                firstName = input.nextLine();
+
+                if (firstName.matches(".*\\d+.*")) {
+                    System.out.println("Your name can't contain numbers. Try again. \n");
+                }
+            }
+
+
+            while (lastName.matches(".*\\d+.*") || lastName.isEmpty()) {
+                System.out.print("Last name: ");
+                lastName = input.nextLine();
+
+                if (lastName.matches(".*\\d+.*")) {
+                    System.out.println("Your name can't contain numbers. Try again. \n");
+                }
+            }
+            
             while (!phoneNumber.matches(phoneValidate)) {
 
                 System.out.print("Phone number: ");
@@ -298,7 +313,8 @@ public class HotelLogistics {
                 }
             } while (!checkSwitch);
 
-        } while (!checkAll);
+        }
+        while (!checkAll);
 
         AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
 
@@ -1593,7 +1609,7 @@ public class HotelLogistics {
             switch (cancel) {
                 case "Y":
                     System.out.println("This will lead to removeBooking");
-                    //removeBooking(booking);
+                    //removeBooking();
                     validate = true;
                     break;
                 case "N":
