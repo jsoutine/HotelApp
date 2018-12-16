@@ -246,7 +246,6 @@ public class HotelLogistics {
                 }
             }
 
-
             while (lastName.matches(".*\\d+.*") || lastName.isEmpty()) {
                 System.out.print("Last name: ");
                 lastName = input.nextLine();
@@ -277,8 +276,8 @@ public class HotelLogistics {
                 if (!password.equals(passwordCheck)) {
                     System.out.println("\nYour password didn't match. Try again.");
                 }
-            } while (!password.equals(passwordCheck));
 
+            } while (!password.equals(passwordCheck));
 
             do {
                 System.out.printf("%n%s%n%s%s%n%s%s%n%s%s%n%s%s%n%n%s%n%s%n%s%n%s%n",
@@ -315,10 +314,10 @@ public class HotelLogistics {
                         System.out.println("\nPlease enter a valid option of Y/N or 0.");
                         checkSwitch = false;
                 }
+
             } while (!checkSwitch);
 
-        }
-        while (!checkAll);
+        } while (!checkAll);
 
         AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
 
