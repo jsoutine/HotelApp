@@ -90,7 +90,7 @@ public class HotelLogistics {
                     "2. Rooms",
                     "3. Bookings",
                     "4. Check in",
-                    "5. Cheeck out",
+                    "5. Check out",
                     "0. Log out");
 
             for (Room room : roomList) {
@@ -137,8 +137,7 @@ public class HotelLogistics {
                         System.out.println("Invalid option. Type a choice 0-4:");
                         break;
                 }
-            }
-            while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("4") && !menuChoice.equals("5") && !menuChoice.equals("0"));
+            }while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("4") && !menuChoice.equals("5") && !menuChoice.equals("0"));
         } while (!logout);
     }
 
@@ -324,17 +323,74 @@ public class HotelLogistics {
         customerList.add(newDude);
 
         System.out.printf("You can now log in with your unique user ID: %s.%n%n", newDude.getAccountID());
+
     }
+
 
     //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
     public void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
-        System.out.printf("%s%n%s%n%s%n%s%n",
-                "3.1.2. CUSTOMER (Admin level)",
-                customer,
-                "NOT COMPLETE METHOD, 'Enter' will for now lead directly to 'Make booking' for this customer",
-                "Back (Enter)");
-        input.nextLine();
-        makeBooking(customer);
+        boolean backSelected = false;
+
+        do {System.out.println("====[ADMIN] CUSTOMER INFO====");
+            System.out.println("Customer selected: " + customer.getName() +
+                    " (ID: " + customer.getAccountID() + ")");
+            System.out.println("1. Make booking for " + customer.getName());
+            System.out.println("2. View bookings for " + customer.getName());
+            System.out.println("3. Edit customer information");
+            System.out.println("0. Back");
+            String choice = input.nextLine();
+            //do {
+                switch (choice) {
+                    case "1":
+                        System.out.println("[ADMIN]");
+                        makeBooking(customer);
+                        break;
+
+                    case "2":
+                        viewBookings(customer);
+                        break;
+                    case "3":
+                        adminEditCustomer(customer);
+                        break;
+
+                    case "0":
+                        backSelected = true;
+                        break;
+
+                    default:
+                        System.out.println("Faulty input. Enter 0-3.\nPress (Enter)");
+                        input.nextLine();
+                }
+            //}while (!choice.matches("1") && !choice.matches("2") && !choice.matches("3") && !choice.matches("0"));
+        }while (!backSelected);
+    }
+
+    private void adminEditCustomer(AccountCustomer customer) {
+        boolean backSelected = false;
+        do {
+            System.out.println("====[ADMIN] EDIT CUSTOMER INFO====");
+            System.out.println("1. Change cust. name");
+            System.out.println("2. Change cust. phone number");
+            System.out.println("3. Change cust. password");
+            System.out.println("0. Back");
+            String choice = input.nextLine();
+
+            switch (choice) {
+                case "1":
+                    editAccountName(customer);
+                    break;
+                case "2":
+                    editAccountPhoneNr(customer);
+                    break;
+                case "3":
+                    editAccountPassword(customer);
+                    break;
+                case "0":
+                    backSelected = true;
+                    break;
+
+            }
+        }while (!backSelected);
     }
 
     //3.1.3.
@@ -479,8 +535,7 @@ public class HotelLogistics {
         } while (!proceed);
     }
 
-    //4.3
-    public void editCustomerInfo(AccountCustomer loggedInAccount) {
+    private void editCustomerInfo(AccountCustomer loggedInAccount) {
         boolean validateInput = false;
         String choice;
 
@@ -528,7 +583,7 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-    public void editAccountName(AccountCustomer loggedInAccount) {
+    private void editAccountName(AccountCustomer loggedInAccount) {
         boolean validateinput = true;
         boolean validateYorN;
         boolean validateExitToChangeName = true;
@@ -605,7 +660,7 @@ public class HotelLogistics {
         } while (!validateExitToChangeName);
     }
 
-    public void editAccountPhoneNr(AccountCustomer loggedInAccount) {
+    private void editAccountPhoneNr(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
         boolean yOrN = true;
         boolean validateExitChangePW = true;
@@ -685,7 +740,7 @@ public class HotelLogistics {
         } while (!validateExitChangePW);
     }
 
-    public void editAccountPassword(AccountCustomer loggedInAccount) {
+    private void editAccountPassword(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
         boolean validateChangePW = true;
         do {
@@ -755,11 +810,11 @@ public class HotelLogistics {
         } while (!validateChangePW);
     }
 
-    public void removeAccount(AccountCustomer loggedInAccount) {
+    private void removeAccount(AccountCustomer loggedInAccount) {
         boolean validateInput;
         boolean validatePW;
 
-        System.out.println("4.3.4====REMOVE ACCOUNT====");
+        System.out.println("4.3.4\n====REMOVE ACCOUNT====");
         do {
             System.out.println("Do you truly wish to remove your account?");
             System.out.println("y/n");
@@ -794,6 +849,15 @@ public class HotelLogistics {
                 validateInput = false;
             }
         } while (!validateInput);
+    }
+
+    private void removeBooking(Account loggedInAccount) {
+        if (loggedInAccount.isCancelledAccount()) {
+
+
+        } else {
+
+        }
     }
 
     //3.2. (listRooms)
@@ -1160,7 +1224,8 @@ public class HotelLogistics {
 
     //4.1.
     public void makeBooking(AccountCustomer concernedAccount) {
-        System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
+        System.out.println("4.1.\nMAKE BOOKING, OR VIEW AVAILABLE");
+
         ArrayList<BookingSearch> matchingResults = new ArrayList<>();
         ArrayList<BookingSearch> addedBookings = new ArrayList<>();
         String answer;
@@ -1384,12 +1449,10 @@ public class HotelLogistics {
             if (toDate.isEqual(room.getRoomBookingList().get(0).getFromDate()) ||                      // Om utchek är samma dag som existerande incheck
                     toDate.isBefore(room.getRoomBookingList().get(0).getFromDate())) {                 //Om utcheck är innan existerande incheck
                 match = true;
-            } else if (fromDate.isEqual(room.getRoomBookingList().get(0).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
-                    fromDate.isAfter(room.getRoomBookingList().get(0).getToDate())) {          //Om incheck är efter existerande utcheck.
-                match = true;
-            } else {
-                match = false;
-            }
+            } else // Om inchek är samma dag som existerande utcheck.
+//Om incheck är efter existerande utcheck.
+                match = fromDate.isEqual(room.getRoomBookingList().get(0).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
+                        fromDate.isAfter(room.getRoomBookingList().get(0).getToDate());
 
         } else {
             for (int i = 0; i < room.getRoomBookingList().size(); i++) {
@@ -1414,12 +1477,10 @@ public class HotelLogistics {
                         break;
                     }
                 } else if (i == room.getRoomBookingList().size() - 1) {                      // If index points to last item in list.
-                    if (fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
-                            fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) {   //Om incheckning är efter existerande utcheck i.
-                        match = true;
-                    } else {
-                        match = false;
-                    }
+                    // Om inchek är samma dag som existerande utcheck.
+//Om incheckning är efter existerande utcheck i.
+                    match = fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||      // Om inchek är samma dag som existerande utcheck.
+                            fromDate.isAfter(room.getRoomBookingList().get(i).getToDate());
                 }
             }
         }
