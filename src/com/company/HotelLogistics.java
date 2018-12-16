@@ -218,11 +218,11 @@ public class HotelLogistics {
         String firstName;
         String lastName;
         String name;
-        String phoneNumber = "";
+        String phoneNumber;
         String password;
         String passwordCheck;
         String choice;
-        String phoneValidate = "0\\d\\d\\d\\d\\d\\d\\d\\d+";
+        String phoneValidate = "0\\d\\d\\d\\d\\d\\d\\d\\d+"; // checks that phone number is in correct format
         boolean checkAll = false;
         boolean checkSwitch;
 
@@ -233,7 +233,7 @@ public class HotelLogistics {
 
         do {
 
-            firstName = "";
+            firstName = ""; // resets information for loop.
             lastName = "";
             phoneNumber = "";
 
