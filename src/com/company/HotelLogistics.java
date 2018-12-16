@@ -300,9 +300,11 @@ public class HotelLogistics {
 
         } while (!checkAll);
 
-        AccountCustomer test = new AccountCustomer(name, password, phoneNumber);
+        AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
 
-        System.out.printf("You can now log in with your unique user ID: %s.", test.getAccountID());
+        customerList.add(newDude);
+
+        System.out.printf("You can now log in with your unique user ID: %s.%n%n", newDude.getAccountID());
     }
 
     //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
