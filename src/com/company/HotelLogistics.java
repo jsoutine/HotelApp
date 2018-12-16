@@ -214,12 +214,15 @@ public class HotelLogistics {
 
     //3.1.1.
     public void addCustomer() {
+
         String firstName;
         String lastName;
-        String phone;
+        String name;
+        String phoneNumber = "";
         String password;
         String passwordCheck;
         String choice;
+        String phoneValidate = "0\\d\\d\\d\\d\\d\\d\\d\\d+";
         boolean checkAll = false;
         boolean checkSwitch;
 
@@ -233,8 +236,18 @@ public class HotelLogistics {
             firstName = input.nextLine();
             System.out.print("Last name: ");
             lastName = input.nextLine();
-            System.out.print("Phone number: ");
-            phone = input.nextLine();
+
+            while (!phoneNumber.matches(phoneValidate)) {
+
+                System.out.print("Phone number: ");
+                phoneNumber = input.nextLine();
+
+                if (!phoneNumber.matches(phoneValidate)) {
+                    System.out.println("Invalid phone number. It must be numeric, start with '0' and contain at least 9 digits.");
+                }
+            }
+
+            name = firstName + " " + lastName; // two variables for user friendliness, combined to pass on to customerAccount.
 
             do {
                 System.out.print("Password: ");
@@ -242,9 +255,7 @@ public class HotelLogistics {
                 System.out.print("Repeat your password: ");
                 passwordCheck = input.nextLine();
 
-                if (password.equals(passwordCheck)) {
-                    System.out.println("Great, thanks");
-                } else {
+                if (!password.equals(passwordCheck)) {
                     System.out.println("\nYour password didn't match. Try again.");
                 }
             } while (!password.equals(passwordCheck));
@@ -255,7 +266,7 @@ public class HotelLogistics {
                         "The information you have entered is: ",
                         "First name: ", firstName,
                         "Last name: ", lastName,
-                        "Phone number: ", phone,
+                        "Phone number: ", phoneNumber,
                         "Password: ", password,
                         "Is this information correct?",
                         "Y. Yes, this is correct.",
@@ -269,7 +280,7 @@ public class HotelLogistics {
                 switch (choice) {
 
                     case "Y":
-                        System.out.println("Cool beans");
+                        System.out.printf("Thank you %s. ", name);
                         checkAll = true;
                         break;
 
@@ -288,6 +299,10 @@ public class HotelLogistics {
             } while (!checkSwitch);
 
         } while (!checkAll);
+
+        AccountCustomer test = new AccountCustomer(name, password, phoneNumber);
+
+        System.out.printf("You can now log in with your unique user ID: %s.", test.getAccountID());
     }
 
     //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
