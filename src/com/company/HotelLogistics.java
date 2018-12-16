@@ -218,11 +218,11 @@ public class HotelLogistics {
         String firstName;
         String lastName;
         String name;
-        String phoneNumber = "";
+        String phoneNumber;
         String password;
         String passwordCheck;
         String choice;
-        String phoneValidate = "0\\d\\d\\d\\d\\d\\d\\d\\d+";
+        String phoneValidate = "0\\d\\d\\d\\d\\d\\d\\d\\d+"; // checks that phone number is in correct format
         boolean checkAll = false;
         boolean checkSwitch;
 
@@ -233,7 +233,7 @@ public class HotelLogistics {
 
         do {
 
-            firstName = "";
+            firstName = ""; // resets information for loop.
             lastName = "";
             phoneNumber = "";
 
@@ -245,7 +245,6 @@ public class HotelLogistics {
                     System.out.println("Your name can't contain numbers. Try again. \n");
                 }
             }
-
 
             while (lastName.matches(".*\\d+.*") || lastName.isEmpty()) {
                 System.out.print("Last name: ");
@@ -262,7 +261,7 @@ public class HotelLogistics {
                 phoneNumber = input.nextLine();
 
                 if (!phoneNumber.matches(phoneValidate)) {
-                    System.out.println("Invalid phone number. It must be numeric, start with '0' and contain at least 9 digits.");
+                    System.out.println("Invalid phone number. It must be numeric, start with '0' and contain at least 9 digits.\n");
                 }
             }
 
@@ -277,8 +276,8 @@ public class HotelLogistics {
                 if (!password.equals(passwordCheck)) {
                     System.out.println("\nYour password didn't match. Try again.");
                 }
-            } while (!password.equals(passwordCheck));
 
+            } while (!password.equals(passwordCheck));
 
             do {
                 System.out.printf("%n%s%n%s%s%n%s%s%n%s%s%n%s%s%n%n%s%n%s%n%s%n%s%n",
@@ -315,10 +314,10 @@ public class HotelLogistics {
                         System.out.println("\nPlease enter a valid option of Y/N or 0.");
                         checkSwitch = false;
                 }
+
             } while (!checkSwitch);
 
-        }
-        while (!checkAll);
+        } while (!checkAll);
 
         AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
 
