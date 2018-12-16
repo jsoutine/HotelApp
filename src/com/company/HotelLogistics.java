@@ -460,8 +460,7 @@ public class HotelLogistics {
         } while (!proceed);
     }
 
-    //4.3
-    public void editCustomerInfo(AccountCustomer loggedInAccount) {
+    private void editCustomerInfo(AccountCustomer loggedInAccount) {
         boolean validateInput = false;
         String choice;
 
@@ -509,7 +508,7 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-    public void editAccountName(AccountCustomer loggedInAccount) {
+    private void editAccountName(AccountCustomer loggedInAccount) {
         boolean validateinput = true;
         boolean validateYorN;
         boolean validateExitToChangeName = true;
@@ -586,7 +585,7 @@ public class HotelLogistics {
         } while (!validateExitToChangeName);
     }
 
-    public void editAccountPhoneNr(AccountCustomer loggedInAccount) {
+    private void editAccountPhoneNr(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
         boolean yOrN = true;
         boolean validateExitChangePW = true;
@@ -666,7 +665,7 @@ public class HotelLogistics {
         } while (!validateExitChangePW);
     }
 
-    public void editAccountPassword(AccountCustomer loggedInAccount) {
+    private void editAccountPassword(AccountCustomer loggedInAccount) {
         boolean validateInput = true;
         boolean validateChangePW = true;
         do {
@@ -736,7 +735,7 @@ public class HotelLogistics {
         } while (!validateChangePW);
     }
 
-    public void removeAccount(AccountCustomer loggedInAccount) {
+    private void removeAccount(AccountCustomer loggedInAccount) {
         boolean validateInput;
         boolean validatePW;
 
