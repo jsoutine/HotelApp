@@ -689,11 +689,15 @@ public class HotelLogistics {
         boolean validateInput;
         int roomSelect;  // selects room
 
+
         do {
+            int counter = 1;
+
             System.out.println("3.2 ALL ROOMS IN THE SYSTEM");
 
             for (Room room : roomList) {
-                System.out.println(room);
+                System.out.printf("%-4s%s%n",Integer.toString(counter).concat(". "), room);
+                counter ++;
             }
 
             System.out.printf("%n1-%s. Select room from above%n", roomList.size());
