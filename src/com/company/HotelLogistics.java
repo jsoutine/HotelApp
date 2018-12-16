@@ -213,7 +213,7 @@ public class HotelLogistics {
     }
 
     //3.1.1.
-    public void addCustomer() {
+    public void addCustomer(AccountAdmin adminLoggedIn) {
 
         String firstName;
         String lastName;
@@ -226,85 +226,87 @@ public class HotelLogistics {
         boolean checkAll = false;
         boolean checkSwitch;
 
-        System.out.printf("%s%n%n%s%n%n%s%n",
-                "====NEW GUEST====",
-                "Welcome to Hotel Gittan. You will be assigned a unique user ID.",
-                "Please fill in the following information below. ");
-
-        do {
-            System.out.print("First name: ");
-            firstName = input.nextLine();
-            System.out.print("Last name: ");
-            lastName = input.nextLine();
-
-            while (!phoneNumber.matches(phoneValidate)) {
-
-                System.out.print("Phone number: ");
-                phoneNumber = input.nextLine();
-
-                if (!phoneNumber.matches(phoneValidate)) {
-                    System.out.println("Invalid phone number. It must be numeric, start with '0' and contain at least 9 digits.");
-                }
-            }
-
-            name = firstName + " " + lastName; // two variables for user friendliness, combined to pass on to customerAccount.
+            System.out.printf("%s%n%n%s%n%n%s%n",
+                    "====NEW GUEST====",
+                    "Welcome to Hotel Gittan. You will be assigned a unique user ID.",
+                    "Please fill in the following information below. ");
 
             do {
-                System.out.print("Password: ");
-                password = input.nextLine();
-                System.out.print("Repeat your password: ");
-                passwordCheck = input.nextLine();
+                System.out.print("First name: ");
+                firstName = input.nextLine();
+                System.out.print("Last name: ");
+                lastName = input.nextLine();
 
-                if (!password.equals(passwordCheck)) {
-                    System.out.println("\nYour password didn't match. Try again.");
+                while (!phoneNumber.matches(phoneValidate)) {
+
+                    System.out.print("Phone number: ");
+                    phoneNumber = input.nextLine();
+
+                    if (!phoneNumber.matches(phoneValidate)) {
+                        System.out.println("Invalid phone number. It must be numeric, start with '0' and contain at least 9 digits.");
+                    }
                 }
-            } while (!password.equals(passwordCheck));
+
+                name = firstName + " " + lastName; // two variables for user friendliness, combined to pass on to customerAccount.
+
+                do {
+                    System.out.print("Password: ");
+                    password = input.nextLine();
+                    System.out.print("Repeat your password: ");
+                    passwordCheck = input.nextLine();
+
+                    if (!password.equals(passwordCheck)) {
+                        System.out.println("\nYour password didn't match. Try again.");
+                    }
+                } while (!password.equals(passwordCheck));
 
 
-            do {
-                System.out.printf("%n%s%n%s%s%n%s%s%n%s%s%n%s%s%n%n%s%n%s%n%s%n%s%n",
-                        "The information you have entered is: ",
-                        "First name: ", firstName,
-                        "Last name: ", lastName,
-                        "Phone number: ", phoneNumber,
-                        "Password: ", password,
-                        "Is this information correct?",
-                        "Y. Yes, this is correct.",
-                        "N. No, let me fill it in again.",
-                        "0. Cancel and go back.");
+                do {
+                    System.out.printf("%n%s%n%s%s%n%s%s%n%s%s%n%s%s%n%n%s%n%s%n%s%n%s%n",
+                            "The information you have entered is: ",
+                            "First name: ", firstName,
+                            "Last name: ", lastName,
+                            "Phone number: ", phoneNumber,
+                            "Password: ", password,
+                            "Is this information correct?",
+                            "Y. Yes, this is correct.",
+                            "N. No, let me fill it in again.",
+                            "0. Cancel and go back.");
 
-                choice = input.nextLine();
-                choice = choice.toUpperCase();
-                checkSwitch = true;
+                    choice = input.nextLine();
+                    choice = choice.toUpperCase();
+                    checkSwitch = true;
 
-                switch (choice) {
+                    switch (choice) {
 
-                    case "Y":
-                        System.out.printf("Thank you %s. ", name);
-                        checkAll = true;
-                        break;
+                        case "Y":
+                            System.out.printf("Thank you %s. ", name);
+                            checkAll = true;
+                            break;
 
-                    case "N":
-                        System.out.println("\nPlease fill in your information again.");
-                        break;
+                        case "N":
+                            System.out.println("\nPlease fill in your information again.");
+                            break;
 
-                    case "O":
-                    case "0":
-                        return;
+                        case "O":
+                        case "0":
+                            return;
 
-                    default:
-                        System.out.println("\nPlease enter a valid option of Y/N or 0.");
-                        checkSwitch = false;
-                }
-            } while (!checkSwitch);
+                        default:
+                            System.out.println("\nPlease enter a valid option of Y/N or 0.");
+                            checkSwitch = false;
+                    }
+                } while (!checkSwitch);
 
-        } while (!checkAll);
+            } while (!checkAll);
 
-        AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
+            AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
 
-        customerList.add(newDude);
+            customerList.add(newDude);
 
-        System.out.printf("You can now log in with your unique user ID: %s.%n%n", newDude.getAccountID());
+            System.out.printf("You can now log in with your unique user ID: %s.%n%n", newDude.getAccountID());
+
+        }
     }
 
     //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
@@ -739,7 +741,7 @@ public class HotelLogistics {
         boolean validateInput;
         boolean validatePW;
 
-        System.out.println("4.3.4====REMOVE ACCOUNT====");
+        System.out.println("4.3.4\n====REMOVE ACCOUNT====");
         do {
             System.out.println("Do you truly wish to remove your account?");
             System.out.println("y/n");
@@ -774,6 +776,15 @@ public class HotelLogistics {
                 validateInput = false;
             }
         } while (!validateInput);
+    }
+
+    private void removeBooking (Account loggedInAccount){
+        if (loggedInAccount.isCancelledAccount()){
+
+
+        } else {
+
+        }
     }
 
     //3.2. (listRooms)
