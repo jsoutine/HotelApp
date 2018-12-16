@@ -262,7 +262,7 @@ public class HotelLogistics {
                 phoneNumber = input.nextLine();
 
                 if (!phoneNumber.matches(phoneValidate)) {
-                    System.out.println("Invalid phone number. It must be numeric, start with '0' and contain at least 9 digits.");
+                    System.out.println("Invalid phone number. It must be numeric, start with '0' and contain at least 9 digits.\n");
                 }
             }
 
