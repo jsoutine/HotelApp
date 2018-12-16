@@ -1357,7 +1357,7 @@ public class HotelLogistics {
                     validate = true;
                     break;
                 default:
-                    System.out.println("Please enter an option of \"1\" or \"2\". ");
+                    System.out.println("Please enter an option of Y or N. ");
                     break;
             }
         } while (!validate);
