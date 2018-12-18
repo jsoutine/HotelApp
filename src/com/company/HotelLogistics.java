@@ -854,6 +854,7 @@ public class HotelLogistics {
         boolean validate = false;
         boolean validateNewValueInput = false;
         boolean exitMethod = false;
+        boolean cancel = false;
 
         do {
             System.out.printf("%s%n%s%n%s%n%s%n%s%n",
@@ -904,7 +905,7 @@ public class HotelLogistics {
                                 }
                             } while (!validate);
                         }
-                        if (!validate) {
+                        if (!validateNewValueInput) {
                             System.out.println("Input did not match an alternative. Try again:");
                         } else {
                             System.out.println("Enter new price for standard " + standardList.get(intAnwser).getName());
@@ -1785,7 +1786,6 @@ public class HotelLogistics {
         //for (Room room : roomList) {}
 
     }
-
     // 3.2.3.
     public void adminEditRoomInfo(Room room) {
         System.out.println("3.2.3 EDIT ROOM: " + room);
