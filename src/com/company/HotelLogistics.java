@@ -261,7 +261,7 @@ public class HotelLogistics {
 
             switch (menu) {
                 case "1":
-                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.\"");
+                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.");
                     checkSwitch = true;
                     break;
                 case "O":
