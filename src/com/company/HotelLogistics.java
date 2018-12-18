@@ -297,7 +297,6 @@ public class HotelLogistics {
             }
 
             while (!phoneNumber.matches(phoneValidate)) {
-
                 System.out.print("Phone number: ");
                 phoneNumber = input.nextLine();
 
@@ -354,11 +353,8 @@ public class HotelLogistics {
         } while (!checkAll);
 
         AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
-
         customerList.add(newDude);
-
         System.out.printf("You can now log in with your unique user ID: %s.%n%n", newDude.getAccountID());
-
     }
 
     //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
@@ -1111,7 +1107,6 @@ public class HotelLogistics {
                         break;
                     case "E":
                         adminEditPrices();
-                        System.out.println("This method does not exist yet. Press 0 to go back.");
                         validateInput = true;
                         break;
                     case "0":
@@ -1134,7 +1129,6 @@ public class HotelLogistics {
                 }
             } while (!validateInput); // loops the room menu
         } while (true); //Always loop, until menuChoice = 0 -> Return
-
     }
 
     //3.2.4 (edit price)
