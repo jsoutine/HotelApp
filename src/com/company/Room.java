@@ -65,4 +65,5 @@ public class Room {
     public String toString(){
         return String.format ("%s%-4d%s%-2d%s%-2d", "Room number: ", roomNumber, "Beds: ", beds, "Standard: ", standard);
     }
+
 }
