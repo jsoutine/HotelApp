@@ -17,7 +17,6 @@ public class HotelLogistics {
     private ArrayList<StandardPrice> standardList = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
 
-
     //2.1.
     public void logIn(String id, String password) {
         boolean match = false;
@@ -1041,13 +1040,13 @@ public class HotelLogistics {
                     System.out.println("Enter room standard (1-5): ");
                     do {
                         answer = input.nextLine();
-                        try{
+                        try {
                             standard = Integer.parseInt(answer);
                             validateInput = true;
                         } catch (NumberFormatException e) {
                             validateInput = false;
                         }
-                        if (standard == 1 || standard == 2 || standard == 3 || standard == 4 || standard == 5){
+                        if (standard == 1 || standard == 2 || standard == 3 || standard == 4 || standard == 5) {
                             validateInput = true;
                             Room newRoom = new Room(beds, standard);
                             roomList.add(newRoom);
@@ -1059,7 +1058,6 @@ public class HotelLogistics {
                         }
 
                     } while (!validateInput);
-
 
 
                     break;
@@ -1142,10 +1140,11 @@ public class HotelLogistics {
         double newDoubleValue = 0;
         boolean validate = false;
         boolean exitMethod = false;
-        boolean cancel = false;
+        boolean cancel;
         boolean validMenuChoice;
 
         do {
+            cancel = false;
             System.out.printf("%s%n%s%n%s%n%s%n%s%n",
                     "Edit price for:",
                     "1. standards",
@@ -1182,46 +1181,46 @@ public class HotelLogistics {
                                 }
                             }
 
-                        if (!cancel && validate) {
-                            validate = false;
-                            for (int i = 0; i < standardList.size(); i++) {
-                                if (standardList.get(i).getName() == intAnwser) {
-                                    intAnwser = i;
-                                    validate = true;
-                                    break;
+                            if (!cancel && validate) {
+                                validate = false;
+                                for (int i = 0; i < standardList.size(); i++) {
+                                    if (standardList.get(i).getName() == intAnwser) {
+                                        intAnwser = i;
+                                        validate = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!validate) {
+                                    System.out.println("Input did not match an alternative. Try again:");
+                                } else {
+                                    System.out.println("Enter new price for standard " + standardList.get(intAnwser).getName());
+                                    do {
+                                        answer = input.nextLine();
+                                        try {
+                                            newDoubleValue = Double.parseDouble(answer);
+                                            validate = true;
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("input must be numneric");
+                                            validate = false;
+                                        }
+
+                                        if (validate) {
+                                            if (newDoubleValue >= 10000 || newDoubleValue < 300) {
+                                                System.out.println("Not a valid value. Must be 300-10.000 . Try again");
+                                                validate = false;
+
+                                            } else {
+                                                standardList.get(intAnwser).setPrice(newDoubleValue);
+                                                System.out.println("Room standard " + standardList.get(intAnwser).getName() +
+                                                        ". New price is:  " + standardList.get(intAnwser).getPrice() + " SEK  \nBack (Enter)");
+                                                validate = true;
+                                                input.nextLine();
+                                            }
+                                        }
+                                    } while (!validate);
                                 }
                             }
-
-                            if (!validate) {
-                                System.out.println("Input did not match an alternative. Try again:");
-                            } else {
-                                System.out.println("Enter new price for standard " + standardList.get(intAnwser).getName());
-                                do {
-                                    answer = input.nextLine();
-                                    try {
-                                        newDoubleValue = Double.parseDouble(answer);
-                                        validate = true;
-                                    } catch (NumberFormatException e) {
-                                        System.out.println("input must be numneric");
-                                        validate = false;
-                                    }
-
-                                    if(validate) {
-                                        if (newDoubleValue >= 10000 || newDoubleValue < 300) {
-                                            System.out.println("Not a valid value. Must be 300-10.000 . Try again");
-                                            validate = false;
-
-                                        } else {
-                                            standardList.get(intAnwser).setPrice(newDoubleValue);
-                                            System.out.println("Room standard " + standardList.get(intAnwser).getName() +
-                                                    ". New price is:  " + standardList.get(intAnwser).getPrice() + " SEK  \nBack (Enter)");
-                                            validate = true;
-                                            input.nextLine();
-                                        }
-                                    }
-                                } while (!validate);
-                            }
-                        }
                         } while (!validate);
                         break;
                     case "2":
@@ -1248,50 +1247,53 @@ public class HotelLogistics {
                                 }
                             }
 
-                        if (!cancel && validate) {
-                            validate = false;
-                            for (int i = 0; i < bedConstantList.size(); i++) {
-                                if (bedConstantList.get(i).getNumberOfBeds() == intAnwser) {
-                                    intAnwser = i;
-                                    validate = true;
-                                    break;
-                                }
-                            }
-
-                            if (!validate) {
-                                System.out.println("Input did not match an alternative. Try again:");
-                            } else {
-
-                                System.out.println("Enter new constant value for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
-                                        " beds/room: (X.X)" +
-                                        "\nCurrent constant value: "
-                                        + bedConstantList.get(intAnwser).getConstant() + " SEK.");
-                                do {
-                                    answer = input.nextLine();
-
-                                    try {
-                                        newDoubleValue = Double.parseDouble(answer);
+                            if (!cancel && validate) {
+                                validate = false;
+                                for (int i = 0; i < bedConstantList.size(); i++) {
+                                    if (bedConstantList.get(i).getNumberOfBeds() == intAnwser) {
+                                        intAnwser = i;
                                         validate = true;
-                                    } catch (NumberFormatException e) {
-                                        System.out.println("input must be numneric, and decimals seperated by a dot (X.X). Try again:");
-                                        validate = false;
+                                        break;
                                     }
+                                }
 
-                                    if(validate) {
-                                        if (newDoubleValue <= 1.00 || newDoubleValue > 4.00) {
-                                            System.out.println("Not a valid value. Must be 1.00 - 4.00. Try again:");
-                                            validate = false;
-                                        } else {
-                                            bedConstantList.get(intAnwser).setConstant(newDoubleValue);
-                                            System.out.println("New beds constant price for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
-                                                    " per room is: " + bedConstantList.get(intAnwser).getConstant() + " SEK \nBack (Enter)");
+                                if (!validate) {
+                                    System.out.println("Input did not match an alternative. Try again:");
+                                } else {
+
+                                    System.out.println("Enter new constant value for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
+                                            " beds/room: (X.X)" +
+                                            "\nCurrent constant value: "
+                                            + bedConstantList.get(intAnwser).getConstant() + " SEK.");
+                                    do {
+                                        answer = input.nextLine();
+
+                                        try {
+                                            newDoubleValue = Double.parseDouble(answer);
                                             validate = true;
-                                            input.nextLine();
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("input must be numneric, and decimals seperated by a dot (X.X). Try again:");
+                                            validate = false;
                                         }
-                                    }
-                                } while (!validate);
+
+                                        if (validate) {
+                                            if (newDoubleValue <1.00 || newDoubleValue > 4.00) {
+                                                System.out.println("Not a valid value. Must be 1.00 - 4.00. Try again:");
+                                                validate = false;
+                                            } else {
+                                                bedConstantList.get(intAnwser).setConstant(newDoubleValue);
+                                                System.out.println("New beds constant price for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
+                                                        " per room is: " + bedConstantList.get(intAnwser).getConstant() + " SEK \nBack (Enter)");
+                                                validate = true;
+                                                input.nextLine();
+                                            }
+                                        }
+
+                                    } while (!validate);
+                                }
+
                             }
-                        }
+
                         } while (!validate);
                         break;
                     case "0":
@@ -1311,10 +1313,10 @@ public class HotelLogistics {
                     System.out.println("Back (Enter)");
                     input.nextLine();
                 }
-            }while (!validMenuChoice);
+            } while (!validMenuChoice);
         } while (!exitMethod);
-    }
 
+    }
     //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
     private void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
