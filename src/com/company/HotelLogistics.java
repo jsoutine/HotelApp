@@ -1712,11 +1712,10 @@ public class HotelLogistics {
     //4.2.1.1.
     public void cancelBooking(BookingConfirm thisBooking) {
 
-        //ArrayList<BookingConfirm> sameBookingId = new ArrayList<>();
         int countElements = 0;
         int bookingID = thisBooking.getBookingID();
         int uniqueID = thisBooking.getUniqueID();
-        boolean validate = false;
+        boolean validate;
         String confirm;
         String menu;
 
