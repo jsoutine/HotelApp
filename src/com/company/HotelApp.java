@@ -20,10 +20,8 @@ public class HotelApp {
         //============================ EXAMPLE OF LOG IN STRUCTURE ===================================================
 
         String selection;
-        int intAnswer = 0;
         String answerID;
         String password;
-        boolean validateInput;
         boolean validMenu;
 
         System.out.println("\n====WELCOME=====");
@@ -94,7 +92,6 @@ public class HotelApp {
             }
 
         } while (!validMenu);
-
 
     }
 }
