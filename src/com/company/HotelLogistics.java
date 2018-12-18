@@ -260,7 +260,7 @@ public class HotelLogistics {
 
             switch (menu) {
                 case "1":
-                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.\"");
+                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.");
                     checkSwitch = true;
                     break;
                 case "O":
@@ -274,7 +274,6 @@ public class HotelLogistics {
         } while (!checkSwitch);
 
         do {
-
             firstName = ""; // resets information for loop.
             lastName = "";
             phoneNumber = "";
@@ -318,7 +317,6 @@ public class HotelLogistics {
                 if (!password.equals(passwordCheck)) {
                     System.out.println("\nYour password didn't match. Try again.");
                 }
-
             } while (!password.equals(passwordCheck));
 
             do {
@@ -338,27 +336,21 @@ public class HotelLogistics {
                 checkSwitch = true;
 
                 switch (choice) {
-
                     case "Y":
                         System.out.printf("Thank you %s. ", name);
                         checkAll = true;
                         break;
-
                     case "N":
                         System.out.println("\nPlease fill in your information again.");
                         break;
-
                     case "O":
                     case "0":
                         return;
-
                     default:
                         System.out.println("\nPlease enter a valid option of Y/N or 0.");
                         checkSwitch = false;
                 }
-
             } while (!checkSwitch);
-
         } while (!checkAll);
 
         AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
@@ -368,7 +360,6 @@ public class HotelLogistics {
         System.out.printf("You can now log in with your unique user ID: %s.%n%n", newDude.getAccountID());
 
     }
-
 
     //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
     private void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
@@ -1094,7 +1085,6 @@ public class HotelLogistics {
         boolean validateInput;
         int roomSelect;  // selects room
 
-
         do {
             int counter = 1;
 
@@ -1106,12 +1096,10 @@ public class HotelLogistics {
             }
 
             System.out.printf("%n1-%s. Select room from above%n", roomList.size());
-
             System.out.printf("%s%n%s%n%s%n",
                     "A.    Add a room",
                     "E.    Edit prices",
                     "0.    Back");
-
             do {
                 menuChoice = input.nextLine();
                 menuChoice = menuChoice.toUpperCase();
@@ -1121,17 +1109,14 @@ public class HotelLogistics {
                         addRoom();
                         validateInput = true;
                         break;
-
                     case "E":
                         adminEditPrices();
                         System.out.println("This method does not exist yet. Press 0 to go back.");
                         validateInput = true;
                         break;
-
                     case "0":
                     case "O":
                         return;
-
                     default:
                         try {
                             roomSelect = Integer.parseInt(menuChoice);  // String -> int
@@ -1147,9 +1132,7 @@ public class HotelLogistics {
                             validateInput = false;
                         }
                 }
-
             } while (!validateInput); // loops the room menu
-
         } while (true); //Always loop, until menuChoice = 0 -> Return
 
     }
@@ -1193,7 +1176,6 @@ public class HotelLogistics {
                                 validate = true;
                                 exitMethod = false;
                                 cancel = true;
-
                             } else {
                                 try {
                                     intAnwser = Integer.parseInt(answer);  // String -> int
@@ -1254,7 +1236,6 @@ public class HotelLogistics {
                             System.out.println(beds.getNumberOfBeds() + " beds/room. Constant: " + beds.getConstant() +
                                     " x standard price per night and room.");
                         }
-
                         do {
                             answer = input.nextLine();
                             if (answer.equals("0") || answer.equalsIgnoreCase("O")) {
@@ -1302,7 +1283,7 @@ public class HotelLogistics {
                                         }
 
                                         if (validate) {
-                                            if (newDoubleValue <= 1.00 || newDoubleValue > 4.00) {
+                                            if (newDoubleValue <1.00 || newDoubleValue > 4.00) {
                                                 System.out.println("Not a valid value. Must be 1.00 - 4.00. Try again:");
                                                 validate = false;
                                             } else {
@@ -1316,7 +1297,9 @@ public class HotelLogistics {
 
                                     } while (!validate);
                                 }
+
                             }
+
                         } while (!validate);
                         break;
                     case "0":
@@ -1338,8 +1321,8 @@ public class HotelLogistics {
                 }
             } while (!validMenuChoice);
         } while (!exitMethod);
-    }
 
+    }
     //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
     private void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
@@ -2046,8 +2029,8 @@ public class HotelLogistics {
 
         do {
             System.out.printf("%n%s%n%s%n%s%n",
-                    "Enter cancel menu for this booking?",
-                    "Y. Yes, enter cancel menu.",
+                    "Enter the cancel menu for this booking?",
+                    "Y. Yes, enter the cancel menu.",
                     "N. No, don't cancel booking.");
 
             cancel = input.nextLine();
@@ -2100,7 +2083,6 @@ public class HotelLogistics {
                 case "Y":
                     for (Room room : roomList) {
                         for (int i = 0; i < room.getRoomBookingList().size(); i++) {
-
                             if (thisBooking.getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {
                                 countElements++;
                             }
@@ -2123,7 +2105,6 @@ public class HotelLogistics {
                             "C. Cancel chosen booking for Room nr: ", thisBooking.getRoom().getRoomNumber(),
                             " Standard: ", thisBooking.getRoom().getStandard(),
                             "0. Don't cancel booking. Go back to previous menu.");
-
                     do {
                         menu = input.nextLine();
                         if (countElements > 1 && menu.equalsIgnoreCase("A")) {
@@ -2151,7 +2132,6 @@ public class HotelLogistics {
                             System.out.printf("%s%s%n", "Successfully cancelled booking: ", thisBooking);
                             validate = true;
                             input.nextLine();
-
                         } else if (menu.equals("0") || menu.equalsIgnoreCase("O")) {
                             validate = true;
                             return;
@@ -2173,7 +2153,6 @@ public class HotelLogistics {
                     break;
             }
         } while (!validate);
-
     }
 
     // 3.2.3.
