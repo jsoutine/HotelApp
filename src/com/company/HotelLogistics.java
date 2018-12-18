@@ -52,7 +52,7 @@ public class HotelLogistics {
     }
 
     //3.4. & 4.5.
-    public boolean logOut() {   //This method returns true if user choose to log out, and false if not.
+    private boolean logOut() {   //This method returns true if user choose to log out, and false if not.
         String menuChoice;
         boolean logout = false;
         System.out.println("Log out? y/n");
@@ -73,7 +73,7 @@ public class HotelLogistics {
     }
 
     //3.
-    public void adminMainMenu(Account loggedInAccount) {
+    private void adminMainMenu(Account loggedInAccount) {
         String menuChoice;
         boolean logout = false;
         boolean validateInput;
@@ -161,11 +161,12 @@ public class HotelLogistics {
                 }
             }
             while (!validateInput);
+
         } while (!logout);
     }
 
     //3.1.
-    public void adminCustomers(Account loggedInAccount) {  //UNDER CONSTRUCTION
+    private void adminCustomers(Account loggedInAccount) {  //UNDER CONSTRUCTION
         ArrayList<AccountCustomer> methodList = new ArrayList<>();
         String menuChoice;
         boolean validateInput;
@@ -236,6 +237,7 @@ public class HotelLogistics {
     //3.1.1.
     public void addCustomer() {
 
+        String menu;
         String firstName;
         String lastName;
         String name;
@@ -247,10 +249,30 @@ public class HotelLogistics {
         boolean checkAll = false;
         boolean checkSwitch;
 
-        System.out.printf("%s%n%n%s%n%n%s%n",
+        System.out.printf("%n%s%n%n%s%n%s%n%s%n",
                 "====NEW GUEST====",
-                "Welcome to Hotel Gittan. You will be assigned a unique user ID.",
-                "Please fill in the following information below. ");
+                "Welcome to Hotel Gittan. Register your account here.",
+                "1. Proceed",
+                "0. Go back");
+
+        do {
+            menu = input.nextLine();
+            menu = menu.toUpperCase();
+
+            switch (menu) {
+                case "1":
+                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.\"");
+                    checkSwitch = true;
+                    break;
+                case "O":
+                case "0":
+                    System.out.println();
+                    return;
+                default:
+                    System.out.println("Please enter a valid option of 1 or 0.");
+                    checkSwitch = false;
+            }
+        } while (!checkSwitch);
 
         do {
 
@@ -350,7 +372,7 @@ public class HotelLogistics {
 
 
     //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
-    public void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
+    private void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
         boolean backSelected = false;
 
         do {
@@ -373,7 +395,7 @@ public class HotelLogistics {
                     viewBookings(customer);
                     break;
                 case "3":
-                    adminEditCustomer(customer);
+                    editCustomerInfo(customer);
                     break;
 
                 case "0":
@@ -388,36 +410,8 @@ public class HotelLogistics {
         } while (!backSelected);
     }
 
-    private void adminEditCustomer(AccountCustomer customer) {
-        boolean backSelected = false;
-        do {
-            System.out.println("====[ADMIN] EDIT CUSTOMER INFO====");
-            System.out.println("1. Change cust. name");
-            System.out.println("2. Change cust. phone number");
-            System.out.println("3. Change cust. password");
-            System.out.println("0. Back");
-            String choice = input.nextLine();
-
-            switch (choice) {
-                case "1":
-                    editAccountName(customer);
-                    break;
-                case "2":
-                    editAccountPhoneNr(customer);
-                    break;
-                case "3":
-                    editAccountPassword(customer);
-                    break;
-                case "0":
-                    backSelected = true;
-                    break;
-
-            }
-        } while (!backSelected);
-    }
-
     //3.1.3.
-    public void adminCancelledAccounts(Account loggedInAccount) {  //UNDER CONSTRUCTION
+    private void adminCancelledAccounts(Account loggedInAccount) {  //UNDER CONSTRUCTION
         ArrayList<Account> cancelledAccounts = new ArrayList<>();
         System.out.println("3.1.3. CANCELLED ACCOUNTS");
         int countElements = 0;
@@ -436,7 +430,7 @@ public class HotelLogistics {
     }
 
     // 3.5
-    public void adminCheckIn() {
+    private void adminCheckIn() {
         System.out.println("CHECK IN");
         ArrayList<BookingConfirm> checkInList = new ArrayList<>();
         String menuChoice;
@@ -501,7 +495,7 @@ public class HotelLogistics {
                     }
                     if (countBookingID > 1) {
                         countElements = 0;
-                        System.out.println("There are more than one room reservation linked to this booking:");
+                        System.out.println("There are more than one room reservations linked to this booking:");
                         for (Room room : roomList) {
                             for (BookingConfirm booking : room.getRoomBookingList()) {
                                 if (booking.getBookingID() == bookingID && !booking.isCheckedIn()) {
@@ -561,7 +555,7 @@ public class HotelLogistics {
     }
 
     //  3.6
-    public void adminCheckOut() {
+    private void adminCheckOut() {
         System.out.println("CHECK OUT");
         ArrayList<BookingConfirm> checkOutList = new ArrayList<>();
         String menuChoice;
@@ -707,18 +701,18 @@ public class HotelLogistics {
         } while (!proceed);
     }
 
-    private void editCustomerInfo(AccountCustomer loggedInAccount) {
+    private void editCustomerInfo(AccountCustomer concernedAccount) {
         boolean validateInput = false;
         String choice;
 
         do {
-            if (loggedInAccount.isCancelledAccount()) {
+            if (concernedAccount.isCancelledAccount()) {
                 validateInput = true;
             } else {
                 System.out.println("4.3\n====EDIT USER INFORMATION====");
-                System.out.println("Name:        " + loggedInAccount.getName());
-                System.out.println("Phonenumber: " + loggedInAccount.getPhoneNumber());
-                System.out.println("Password:    " + loggedInAccount.getPassword());
+                System.out.println("Name:        " + concernedAccount.getName());
+                System.out.println("Phonenumber: " + concernedAccount.getPhoneNumber());
+                System.out.println("Password:    " + concernedAccount.getPassword());
                 System.out.println("=============================");
                 System.out.println("1. Name");
                 System.out.println("2. Phonenumber");
@@ -731,16 +725,16 @@ public class HotelLogistics {
                     choice = input.nextLine();
                     switch (choice) {
                         case "1":
-                            editAccountName(loggedInAccount);
+                            editAccountName(concernedAccount);
                             break;
                         case "2":
-                            editAccountPhoneNr(loggedInAccount);
+                            editAccountPhoneNr(concernedAccount);
                             break;
                         case "3":
-                            editAccountPassword(loggedInAccount);
+                            editAccountPassword(concernedAccount);
                             break;
                         case "4":
-                            removeAccount(loggedInAccount);
+                            removeAccount(concernedAccount);
                             break;
                         case "0":
                             validateInput = true;
@@ -1023,18 +1017,81 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-    private void removeBooking(Account loggedInAccount) {
-        if (loggedInAccount.isCancelledAccount()) {
+    private void addRoom() {
+        String choice;
+        int val = 0;
+        int beds = 0;
+        String answer;
+        int standard = 0;
+        boolean validateInput;
+        do {
+            System.out.println("====ADD ROOM======");
+            System.out.println("1. Create new room");
+            System.out.println("0. Back");
+            System.out.println("==================");
+            choice = input.nextLine();
+
+            switch (choice) {
+                case "1":
+                    System.out.println("Enter number of beds (1,2 or 4): ");
+                    do {
+                        answer = input.nextLine();
+                        try {
+                            beds = Integer.parseInt(answer);
+                            validateInput = true;
+                        } catch (NumberFormatException e) {
+                            validateInput = false;
+                        }
+
+                        if (beds == 1 || beds == 2 || beds == 4) {
+                            validateInput = true;
+                        } else {
+                            validateInput = false;
+                            System.out.println("Invalid input. Amount of beds must be entered accordingly: 1, 2 or 4. \nTry again:");
+                        }
+                    } while (!validateInput);
+
+                    System.out.println("Enter room standard (1-5): ");
+                    do {
+                        answer = input.nextLine();
+                        try{
+                            standard = Integer.parseInt(answer);
+                            validateInput = true;
+                        } catch (NumberFormatException e) {
+                            validateInput = false;
+                        }
+                        if (standard == 1 || standard == 2 || standard == 3 || standard == 4 || standard == 5){
+                            validateInput = true;
+                            Room newRoom = new Room(beds, standard);
+                            roomList.add(newRoom);
+                            System.out.println("New room has been created!\nBack (Enter)");
+                            input.nextLine();
+                        } else {
+                            validateInput = false;
+                            System.out.println("Invalid input. Standard must be entered accordingly: 1-5.\nTry again:");
+                        }
+
+                    } while (!validateInput);
 
 
-        } else {
 
-        }
+                    break;
+
+                case "0":
+                    System.out.println("Returning to the previous menu!");
+                    break;
+
+                default:
+                    System.out.println("Faulty input recognized. Try again!\nPress (Enter)");
+                    input.nextLine();
+                    break;
+            }
+        } while (!choice.equalsIgnoreCase("1") && !choice.equalsIgnoreCase("0"));
     }
 
     //3.2. (listRooms)
 
-    public void adminRooms(Account loggedInAccount) {
+    private void adminRooms(Account loggedInAccount) {
         String menuChoice;
         boolean validateInput;
         int roomSelect;  // selects room
@@ -1063,7 +1120,7 @@ public class HotelLogistics {
 
                 switch (menuChoice) {
                     case "A":
-                        System.out.println("This method does not exist yet. Press 0 to go back.");
+                        addRoom();
                         validateInput = true;
                         break;
 
@@ -1101,7 +1158,7 @@ public class HotelLogistics {
 
     //3.2.4 (edit price)
 
-    public void adminEditPrices() {
+    private void adminEditPrices() {
         String menuChoice;
         String answer;
         int intAnwser = 0;
@@ -1286,7 +1343,7 @@ public class HotelLogistics {
     }
 
     //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
-    public void customerMainMenu(AccountCustomer loggedInAccount) {
+    private void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
         boolean logout = false;
         do {
@@ -1533,7 +1590,7 @@ public class HotelLogistics {
     }
 
     //4.1.
-    public void makeBooking(AccountCustomer concernedAccount) {
+    private void makeBooking(AccountCustomer concernedAccount) {
         System.out.println("4.1.\nMAKE BOOKING, OR VIEW AVAILABLE");
 
         ArrayList<BookingSearch> matchingResults = new ArrayList<>();
@@ -1768,7 +1825,7 @@ public class HotelLogistics {
     }
 
     //Part of 4.1.
-    public boolean checkDates(Room room, LocalDate fromDate, LocalDate toDate) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
+    private boolean checkDates(Room room, LocalDate fromDate, LocalDate toDate) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
         boolean match = false;
         if (room.getRoomBookingList().isEmpty()) {                                                  //Om bokningslistan för rummet är tom.
             match = true;
@@ -1815,7 +1872,7 @@ public class HotelLogistics {
     }
 
     //Part of 4.1.
-    public void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingId) {  //Can be used to book, or sort bookings in cronological time order.
+    private void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingId) {  //Can be used to book, or sort bookings in cronological time order.
         if (room.getRoomBookingList().isEmpty()) {                                                  //If booking list for room is empty.
             room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));
             //System.out.println("Booking successful. Code 1");
@@ -1880,7 +1937,7 @@ public class HotelLogistics {
         }
     }
 
-    public double calculateSingleBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {  //Used to determine the price of a specific room item booking.
+    private double calculateSingleBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {  //Used to determine the price of a specific room item booking.
         double price;
         double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);
@@ -1895,7 +1952,7 @@ public class HotelLogistics {
         return price;
     }
 
-    public double calculateSumBookingPrice(ArrayList<BookingSearch> bookingList) {  //Used to calculate the sum of an entire booking.
+    private double calculateSumBookingPrice(ArrayList<BookingSearch> bookingList) {  //Used to calculate the sum of an entire booking.
         double sum = 0;
         for (Booking booking : bookingList) {
             sum += booking.getPrice();
@@ -1918,7 +1975,7 @@ public class HotelLogistics {
 
 
     //4.2.  &&  3.3.)
-    public void viewBookings(Account loggedIn) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
+    private void viewBookings(Account loggedIn) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
         do {
             if (loggedIn instanceof AccountAdmin) {
                 System.out.println("4.2. ALL BOOKINGS");
@@ -1982,30 +2039,33 @@ public class HotelLogistics {
     }
 
     //4.2.1.
-    public void viewBooking(Booking booking) {
-
+    private void viewBooking(BookingConfirm booking) {
         String cancel;
         boolean validate = false;
-
 
         System.out.println("4.2.1. BOOKING");
         System.out.println(booking);
 
         do {
             System.out.printf("%n%s%n%s%n%s%n",
-                    "Would you like to cancel this booking?",
-                    "Y. Yes, remove booking.",
-                    "N. No, don't remove booking. Go back to bookings.");
+                    "Enter cancel menu for this booking?",
+                    "Y. Yes, enter cancel menu.",
+                    "N. No, don't cancel booking.");
 
             cancel = input.nextLine();
             cancel = cancel.toUpperCase();
 
             switch (cancel) {
                 case "Y":
-                    System.out.println("This will lead to removeBooking");
-                    //removeBooking();
-                    validate = true;
-                    break;
+                    if (booking.isCheckedIn() && !booking.isCheckedOut()) {
+                        System.out.println("This booking is checked in. Please check out before cancelling booking. \nBack(Enter)");
+                        input.nextLine();
+                        return;
+                    } else {
+                        cancelBooking(booking);
+                        validate = true;
+                        break;
+                    }
                 case "N":
                     System.out.println("Booking still valid.");
                     validate = true;
@@ -2021,23 +2081,19 @@ public class HotelLogistics {
     }
 
     //4.2.1.1.
-    public void removeBooking(BookingConfirm thisBooking) {
-
-        ArrayList<BookingConfirm> sameBookingId = new ArrayList<>();
-        int countElements;
-        boolean validate = false;
+    private void cancelBooking(BookingConfirm thisBooking) {
+        int countElements = 0;
+        int bookingID = thisBooking.getBookingID();
+        int uniqueID = thisBooking.getUniqueID();
+        boolean validate;
         String confirm;
-
-        System.out.printf("%s%s%n%s%n%s%n",
-                "Are you sure you would like to remove the booking ", thisBooking,
-                "Y. Yes, I'm sure.",
-                "N. No, go back.");
+        String menu;
 
         do {
-            System.out.printf("%n%s%n%s%n%s%n",
-                    "Would you like to cancel this booking?",
-                    "Y. Yes, remove booking.",
-                    "N. No, don't remove booking. Go back to bookings.");
+            System.out.printf("%n%s%s%s%n%s%n%s%n",
+                    "Would you like to cancel booking ", thisBooking, "?",
+                    "Y. Yes, cancel this booking.",
+                    "N. No, don't cancel booking. Go back to bookings.");
 
             confirm = input.nextLine();
             confirm = confirm.toUpperCase();
@@ -2045,8 +2101,68 @@ public class HotelLogistics {
             switch (confirm) {
                 case "Y":
                     for (Room room : roomList) {
-                        for (BookingConfirm booking : room.getRoomBookingList()) ;
+                        for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+
+                            if (thisBooking.getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {
+                                countElements++;
+                            }
+                        }
                     }
+                    if (countElements > 1) {
+                        countElements = 0;
+                        System.out.println("\nThere are more than one room reservations linked to this booking ");
+                        for (Room room : roomList) {
+                            for (BookingConfirm booking : room.getRoomBookingList()) {
+                                if (booking.getBookingID() == bookingID) {
+                                    System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), booking);
+                                }
+                            }
+                        }
+                        System.out.print("\nA. Cancel all\n");
+                    }
+
+                    System.out.printf("%s%s%s%s%n%s%n",
+                            "C. Cancel chosen booking for Room nr: ", thisBooking.getRoom().getRoomNumber(),
+                            " Standard: ", thisBooking.getRoom().getStandard(),
+                            "0. Don't cancel booking. Go back to previous menu.");
+
+                    do {
+                        menu = input.nextLine();
+                        if (countElements > 1 && menu.equalsIgnoreCase("A")) {
+                            for (Room room : roomList) {
+                                for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+                                    if (room.getRoomBookingList().get(i).getBookingID() == bookingID) {
+                                        room.getRoomBookingList().remove(i);
+                                        i -= i;
+                                    }
+                                }
+                            }
+                            System.out.printf("%s%d%s%d%n", "Succesfully cancelled all ", countElements, " bookings of booking ID: ", bookingID);
+                            validate = true;
+                            //proceed = true;
+                            input.nextLine();
+                        } else if (menu.equalsIgnoreCase("C")) {
+                            for (Room room : roomList) {
+                                for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+                                    if (room.getRoomBookingList().get(i).getUniqueID() == uniqueID) {
+                                        room.getRoomBookingList().remove(i);
+                                        break;
+                                    }
+                                }
+                            }
+                            System.out.printf("%s%s%n", "Successfully cancelled booking: ", thisBooking);
+                            validate = true;
+                            input.nextLine();
+
+                        } else if (menu.equals("0") || menu.equalsIgnoreCase("O")) {
+                            validate = true;
+                            return;
+                        } else {
+                            System.out.println("Invalid input. Try again:");
+                            validate = false;
+                        }
+                    } while (!validate);
+
                     validate = true;
                     break;
                 case "N":
@@ -2055,23 +2171,20 @@ public class HotelLogistics {
                     break;
                 default:
                     System.out.println("Please enter an option of Y or N. ");
+                    validate = false;
                     break;
             }
         } while (!validate);
 
-
-        //for (Room room : roomList) {}
-
     }
 
     // 3.2.3.
-    public void
-    adminEditRoomInfo(Room room) {
+    private void adminEditRoomInfo(Room room) {
         System.out.println("3.2.3 EDIT ROOM: " + room);
 
         String answer;
         int intAnwser;
-        boolean validate = false;
+        boolean validate;
 
         do {
             System.out.printf("%s%n%s%n%s%n%s%n%s%n%s%n",
@@ -2228,7 +2341,7 @@ public class HotelLogistics {
         } while (true);
     }
 
-    public void viewBookingsForRoom(Room room) {
+    private void viewBookingsForRoom(Room room) {
         System.out.println("3.2.3.3. BOOKINGS FOR ROOM NUMBER " + room.getRoomNumber());
 
         do {
@@ -2449,7 +2562,6 @@ public class HotelLogistics {
             bookingDates(roomList.get(9), fromDate10, toDate10, customerList.get(0), price10, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
-//master
         }
 
         LocalDate fromDate11 = LocalDate.of(2019, 2, 16);
