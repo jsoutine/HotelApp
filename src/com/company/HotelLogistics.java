@@ -160,11 +160,7 @@ public class HotelLogistics {
                         break;
                 }
             }
-<<<<<<< HEAD
-            while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("4") && !menuChoice.equals("5") && !menuChoice.equals("0"));
-=======
             while (!validateInput);
->>>>>>> master
         } while (!logout);
     }
 
