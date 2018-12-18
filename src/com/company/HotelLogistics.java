@@ -383,48 +383,33 @@ public class HotelLogistics {
             System.out.println("3. Edit customer information");
             System.out.println("0. Back");
             String choice = input.nextLine();
-<<<<<<< HEAD
-            do {
-                switch (choice) {
-                    case "1":
-                        System.out.println("[ADMIN]");
-                        makeBooking(customer);
-                        break;
-=======
-            //do {
-            switch (choice) {
-                case "1":
-                    System.out.println("[ADMIN]");
-                    makeBooking(customer);
-                    break;
->>>>>>> master
 
-                case "2":
-                    viewBookings(customer);
-                    break;
-                case "3":
-                    adminEditCustomer(customer);
-                    break;
+                    //do {
+                    switch (choice) {
+                        case "1":
+                            System.out.println("[ADMIN]");
+                            makeBooking(customer);
+                            break;
 
-                case "0":
-                    backSelected = true;
-                    break;
+                        case "2":
+                            viewBookings(customer);
+                            break;
+                        case "3":
+                            adminEditCustomer(customer);
+                            break;
 
-<<<<<<< HEAD
-                    default:
-                        System.out.println("Faulty input. Enter 0-3.\nPress (Enter)");
-                        input.nextLine();
-                }
-            } while (!choice.matches("1") && !choice.matches("2") && !choice.matches("3") && !choice.matches("0"));
-=======
-                default:
-                    System.out.println("Faulty input. Enter 0-3.\nPress (Enter)");
-                    input.nextLine();
+                        case "0":
+                            backSelected = true;
+                            break;
+
+                        default:
+                            System.out.println("Faulty input. Enter 0-3.\nPress (Enter)");
+                            input.nextLine();
+                    }
+                    //}while (!choice.matches("1") && !choice.matches("2") && !choice.matches("3") && !choice.matches("0"));
+
+                }while (!backSelected);
             }
-            //}while (!choice.matches("1") && !choice.matches("2") && !choice.matches("3") && !choice.matches("0"));
->>>>>>> master
-        } while (!backSelected);
-    }
 
     private void adminEditCustomer(AccountCustomer customer) {
         boolean backSelected = false;
@@ -1076,7 +1061,7 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-<<<<<<< HEAD
+
     private void addRoom() {
         String choice;
         int val = 0;
@@ -1099,7 +1084,6 @@ public class HotelLogistics {
                             beds = Integer.parseInt(answer);
                             validateInput = true;
                         } catch (NumberFormatException e) {
-                            //System.out.println("Invalid input. Must be numeric. Try again:");
                             validateInput = false;
                         }
 
@@ -1146,8 +1130,6 @@ public class HotelLogistics {
         } while (!choice.equalsIgnoreCase("1") && !choice.equalsIgnoreCase("0"));
     }
 
-=======
->>>>>>> master
     //3.2. (listRooms)
 
     public void adminRooms(Account loggedInAccount) {
