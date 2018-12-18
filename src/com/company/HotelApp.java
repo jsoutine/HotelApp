@@ -25,7 +25,6 @@ public class HotelApp {
         boolean validMenu;
 
         System.out.println("\n====WELCOME=====");
-
         do {
             System.out.printf("%s%n%s%n%s%n%s%n",
                     "1. Log in",
@@ -39,14 +38,11 @@ public class HotelApp {
                 case "1":
                     System.out.print("Please enter your user ID: ");
                     answerID = myApp.input.nextLine();
-
                     System.out.print("Please enter your password: ");
                     password = myApp.input.nextLine();
                     logistics.logIn(answerID, password);
-
                     validMenu = false;
                     break;
-
                 case "2":
                     logistics.addCustomer();
                     validMenu = false;
