@@ -9,6 +9,8 @@ public class BookingConfirm extends Booking {
     private boolean sameBookingID;
     private int uniqueID;  //The unique room bookingID, not dependent on bookingID
     private int uniqueIDcounter;
+    private boolean checkedIn;
+    private boolean checkedOut;
 
     public BookingConfirm (Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingID) {
         super(room, fromDate, toDate, price);
@@ -19,6 +21,8 @@ public class BookingConfirm extends Booking {
             bookingID = bookingIdCount;
         }
         uniqueID = ++uniqueIDcounter;
+        checkedIn = false;
+        checkedOut = false;
     }
 
     public int getBookingID() {
@@ -31,6 +35,22 @@ public class BookingConfirm extends Booking {
 
     public AccountCustomer getCustomer() {
         return customer;
+    }
+
+    public boolean isCheckedIn() {
+        return checkedIn;
+    }
+
+    public void setCheckedIn(boolean checkedIn) {
+        this.checkedIn = checkedIn;
+    }
+
+    public boolean isCheckedOut() {
+        return checkedOut;
+    }
+
+    public void setCheckedOut(boolean checkedOut) {
+        this.checkedOut = checkedOut;
     }
 
     @Override
