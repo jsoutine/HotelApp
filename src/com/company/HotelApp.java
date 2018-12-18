@@ -86,8 +86,6 @@ public class HotelApp {
                     validMenu = false;
                     break;
             }
-
         } while (!validMenu);
-
     }
 }
