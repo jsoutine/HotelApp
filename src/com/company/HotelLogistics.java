@@ -874,15 +874,6 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-    private void removeBooking(Account loggedInAccount) {
-        if (loggedInAccount.isCancelledAccount()) {
-
-
-        } else {
-
-        }
-    }
-
     //3.2. (listRooms)
 
     public void adminRooms(Account loggedInAccount) {
@@ -1675,7 +1666,7 @@ public class HotelLogistics {
     }
 
     //4.2.1.
-    public void viewBooking(Booking booking) {
+    public void viewBooking(BookingConfirm booking) {
 
         String cancel;
         boolean validate = false;
@@ -1688,15 +1679,14 @@ public class HotelLogistics {
             System.out.printf("%n%s%n%s%n%s%n",
                     "Would you like to cancel this booking?",
                     "Y. Yes, remove booking.",
-                    "N. No, don't remove booking. Go back to bookings.");
+                    "N. No, don't remove booking.");
 
             cancel = input.nextLine();
             cancel = cancel.toUpperCase();
 
             switch (cancel) {
                 case "Y":
-                    System.out.println("This will lead to removeBooking");
-                    //removeBooking();
+                    removeBooking(booking);
                     validate = true;
                     break;
                 case "N":
@@ -1721,15 +1711,10 @@ public class HotelLogistics {
         boolean validate = false;
         String confirm;
 
-        System.out.printf("%s%s%n%s%n%s%n",
-                "Are you sure you would like to remove the booking ", thisBooking,
-                "Y. Yes, I'm sure.",
-                "N. No, go back.");
-
         do {
-            System.out.printf("%n%s%n%s%n%s%n",
-                    "Would you like to cancel this booking?",
-                    "Y. Yes, remove booking.",
+            System.out.printf("%n%s%s%n%s%n%s%n",
+                    "Confirm remove booking ", thisBooking,
+                    "Y. Yes, confirm remove booking.",
                     "N. No, don't remove booking. Go back to bookings.");
 
             confirm = input.nextLine();
