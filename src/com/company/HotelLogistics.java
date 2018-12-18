@@ -499,7 +499,7 @@ public class HotelLogistics {
                     }
                     if (countBookingID > 1) {
                         countElements = 0;
-                        System.out.println("There are more than one room reservation linked to this booking:");
+                        System.out.println("There are more than one room reservations linked to this booking:");
                         for (Room room : roomList) {
                             for (BookingConfirm booking : room.getRoomBookingList()) {
                                 if (booking.getBookingID() == bookingID && !booking.isCheckedIn()) {
