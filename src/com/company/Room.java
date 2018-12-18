@@ -49,7 +49,7 @@ public class Room {
         }else{
             throw new IllegalArgumentException(
                     "Number of beds in a room can only be 1, 2 or 4.");
-        };
+        }
     }
 
     public void setStandard (int standard) {
