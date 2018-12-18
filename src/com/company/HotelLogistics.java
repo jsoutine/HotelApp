@@ -1268,7 +1268,9 @@ public class HotelLogistics {
                     case "o":
                         System.out.println("Back (Enter) ");
                         exitMethod = true;
+                        validMenuChoice = true;
                         input.nextLine();
+                        break;
                     default:
                         System.out.println("Invalid input. Please type a choice 0-2: ");
                         validMenuChoice = false;
@@ -2062,7 +2064,8 @@ public class HotelLogistics {
     }
 
     // 3.2.3.
-    public void adminEditRoomInfo(Room room) {
+    public void
+    adminEditRoomInfo(Room room) {
         System.out.println("3.2.3 EDIT ROOM: " + room);
 
         String answer;
