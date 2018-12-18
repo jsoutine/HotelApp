@@ -160,11 +160,8 @@ public class HotelLogistics {
                         break;
                 }
             }
-<<<<<<< HEAD
-            while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("4") && !menuChoice.equals("5") && !menuChoice.equals("0"));
-=======
             while (!validateInput);
->>>>>>> master
+
         } while (!logout);
     }
 
@@ -1048,6 +1045,78 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
+    private void addRoom() {
+        String choice;
+        int val = 0;
+        int beds = 0;
+        String answer;
+        int standard = 0;
+        boolean validateInput;
+        do {
+            System.out.println("====ADD ROOM======");
+            System.out.println("1. Create new room");
+            System.out.println("0. Back");
+            System.out.println("==================");
+            choice = input.nextLine();
+
+            switch (choice) {
+                case "1":
+                    System.out.println("Enter number of beds (1,2 or 4): ");
+                    do {
+                        answer = input.nextLine();
+                        try {
+                            beds = Integer.parseInt(answer);
+                            validateInput = true;
+                        } catch (NumberFormatException e) {
+                            validateInput = false;
+                        }
+
+                        if (beds == 1 || beds == 2 || beds == 4) {
+                            validateInput = true;
+                        } else {
+                            validateInput = false;
+                            System.out.println("Invalid input. Amount of beds must be entered accordingly: 1, 2 or 4. \nTry again:");
+                        }
+                    } while (!validateInput);
+
+                    System.out.println("Enter room standard (1-5): ");
+                    do {
+                        answer = input.nextLine();
+                        try{
+                            standard = Integer.parseInt(answer);
+                            validateInput = true;
+                        } catch (NumberFormatException e) {
+                            validateInput = false;
+                        }
+                        if (standard == 1 || standard == 2 || standard == 3 || standard == 4 || standard == 5){
+                            validateInput = true;
+                            Room newRoom = new Room(beds, standard);
+                            roomList.add(newRoom);
+                            System.out.println("New room has been created!\nBack (Enter)");
+                            input.nextLine();
+                        } else {
+                            validateInput = false;
+                            System.out.println("Invalid input. Standard must be entered accordingly: 1-5.\nTry again:");
+                        }
+
+                    } while (!validateInput);
+
+
+
+                    break;
+
+                case "0":
+                    System.out.println("Returning to the previous menu!");
+                    break;
+
+                default:
+                    System.out.println("Faulty input recognized. Try again!\nPress (Enter)");
+                    input.nextLine();
+                    break;
+            }
+        } while (!choice.equalsIgnoreCase("1") && !choice.equalsIgnoreCase("0"));
+    }
+
     //3.2. (listRooms)
 
     public void adminRooms(Account loggedInAccount) {
@@ -1079,7 +1148,7 @@ public class HotelLogistics {
 
                 switch (menuChoice) {
                     case "A":
-                        System.out.println("This method does not exist yet. Press 0 to go back.");
+                        addRoom();
                         validateInput = true;
                         break;
 
@@ -2524,7 +2593,6 @@ public class HotelLogistics {
             bookingDates(roomList.get(9), fromDate10, toDate10, customerList.get(0), price10, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
-//master
         }
 
         LocalDate fromDate11 = LocalDate.of(2019, 2, 16);
