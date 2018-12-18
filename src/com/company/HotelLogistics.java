@@ -1,11 +1,11 @@
 package com.company;
 
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class HotelLogistics {
@@ -353,7 +353,8 @@ public class HotelLogistics {
     public void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
         boolean backSelected = false;
 
-        do {System.out.println("====[ADMIN] CUSTOMER INFO====");
+        do {
+            System.out.println("====[ADMIN] CUSTOMER INFO====");
             System.out.println("Customer selected: " + customer.getName() +
                     " (ID: " + customer.getAccountID() + ")");
             System.out.println("1. Make booking for " + customer.getName());
@@ -361,7 +362,7 @@ public class HotelLogistics {
             System.out.println("3. Edit customer information");
             System.out.println("0. Back");
             String choice = input.nextLine();
-            //do {
+            do {
                 switch (choice) {
                     case "1":
                         System.out.println("[ADMIN]");
@@ -383,8 +384,8 @@ public class HotelLogistics {
                         System.out.println("Faulty input. Enter 0-3.\nPress (Enter)");
                         input.nextLine();
                 }
-            //}while (!choice.matches("1") && !choice.matches("2") && !choice.matches("3") && !choice.matches("0"));
-        }while (!backSelected);
+            } while (!choice.matches("1") && !choice.matches("2") && !choice.matches("3") && !choice.matches("0"));
+        } while (!backSelected);
     }
 
     private void adminEditCustomer(AccountCustomer customer) {
@@ -412,7 +413,7 @@ public class HotelLogistics {
                     break;
 
             }
-        }while (!backSelected);
+        } while (!backSelected);
     }
 
     //3.1.3.
@@ -640,7 +641,7 @@ public class HotelLogistics {
                                 } else {
 
                                     if (yesOrNo.equalsIgnoreCase("Y")) {
-                                        System.out.println("Very well, then lets return to the main menu \nBack (Enter)");
+                                        System.out.println("Very well, then lets return to the previous menu!\nBack (Enter)");
                                         loggedInAccount.setName(choice);
                                         validateinput = true;
                                         validateYorN = true;
@@ -698,12 +699,10 @@ public class HotelLogistics {
 
             switch (choice) {
                 case "1":
-                    //String regexStr = "^[0-9]{10}$";
+                    String regexStr = "^[0-9]{10}$";
                     System.out.println("Required format: Start with 0, then enter a 9-digit number sequence.");
 
-                    //do {
-
-<<<<<<< HEAD
+                    do {
                         do {
                             System.out.println("Enter new phonenumber: ");
                             newNr = input.nextLine();
@@ -716,21 +715,15 @@ public class HotelLogistics {
                                 System.out.println(e.getMessage() + "Try again:");
                                 validateInput = false;
                             }
-                        }while(!validateInput);
+                        } while (!validateInput);
                         System.out.println("Back (Enter)");
                         input.nextLine();
                         validateExitChangePW = false;
 
-                       // if (newNr.equals("0")){
-                         //   editAccountPassword(loggedInAccount);
-
-                      /*  }else{
-=======
                         if (newNr.equals("0")) {
                             editAccountPassword(loggedInAccount);
 
                         } else {
->>>>>>> master
 
                             if (newNr.matches(regexStr)) {
                                 System.out.println("New phonenumber: " + newNr);
@@ -742,7 +735,7 @@ public class HotelLogistics {
 
                                     if (yesOrNo.equalsIgnoreCase("Y")) {
                                         loggedInAccount.setPhoneNumber(newNr);
-                                        System.out.println("Very well, then lets return to the previous menu! \n(Enter)");
+                                        System.out.println("Very well, then lets return to the previous menu!\n(Enter)");
                                         validateInput = true;
                                         yOrN = true;
                                         validateExitChangePW = true;
@@ -757,6 +750,7 @@ public class HotelLogistics {
                                         validateExitChangePW = false;
                                         yOrN = true;
                                         validateInput = true;
+
                                     } else {
                                         System.out.println("Neither y nor n have been entered. Try again!");
                                         validateInput = false;
@@ -769,7 +763,7 @@ public class HotelLogistics {
                                 validateExitChangePW = false;
                             }
                         }
-                    } while (!validateInput);*/
+                    } while (!validateInput);
                     break;
 
                 case "0":
@@ -812,7 +806,7 @@ public class HotelLogistics {
                             String yesOrNo = input.nextLine();
 
                             if (yesOrNo.equalsIgnoreCase("Y")) {
-                                System.out.println("Very well, then lets return to the previous menu \nPress (Enter)");
+                                System.out.println("Very well, then lets return to the previous menu!\nPress (Enter)");
                                 loggedInAccount.setPassword(newPwd);
                                 validateInput = true;
                                 validateChangePW = true;
@@ -868,6 +862,7 @@ public class HotelLogistics {
                 do {
                     System.out.println("Enter your password to verify deletion of account: ");
                     String pwCheck = input.nextLine();
+
                     if (pwCheck.matches(loggedInAccount.getPassword())) {
                         loggedInAccount.setCancelledAccount(true);
                         validateInput = true;
@@ -895,18 +890,73 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-<<<<<<< HEAD
-    private void addRoom (){
-        
-=======
-    private void removeBooking(Account loggedInAccount) {
-        if (loggedInAccount.isCancelledAccount()) {
+    private void addRoom() {
+        String choice;
+        int val = 0;
+        int beds = 0;
+        String answer;
+        int standard = 0;
+        boolean validateInput;
+        do {
+            System.out.println("====ADD ROOM====");
+            System.out.println("1. Create new room");
+            System.out.println("0. Back");
+            choice = input.nextLine();
 
+            switch (choice) {
+                case "1":
+                    System.out.println("Enter number of beds (1,2 or 4): ");
+                    do {
+                        answer = input.nextLine();
+                        try {
+                            beds = Integer.parseInt(answer);
+                            validateInput = true;
+                        } catch (NumberFormatException e) {
+                            //System.out.println("Invalid input. Must be numeric. Try again:");
+                            validateInput = false;
+                        }
 
-        } else {
+                        if (beds == 1 || beds == 2 || beds == 4) {
+                            validateInput = true;
+                        } else {
+                            validateInput = false;
+                            System.out.println("Invalid input. Amount of beds must be numeric (1, 2 or 4). \nTry again:");
+                        }
+                    } while (!validateInput);
 
-        }
->>>>>>> master
+                    System.out.println("Enter room standard (1-5): ");
+                    do {
+                        answer = input.nextLine();
+                        try{
+                            standard = Integer.parseInt(answer);
+                            //validateInput = true;
+                        } catch (NumberFormatException e) {
+                            //validateInput = false;
+                        }
+                        if (standard == 1 || standard == 2 || standard == 3 || standard == 4 || standard == 5){
+                            validateInput = true;
+                        } else {
+                            validateInput = false;
+                            System.out.println("Invalid input. Standard must be entered numericaly (1-5).\nTry again:");
+                        }
+
+                    } while (!validateInput);
+
+                    Room newRoom = new Room(beds, standard);
+                    roomList.add(newRoom);
+                    System.out.println(roomList);
+                    break;
+
+                case "0":
+                    System.out.println("Returning to the previous menu!");
+                    break;
+
+                default:
+                    System.out.println("Faulty input recognized. Try again!\nPress (Enter)");
+                    input.nextLine();
+                    break;
+            }
+        } while (!choice.equalsIgnoreCase("1") && !choice.equalsIgnoreCase("0"));
     }
 
     //3.2. (listRooms)
@@ -940,7 +990,8 @@ public class HotelLogistics {
 
                 switch (menuChoice) {
                     case "A":
-                        System.out.println("This method does not exist yet. Press 0 to go back.");
+                        //System.out.println("This method does not exist yet. Press 0 to go back.");
+                        addRoom();
                         validateInput = true;
                         break;
 
@@ -1390,24 +1441,24 @@ public class HotelLogistics {
                                             "This room is alredy added to your booking. Remove from your list?",
                                             "Y. Yes, remove this room from the list.",
                                             "N. No, don't remove this from the list.");
-                                    do{
+                                    do {
                                         answer = input.nextLine();
                                         if (answer.equalsIgnoreCase("Y")) {
                                             validateInput = true;
-                                            matchingResults.get(bookingChoice -1).setAdded(false);
-                                            for (int i = 0 ; i < addedBookings.size() ; i++) {
-                                                if (matchingResults.get(bookingChoice -1).getRoom() == addedBookings.get(i).getRoom()) {
+                                            matchingResults.get(bookingChoice - 1).setAdded(false);
+                                            for (int i = 0; i < addedBookings.size(); i++) {
+                                                if (matchingResults.get(bookingChoice - 1).getRoom() == addedBookings.get(i).getRoom()) {
                                                     addedBookings.remove(i);
                                                     break;
                                                 }
                                             }
-                                        } else if ( answer.equalsIgnoreCase("N")) {
+                                        } else if (answer.equalsIgnoreCase("N")) {
                                             validateInput = true;
                                         } else {
                                             validateInput = false;
                                             System.out.println("Invalid input. Try again:");
                                         }
-                                    }while(!validateInput);
+                                    } while (!validateInput);
                                     proceed = false;
                                 } else {
                                     System.out.printf("%s%n%s%n%s%n%s%n%s%n%s%n",
