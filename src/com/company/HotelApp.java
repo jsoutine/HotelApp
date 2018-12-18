@@ -51,10 +51,8 @@ public class HotelApp {
                     break;
 
                 case "2":
-                    //myApp.input.nextLine();
-                    System.out.printf("%s%n%s", "Welcome new guest. You will be assigned a unique user ID.", "Enter your desired password: ");
                     myApp.input.nextLine();
-                    System.out.println("SYNTAX ERROR. YOU HAVE OVERLOADED THE MAINFRAME.\n");
+                    logistics.addCustomer();
                     validMenu = false;
                     break;
 
