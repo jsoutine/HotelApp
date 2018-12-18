@@ -1108,10 +1108,11 @@ public class HotelLogistics {
         double newDoubleValue = 0;
         boolean validate = false;
         boolean exitMethod = false;
-        boolean cancel = false;
+        boolean cancel;
         boolean validMenuChoice;
 
         do {
+            cancel = false;
             System.out.printf("%s%n%s%n%s%n%s%n%s%n",
                     "Edit price for:",
                     "1. standards",
