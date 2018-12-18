@@ -137,7 +137,8 @@ public class HotelLogistics {
                         System.out.println("Invalid option. Type a choice 0-4:");
                         break;
                 }
-            }while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("4") && !menuChoice.equals("5") && !menuChoice.equals("0"));
+            }
+            while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("4") && !menuChoice.equals("5") && !menuChoice.equals("0"));
         } while (!logout);
     }
 
@@ -214,6 +215,7 @@ public class HotelLogistics {
     //3.1.1.
     public void addCustomer() {
 
+        String menu;
         String firstName;
         String lastName;
         String name;
@@ -225,10 +227,30 @@ public class HotelLogistics {
         boolean checkAll = false;
         boolean checkSwitch;
 
-        System.out.printf("%s%n%n%s%n%n%s%n",
+        System.out.printf("%n%s%n%n%s%n%s%n%s%n",
                 "====NEW GUEST====",
-                "Welcome to Hotel Gittan. You will be assigned a unique user ID.",
-                "Please fill in the following information below. ");
+                "Welcome to Hotel Gittan. Register your account here.",
+                "1. Proceed",
+                "0. Go back");
+
+        do {
+            menu = input.nextLine();
+            menu = menu.toUpperCase();
+
+            switch (menu) {
+                case "1":
+                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.\"");
+                    checkSwitch = true;
+                    break;
+                case "O":
+                case "0":
+                    System.out.println();
+                    return;
+                default:
+                    System.out.println("Please enter a valid option of 1 or 0.");
+                    checkSwitch = false;
+            }
+        } while (!checkSwitch);
 
         do {
 
@@ -331,7 +353,8 @@ public class HotelLogistics {
     public void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
         boolean backSelected = false;
 
-        do {System.out.println("====[ADMIN] CUSTOMER INFO====");
+        do {
+            System.out.println("====[ADMIN] CUSTOMER INFO====");
             System.out.println("Customer selected: " + customer.getName() +
                     " (ID: " + customer.getAccountID() + ")");
             System.out.println("1. Make booking for " + customer.getName());
@@ -340,29 +363,29 @@ public class HotelLogistics {
             System.out.println("0. Back");
             String choice = input.nextLine();
             //do {
-                switch (choice) {
-                    case "1":
-                        System.out.println("[ADMIN]");
-                        makeBooking(customer);
-                        break;
+            switch (choice) {
+                case "1":
+                    System.out.println("[ADMIN]");
+                    makeBooking(customer);
+                    break;
 
-                    case "2":
-                        viewBookings(customer);
-                        break;
-                    case "3":
-                        adminEditCustomer(customer);
-                        break;
+                case "2":
+                    viewBookings(customer);
+                    break;
+                case "3":
+                    adminEditCustomer(customer);
+                    break;
 
-                    case "0":
-                        backSelected = true;
-                        break;
+                case "0":
+                    backSelected = true;
+                    break;
 
-                    default:
-                        System.out.println("Faulty input. Enter 0-3.\nPress (Enter)");
-                        input.nextLine();
-                }
+                default:
+                    System.out.println("Faulty input. Enter 0-3.\nPress (Enter)");
+                    input.nextLine();
+            }
             //}while (!choice.matches("1") && !choice.matches("2") && !choice.matches("3") && !choice.matches("0"));
-        }while (!backSelected);
+        } while (!backSelected);
     }
 
     private void adminEditCustomer(AccountCustomer customer) {
@@ -390,7 +413,7 @@ public class HotelLogistics {
                     break;
 
             }
-        }while (!backSelected);
+        } while (!backSelected);
     }
 
     //3.1.3.
