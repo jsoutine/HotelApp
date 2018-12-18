@@ -2520,7 +2520,6 @@ public class HotelLogistics {
             bookingDates(roomList.get(9), fromDate10, toDate10, customerList.get(0), price10, sameBookingID);
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
-//master
         }
 
         LocalDate fromDate11 = LocalDate.of(2019, 2, 16);
