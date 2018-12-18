@@ -32,6 +32,10 @@ public class Booking {
         return toDate;
     }
 
+    public void setToDate (LocalDate toDate) {   //Used when checking out earlier, where new toDate is set to today.
+            this.toDate = toDate;
+    }
+
     public Room getRoom() {
         return room;
     }

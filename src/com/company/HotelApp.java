@@ -8,7 +8,6 @@ import java.util.Scanner;
 public class HotelApp {
     private Scanner input = new Scanner(System.in);
 
-
     public static void main(String[] args) {
 
         HotelApp myApp = new HotelApp();
@@ -51,7 +50,6 @@ public class HotelApp {
                     break;
 
                 case "2":
-                    //myApp.input.nextLine();
                     logistics.addCustomer();
                     validMenu = false;
                     break;
