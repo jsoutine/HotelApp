@@ -170,15 +170,15 @@ public class HotelLogistics {
             for (AccountCustomer x : customerList) {
                 if (!x.isCancelledAccount()) {     //If account is not admin, and nor cancelled; add to new ArrayList (methodList)
                     methodList.add(x);
-                    System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), x);
+                    System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), x);
                 }
             }
             if (methodList.isEmpty()) {
                 System.out.println("Customer list is empty.");
 
             } else {
-                System.out.printf("%s%n",
-                        "1-n. Choose customer");
+                System.out.printf("%-4s%s%n",
+                        ("1-").concat(Integer.toString(countElements)).concat("."), " Choose customer");
             }
             System.out.printf("%s%n%s%n%s%n",
                     "A.   Add customer",
