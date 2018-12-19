@@ -84,7 +84,6 @@ public class HotelLogistics {
             int toCheckOutToday = 0;
             int checkedOutToday = 0;
             int overDueStays = 0;
-
             System.out.printf("%n%s%n%s%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n",
                     "3. ADMIN MAIN MENU",
                     "Logged in as admin (name: ", loggedInAccount.getName(), ")",
@@ -94,7 +93,6 @@ public class HotelLogistics {
                     "4. Check in",
                     "5. Check out",
                     "0. Log out");
-
             for (Room room : roomList) {  //Cancel booking if hasn't checked in at the booked date.
                 for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                     if (room.getRoomBookingList().get(i).getFromDate().isBefore(LocalDate.now()) &&
@@ -104,7 +102,6 @@ public class HotelLogistics {
                     }
                 }
             }
-
             for (Room room : roomList) {  //Count expected check in & check out for today.
                 for (BookingConfirm booking : room.getRoomBookingList()) {
                     if (booking.getFromDate().equals(LocalDate.now())) {
@@ -161,7 +158,6 @@ public class HotelLogistics {
                 }
             }
             while (!validateInput);
-
         } while (!logout);
     }
 
@@ -1612,13 +1608,9 @@ public class HotelLogistics {
         if (!cancel) {
             matchingResults = searchBooking(oneRoom);  //Call to method searchBooking to add matching booking object to ArrayList, depending on one room, or more than one room.
             for (BookingSearch booking : matchingResults) {
-                lastMinute(booking);                 //Determine if last minute. If so; adjust to lat minute prices.
+                lastMinute(booking);                 //Determine if last minute. If so; adjust to last minute prices.
             }
-        }
-
-        if (!cancel) {
             do {
-
                 if (matchingResults.isEmpty()) {
                     System.out.println("No results" + "\nBack (Enter)");
                     cancel = true;
@@ -1638,7 +1630,6 @@ public class HotelLogistics {
                                 "P. Proceed to make booking of ", addedBookings.size(), " added rooms.",
                                 "0. Cancel. No booking will be made.");
                     }
-
                     do {
                         answer = input.nextLine();
                         if (answer.equals("0") || answer.equalsIgnoreCase("O")) {
@@ -1686,7 +1677,6 @@ public class HotelLogistics {
                                     }
                                 } while (!validateInput);
                             }
-
                         } else {
                             try {
                                 bookingChoice = Integer.parseInt(answer);  // String -> int
@@ -1967,9 +1957,7 @@ public class HotelLogistics {
         if (daysUntil < 6 && periodDays < 10) {  //If last minute
             booking.setLastMinute(true);
             booking.setPrice(booking.getPrice() * 0.75);
-
         }
-
     }
 
 
@@ -2001,7 +1989,6 @@ public class HotelLogistics {
             } else {
                 for (int i = 0; i < methodList.size(); i++) {
                     System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), methodList.get(i));
-
                 }
                 System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
                 do {
@@ -2015,8 +2002,6 @@ public class HotelLogistics {
                             if (intChoice < 1 || intChoice > methodList.size()) {
                                 validateInput = false;
                                 System.out.println("Choice did not match an alternative. Try again:");
-                                //} else {
-                                //    validateNumeric = true;
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("Choice did not match an alternative. Try again:");
@@ -2050,7 +2035,6 @@ public class HotelLogistics {
                     "Enter cancel menu for this booking?",
                     "Y. Yes, enter cancel menu.",
                     "N. No, don't cancel booking.");
-
             cancel = input.nextLine();
             cancel = cancel.toUpperCase();
 
@@ -2074,7 +2058,6 @@ public class HotelLogistics {
                     break;
             }
         } while (!validate);
-
         System.out.println("Back (Enter)");
         input.nextLine();
     }
