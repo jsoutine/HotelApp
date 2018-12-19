@@ -1,8 +1,6 @@
 package com.company;
 
 import java.time.LocalDate;
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
 
 public class Booking {
     private LocalDate fromDate;
@@ -19,7 +17,6 @@ public class Booking {
             this.fromDate = fromDate;
             this.toDate = toDate;
         }
-
         this.room =room;
         this.price =price;
 }
@@ -46,17 +43,6 @@ public class Booking {
 
     public void setPrice (double price) {
         this.price = price;
-    }
-
-    public String getPeriod() {
-        //Period diff = Period.between(fromdate, toDate);  //Gets period divided in yy,mm,dd
-        long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);  //ChronoUnit. To get time in only one unit, t.ex. days.
-        return String.format("%d%s", periodDays, " days");
-    }
-
-    public String getTimeUntil() {
-        Period diff2 = Period.between(today, fromDate);
-        return String.format("%d%s%d%s%d%s", diff2.getYears(), " years, ", diff2.getMonths(), " months and ", diff2.getDays(), " days.");
     }
 
     public String getDates() {
