@@ -17,7 +17,6 @@ public class HotelLogistics {
     private ArrayList<StandardPrice> standardList = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
 
-
     //2.1.
     public void logIn(String id, String password) {
         boolean match = false;
@@ -52,7 +51,7 @@ public class HotelLogistics {
     }
 
     //3.4. & 4.5.
-    public boolean logOut() {   //This method returns true if user choose to log out, and false if not.
+    private boolean logOut() {   //This method returns true if user choose to log out, and false if not.
         String menuChoice;
         boolean logout = false;
         System.out.println("Log out? y/n");
@@ -73,7 +72,7 @@ public class HotelLogistics {
     }
 
     //3.
-    public void adminMainMenu(Account loggedInAccount) {
+    private void adminMainMenu(Account loggedInAccount) {
         String menuChoice;
         boolean logout = false;
         boolean validateInput;
@@ -166,7 +165,7 @@ public class HotelLogistics {
     }
 
     //3.1.
-    public void adminCustomers(Account loggedInAccount) {  //UNDER CONSTRUCTION
+    private void adminCustomers(Account loggedInAccount) {  //UNDER CONSTRUCTION
         ArrayList<AccountCustomer> methodList = new ArrayList<>();
         String menuChoice;
         boolean validateInput;
@@ -261,7 +260,7 @@ public class HotelLogistics {
 
             switch (menu) {
                 case "1":
-                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.\"");
+                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.");
                     checkSwitch = true;
                     break;
                 case "O":
@@ -275,7 +274,6 @@ public class HotelLogistics {
         } while (!checkSwitch);
 
         do {
-
             firstName = ""; // resets information for loop.
             lastName = "";
             phoneNumber = "";
@@ -299,7 +297,6 @@ public class HotelLogistics {
             }
 
             while (!phoneNumber.matches(phoneValidate)) {
-
                 System.out.print("Phone number: ");
                 phoneNumber = input.nextLine();
 
@@ -319,7 +316,6 @@ public class HotelLogistics {
                 if (!password.equals(passwordCheck)) {
                     System.out.println("\nYour password didn't match. Try again.");
                 }
-
             } while (!password.equals(passwordCheck));
 
             do {
@@ -339,40 +335,30 @@ public class HotelLogistics {
                 checkSwitch = true;
 
                 switch (choice) {
-
                     case "Y":
                         System.out.printf("Thank you %s. ", name);
                         checkAll = true;
                         break;
-
                     case "N":
                         System.out.println("\nPlease fill in your information again.");
                         break;
-
                     case "O":
                     case "0":
                         return;
-
                     default:
                         System.out.println("\nPlease enter a valid option of Y/N or 0.");
                         checkSwitch = false;
                 }
-
             } while (!checkSwitch);
-
         } while (!checkAll);
 
         AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
-
         customerList.add(newDude);
-
         System.out.printf("You can now log in with your unique user ID: %s.%n%n", newDude.getAccountID());
-
     }
 
-
     //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
-    public void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
+    private void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
         boolean backSelected = false;
 
         do {
@@ -395,7 +381,7 @@ public class HotelLogistics {
                     viewBookings(customer);
                     break;
                 case "3":
-                    adminEditCustomer(customer);
+                    editCustomerInfo(customer);
                     break;
 
                 case "0":
@@ -410,36 +396,8 @@ public class HotelLogistics {
         } while (!backSelected);
     }
 
-    private void adminEditCustomer(AccountCustomer customer) {
-        boolean backSelected = false;
-        do {
-            System.out.println("====[ADMIN] EDIT CUSTOMER INFO====");
-            System.out.println("1. Change cust. name");
-            System.out.println("2. Change cust. phone number");
-            System.out.println("3. Change cust. password");
-            System.out.println("0. Back");
-            String choice = input.nextLine();
-
-            switch (choice) {
-                case "1":
-                    editAccountName(customer);
-                    break;
-                case "2":
-                    editAccountPhoneNr(customer);
-                    break;
-                case "3":
-                    editAccountPassword(customer);
-                    break;
-                case "0":
-                    backSelected = true;
-                    break;
-
-            }
-        } while (!backSelected);
-    }
-
     //3.1.3.
-    public void adminCancelledAccounts(Account loggedInAccount) {  //UNDER CONSTRUCTION
+    private void adminCancelledAccounts(Account loggedInAccount) {  //UNDER CONSTRUCTION
         ArrayList<Account> cancelledAccounts = new ArrayList<>();
         System.out.println("3.1.3. CANCELLED ACCOUNTS");
         int countElements = 0;
@@ -458,7 +416,7 @@ public class HotelLogistics {
     }
 
     // 3.5
-    public void adminCheckIn() {
+    private void adminCheckIn() {
         System.out.println("CHECK IN");
         ArrayList<BookingConfirm> checkInList = new ArrayList<>();
         String menuChoice;
@@ -523,7 +481,7 @@ public class HotelLogistics {
                     }
                     if (countBookingID > 1) {
                         countElements = 0;
-                        System.out.println("There are more than one room reservation linked to this booking:");
+                        System.out.println("There are more than one room reservations linked to this booking:");
                         for (Room room : roomList) {
                             for (BookingConfirm booking : room.getRoomBookingList()) {
                                 if (booking.getBookingID() == bookingID && !booking.isCheckedIn()) {
@@ -583,7 +541,7 @@ public class HotelLogistics {
     }
 
     //  3.6
-    public void adminCheckOut() {
+    private void adminCheckOut() {
         System.out.println("CHECK OUT");
         ArrayList<BookingConfirm> checkOutList = new ArrayList<>();
         String menuChoice;
@@ -729,18 +687,18 @@ public class HotelLogistics {
         } while (!proceed);
     }
 
-    private void editCustomerInfo(AccountCustomer loggedInAccount) {
+    private void editCustomerInfo(AccountCustomer concernedAccount) {
         boolean validateInput = false;
         String choice;
 
         do {
-            if (loggedInAccount.isCancelledAccount()) {
+            if (concernedAccount.isCancelledAccount()) {
                 validateInput = true;
             } else {
                 System.out.println("4.3\n====EDIT USER INFORMATION====");
-                System.out.println("Name:        " + loggedInAccount.getName());
-                System.out.println("Phonenumber: " + loggedInAccount.getPhoneNumber());
-                System.out.println("Password:    " + loggedInAccount.getPassword());
+                System.out.println("Name:        " + concernedAccount.getName());
+                System.out.println("Phonenumber: " + concernedAccount.getPhoneNumber());
+                System.out.println("Password:    " + concernedAccount.getPassword());
                 System.out.println("=============================");
                 System.out.println("1. Name");
                 System.out.println("2. Phonenumber");
@@ -753,16 +711,16 @@ public class HotelLogistics {
                     choice = input.nextLine();
                     switch (choice) {
                         case "1":
-                            editAccountName(loggedInAccount);
+                            editAccountName(concernedAccount);
                             break;
                         case "2":
-                            editAccountPhoneNr(loggedInAccount);
+                            editAccountPhoneNr(concernedAccount);
                             break;
                         case "3":
-                            editAccountPassword(loggedInAccount);
+                            editAccountPassword(concernedAccount);
                             break;
                         case "4":
-                            removeAccount(loggedInAccount);
+                            removeAccount(concernedAccount);
                             break;
                         case "0":
                             validateInput = true;
@@ -1081,13 +1039,13 @@ public class HotelLogistics {
                     System.out.println("Enter room standard (1-5): ");
                     do {
                         answer = input.nextLine();
-                        try{
+                        try {
                             standard = Integer.parseInt(answer);
                             validateInput = true;
                         } catch (NumberFormatException e) {
                             validateInput = false;
                         }
-                        if (standard == 1 || standard == 2 || standard == 3 || standard == 4 || standard == 5){
+                        if (standard == 1 || standard == 2 || standard == 3 || standard == 4 || standard == 5) {
                             validateInput = true;
                             Room newRoom = new Room(beds, standard);
                             roomList.add(newRoom);
@@ -1099,7 +1057,6 @@ public class HotelLogistics {
                         }
 
                     } while (!validateInput);
-
 
 
                     break;
@@ -1118,11 +1075,10 @@ public class HotelLogistics {
 
     //3.2. (listRooms)
 
-    public void adminRooms(Account loggedInAccount) {
+    private void adminRooms(Account loggedInAccount) {
         String menuChoice;
         boolean validateInput;
         int roomSelect;  // selects room
-
 
         do {
             int counter = 1;
@@ -1135,12 +1091,10 @@ public class HotelLogistics {
             }
 
             System.out.printf("%n1-%s. Select room from above%n", roomList.size());
-
             System.out.printf("%s%n%s%n%s%n",
                     "A.    Add a room",
                     "E.    Edit prices",
                     "0.    Back");
-
             do {
                 menuChoice = input.nextLine();
                 menuChoice = menuChoice.toUpperCase();
@@ -1150,17 +1104,13 @@ public class HotelLogistics {
                         addRoom();
                         validateInput = true;
                         break;
-
                     case "E":
                         adminEditPrices();
-                        System.out.println("This method does not exist yet. Press 0 to go back.");
                         validateInput = true;
                         break;
-
                     case "0":
                     case "O":
                         return;
-
                     default:
                         try {
                             roomSelect = Integer.parseInt(menuChoice);  // String -> int
@@ -1176,26 +1126,24 @@ public class HotelLogistics {
                             validateInput = false;
                         }
                 }
-
             } while (!validateInput); // loops the room menu
-
         } while (true); //Always loop, until menuChoice = 0 -> Return
-
     }
 
     //3.2.4 (edit price)
 
-    public void adminEditPrices() {
+    private void adminEditPrices() {
         String menuChoice;
         String answer;
         int intAnwser = 0;
         double newDoubleValue = 0;
         boolean validate = false;
         boolean exitMethod = false;
-        boolean cancel = false;
+        boolean cancel;
         boolean validMenuChoice;
 
         do {
+            cancel = false;
             System.out.printf("%s%n%s%n%s%n%s%n%s%n",
                     "Edit price for:",
                     "1. standards",
@@ -1221,7 +1169,6 @@ public class HotelLogistics {
                                 validate = true;
                                 exitMethod = false;
                                 cancel = true;
-
                             } else {
                                 try {
                                     intAnwser = Integer.parseInt(answer);  // String -> int
@@ -1233,46 +1180,46 @@ public class HotelLogistics {
                                 }
                             }
 
-                        if (!cancel && validate) {
-                            validate = false;
-                            for (int i = 0; i < standardList.size(); i++) {
-                                if (standardList.get(i).getName() == intAnwser) {
-                                    intAnwser = i;
-                                    validate = true;
-                                    break;
+                            if (!cancel && validate) {
+                                validate = false;
+                                for (int i = 0; i < standardList.size(); i++) {
+                                    if (standardList.get(i).getName() == intAnwser) {
+                                        intAnwser = i;
+                                        validate = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!validate) {
+                                    System.out.println("Input did not match an alternative. Try again:");
+                                } else {
+                                    System.out.println("Enter new price for standard " + standardList.get(intAnwser).getName());
+                                    do {
+                                        answer = input.nextLine();
+                                        try {
+                                            newDoubleValue = Double.parseDouble(answer);
+                                            validate = true;
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("input must be numneric");
+                                            validate = false;
+                                        }
+
+                                        if (validate) {
+                                            if (newDoubleValue >= 10000 || newDoubleValue < 300) {
+                                                System.out.println("Not a valid value. Must be 300-10.000 . Try again");
+                                                validate = false;
+
+                                            } else {
+                                                standardList.get(intAnwser).setPrice(newDoubleValue);
+                                                System.out.println("Room standard " + standardList.get(intAnwser).getName() +
+                                                        ". New price is:  " + standardList.get(intAnwser).getPrice() + " SEK  \nBack (Enter)");
+                                                validate = true;
+                                                input.nextLine();
+                                            }
+                                        }
+                                    } while (!validate);
                                 }
                             }
-
-                            if (!validate) {
-                                System.out.println("Input did not match an alternative. Try again:");
-                            } else {
-                                System.out.println("Enter new price for standard " + standardList.get(intAnwser).getName());
-                                do {
-                                    answer = input.nextLine();
-                                    try {
-                                        newDoubleValue = Double.parseDouble(answer);
-                                        validate = true;
-                                    } catch (NumberFormatException e) {
-                                        System.out.println("input must be numneric");
-                                        validate = false;
-                                    }
-
-                                    if(validate) {
-                                        if (newDoubleValue >= 10000 || newDoubleValue < 300) {
-                                            System.out.println("Not a valid value. Must be 300-10.000 . Try again");
-                                            validate = false;
-
-                                        } else {
-                                            standardList.get(intAnwser).setPrice(newDoubleValue);
-                                            System.out.println("Room standard " + standardList.get(intAnwser).getName() +
-                                                    ". New price is:  " + standardList.get(intAnwser).getPrice() + " SEK  \nBack (Enter)");
-                                            validate = true;
-                                            input.nextLine();
-                                        }
-                                    }
-                                } while (!validate);
-                            }
-                        }
                         } while (!validate);
                         break;
                     case "2":
@@ -1282,7 +1229,6 @@ public class HotelLogistics {
                             System.out.println(beds.getNumberOfBeds() + " beds/room. Constant: " + beds.getConstant() +
                                     " x standard price per night and room.");
                         }
-
                         do {
                             answer = input.nextLine();
                             if (answer.equals("0") || answer.equalsIgnoreCase("O")) {
@@ -1300,51 +1246,53 @@ public class HotelLogistics {
                                 }
                             }
 
-                        if (!cancel && validate) {
-                            validate = false;
-                            for (int i = 0; i < bedConstantList.size(); i++) {
-                                if (bedConstantList.get(i).getNumberOfBeds() == intAnwser) {
-                                    intAnwser = i;
-                                    validate = true;
-                                    break;
-                                }
-                            }
-
-                            if (!validate) {
-                                System.out.println("Input did not match an alternative. Try again:");
-                            } else {
-
-                                System.out.println("Enter new constant value for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
-                                        " beds/room: (X.X)" +
-                                        "\nCurrent constant value: "
-                                        + bedConstantList.get(intAnwser).getConstant() + " SEK.");
-                                do {
-                                    answer = input.nextLine();
-
-                                    try {
-                                        newDoubleValue = Double.parseDouble(answer);
+                            if (!cancel && validate) {
+                                validate = false;
+                                for (int i = 0; i < bedConstantList.size(); i++) {
+                                    if (bedConstantList.get(i).getNumberOfBeds() == intAnwser) {
+                                        intAnwser = i;
                                         validate = true;
-                                    } catch (NumberFormatException e) {
-                                        System.out.println("input must be numneric, and decimals seperated by a dot (X.X). Try again:");
-                                        validate = false;
+                                        break;
                                     }
+                                }
 
-                                    if(validate) {
-                                        if (newDoubleValue <= 1.00 || newDoubleValue > 4.00) {
-                                            System.out.println("Not a valid value. Must be 1.00 - 4.00. Try again:");
-                                            validate = false;
-                                        } else {
-                                            bedConstantList.get(intAnwser).setConstant(newDoubleValue);
-                                            System.out.println("New beds constant price for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
-                                                    " per room is: " + bedConstantList.get(intAnwser).getConstant() + " SEK \nBack (Enter)");
+                                if (!validate) {
+                                    System.out.println("Input did not match an alternative. Try again:");
+                                } else {
+
+                                    System.out.println("Enter new constant value for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
+                                            " beds/room: (X.X)" +
+                                            "\nCurrent constant value: "
+                                            + bedConstantList.get(intAnwser).getConstant() + " SEK.");
+                                    do {
+                                        answer = input.nextLine();
+
+                                        try {
+                                            newDoubleValue = Double.parseDouble(answer);
                                             validate = true;
-                                            input.nextLine();
+                                        } catch (NumberFormatException e) {
+                                            System.out.println("input must be numneric, and decimals seperated by a dot (X.X). Try again:");
+                                            validate = false;
                                         }
-                                    }
 
-                                } while (!validate);
+                                        if (validate) {
+                                            if (newDoubleValue <1.00 || newDoubleValue > 4.00) {
+                                                System.out.println("Not a valid value. Must be 1.00 - 4.00. Try again:");
+                                                validate = false;
+                                            } else {
+                                                bedConstantList.get(intAnwser).setConstant(newDoubleValue);
+                                                System.out.println("New beds constant price for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
+                                                        " per room is: " + bedConstantList.get(intAnwser).getConstant() + " SEK \nBack (Enter)");
+                                                validate = true;
+                                                input.nextLine();
+                                            }
+                                        }
+
+                                    } while (!validate);
+                                }
+
                             }
-                        }
+
                         } while (!validate);
                         break;
                     case "0":
@@ -1364,12 +1312,12 @@ public class HotelLogistics {
                     System.out.println("Back (Enter)");
                     input.nextLine();
                 }
-            }while (!validMenuChoice);
+            } while (!validMenuChoice);
         } while (!exitMethod);
-    }
 
+    }
     //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
-    public void customerMainMenu(AccountCustomer loggedInAccount) {
+    private void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
         boolean logout = false;
         do {
@@ -1616,7 +1564,7 @@ public class HotelLogistics {
     }
 
     //4.1.
-    public void makeBooking(AccountCustomer concernedAccount) {
+    private void makeBooking(AccountCustomer concernedAccount) {
         System.out.println("4.1.\nMAKE BOOKING, OR VIEW AVAILABLE");
 
         ArrayList<BookingSearch> matchingResults = new ArrayList<>();
@@ -1851,7 +1799,7 @@ public class HotelLogistics {
     }
 
     //Part of 4.1.
-    public boolean checkDates(Room room, LocalDate fromDate, LocalDate toDate) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
+    private boolean checkDates(Room room, LocalDate fromDate, LocalDate toDate) {  //Kan användas för att boka, eller för att sortera bokningar i kronologisk tids-ordning.
         boolean match = false;
         if (room.getRoomBookingList().isEmpty()) {                                                  //Om bokningslistan för rummet är tom.
             match = true;
@@ -1898,7 +1846,7 @@ public class HotelLogistics {
     }
 
     //Part of 4.1.
-    public void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingId) {  //Can be used to book, or sort bookings in cronological time order.
+    private void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingId) {  //Can be used to book, or sort bookings in cronological time order.
         if (room.getRoomBookingList().isEmpty()) {                                                  //If booking list for room is empty.
             room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));
             //System.out.println("Booking successful. Code 1");
@@ -1963,7 +1911,7 @@ public class HotelLogistics {
         }
     }
 
-    public double calculateSingleBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {  //Used to determine the price of a specific room item booking.
+    private double calculateSingleBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {  //Used to determine the price of a specific room item booking.
         double price;
         double bedsConstant = 1;
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);
@@ -1978,7 +1926,7 @@ public class HotelLogistics {
         return price;
     }
 
-    public double calculateSumBookingPrice(ArrayList<BookingSearch> bookingList) {  //Used to calculate the sum of an entire booking.
+    private double calculateSumBookingPrice(ArrayList<BookingSearch> bookingList) {  //Used to calculate the sum of an entire booking.
         double sum = 0;
         for (Booking booking : bookingList) {
             sum += booking.getPrice();
@@ -2001,7 +1949,7 @@ public class HotelLogistics {
 
 
     //4.2.  &&  3.3.)
-    public void viewBookings(Account loggedIn) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
+    private void viewBookings(Account loggedIn) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
         do {
             if (loggedIn instanceof AccountAdmin) {
                 System.out.println("4.2. ALL BOOKINGS");
@@ -2065,19 +2013,17 @@ public class HotelLogistics {
     }
 
     //4.2.1.
-    public void viewBooking(BookingConfirm booking) {
-
+    private void viewBooking(BookingConfirm booking) {
         String cancel;
         boolean validate = false;
-
 
         System.out.println("4.2.1. BOOKING");
         System.out.println(booking);
 
         do {
             System.out.printf("%n%s%n%s%n%s%n",
-                    "Enter cancel menu for this booking?",
-                    "Y. Yes, enter cancel menu.",
+                    "Enter the cancel menu for this booking?",
+                    "Y. Yes, enter the cancel menu.",
                     "N. No, don't cancel booking.");
 
             cancel = input.nextLine();
@@ -2109,8 +2055,7 @@ public class HotelLogistics {
     }
 
     //4.2.1.1.
-    public void cancelBooking(BookingConfirm thisBooking) {
-
+    private void cancelBooking(BookingConfirm thisBooking) {
         int countElements = 0;
         int bookingID = thisBooking.getBookingID();
         int uniqueID = thisBooking.getUniqueID();
@@ -2131,7 +2076,6 @@ public class HotelLogistics {
                 case "Y":
                     for (Room room : roomList) {
                         for (int i = 0; i < room.getRoomBookingList().size(); i++) {
-
                             if (thisBooking.getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {
                                 countElements++;
                             }
@@ -2154,7 +2098,6 @@ public class HotelLogistics {
                             "C. Cancel chosen booking for Room nr: ", thisBooking.getRoom().getRoomNumber(),
                             " Standard: ", thisBooking.getRoom().getStandard(),
                             "0. Don't cancel booking. Go back to previous menu.");
-
                     do {
                         menu = input.nextLine();
                         if (countElements > 1 && menu.equalsIgnoreCase("A")) {
@@ -2182,7 +2125,6 @@ public class HotelLogistics {
                             System.out.printf("%s%s%n", "Successfully cancelled booking: ", thisBooking);
                             validate = true;
                             input.nextLine();
-
                         } else if (menu.equals("0") || menu.equalsIgnoreCase("O")) {
                             validate = true;
                             return;
@@ -2204,12 +2146,10 @@ public class HotelLogistics {
                     break;
             }
         } while (!validate);
-
     }
 
     // 3.2.3.
-    public void
-    adminEditRoomInfo(Room room) {
+    private void adminEditRoomInfo(Room room) {
         System.out.println("3.2.3 EDIT ROOM: " + room);
 
         String answer;
@@ -2371,7 +2311,7 @@ public class HotelLogistics {
         } while (true);
     }
 
-    public void viewBookingsForRoom(Room room) {
+    private void viewBookingsForRoom(Room room) {
         System.out.println("3.2.3.3. BOOKINGS FOR ROOM NUMBER " + room.getRoomNumber());
 
         do {
