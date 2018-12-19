@@ -244,7 +244,7 @@ public class HotelLogistics {
                 "====NEW GUEST====",
                 "Welcome to Hotel Gittan. Register your account here.",
                 "1. Proceed",
-                "0. Go back");
+                "0. Back");
 
         do {
             menu = input.nextLine();
@@ -260,7 +260,7 @@ public class HotelLogistics {
                     System.out.println();
                     return;
                 default:
-                    System.out.println("Please enter a valid option of 1 or 0.");
+                    System.out.println("Invalid input. Try again.");
                     checkSwitch = false;
             }
         } while (!checkSwitch);
@@ -318,9 +318,9 @@ public class HotelLogistics {
                         "Phone number: ", phoneNumber,
                         "Password: ", password,
                         "Is this information correct?",
-                        "Y. Yes, this is correct.",
-                        "N. No, let me fill it in again.",
-                        "0. Cancel and go back.");
+                        "Y. Yes.",
+                        "N. No, fill it in again.",
+                        "0. Back");
 
                 choice = input.nextLine();
                 choice = choice.toUpperCase();
@@ -336,9 +336,10 @@ public class HotelLogistics {
                         break;
                     case "O":
                     case "0":
+                        System.out.println("Cancelled. No account created.");
                         return;
                     default:
-                        System.out.println("\nPlease enter a valid option of Y/N or 0.");
+                        System.out.println("\nInvalid input. Try again.");
                         checkSwitch = false;
                 }
             } while (!checkSwitch);
@@ -346,7 +347,7 @@ public class HotelLogistics {
 
         AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
         customerList.add(newDude);
-        System.out.printf("You can now log in with your unique user ID: %s.%n%n", newDude.getAccountID());
+        System.out.printf("You can now log in with your unique user ID: %s, and your chosen password. %n%n", newDude.getAccountID());
     }
 
     private void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
@@ -1101,7 +1102,7 @@ public class HotelLogistics {
                                 validateInput = true;
                             }
                         } catch (NumberFormatException e) {
-                            System.out.printf("Please enter an option, or valid number between 1 and %d. Try again or press \"0\" to go back.%n", roomList.size());
+                            System.out.println("Invalid input. Try again.");
                             validateInput = false;
                         }
                 }
@@ -1987,8 +1988,10 @@ public class HotelLogistics {
         do {
             System.out.printf("%n%s%n%s%n%s%n",
                     "Enter the cancel menu for this booking?",
-                    "Y. Yes, enter the cancel menu.",
-                    "N. No, don't cancel booking.");
+
+                    "Y. Yes",
+                    "N. No");
+
             cancel = input.nextLine();
             cancel = cancel.toUpperCase();
 
@@ -2008,7 +2011,7 @@ public class HotelLogistics {
                     validate = true;
                     break;
                 default:
-                    System.out.println("Please enter an option of Y or N. ");
+                    System.out.println("Invalid input. Try again.");
                     break;
             }
         } while (!validate);
@@ -2028,8 +2031,8 @@ public class HotelLogistics {
         do {
             System.out.printf("%n%s%s%s%n%s%n%s%n",
                     "Would you like to cancel booking ", thisBooking, "?",
-                    "Y. Yes, cancel this booking.",
-                    "N. No, don't cancel booking. Go back to bookings.");
+                    "Y. Yes",
+                    "N. No, go back to bookings");
 
             confirm = input.nextLine();
             confirm = confirm.toUpperCase();
@@ -2059,7 +2062,7 @@ public class HotelLogistics {
                     System.out.printf("%s%s%s%s%n%s%n",
                             "C. Cancel chosen booking for Room nr: ", thisBooking.getRoom().getRoomNumber(),
                             " Standard: ", thisBooking.getRoom().getStandard(),
-                            "0. Don't cancel booking. Go back to previous menu.");
+                            "0. Back");
                     do {
                         menu = input.nextLine();
                         if (countElements > 1 && menu.equalsIgnoreCase("A")) {
@@ -2088,6 +2091,7 @@ public class HotelLogistics {
                             validate = true;
                             input.nextLine();
                         } else if (menu.equals("0") || menu.equalsIgnoreCase("O")) {
+                            System.out.println("Booking still valid.");
                             validate = true;
                             return;
                         } else {
@@ -2102,8 +2106,12 @@ public class HotelLogistics {
                     System.out.println("Booking still valid.");
                     validate = true;
                     break;
+                case "O":
+                case "0":
+                    System.out.println("Booking still valid.");
+                    return;
                 default:
-                    System.out.println("Please enter an option of Y or N. ");
+                    System.out.println("Invalid input. Try again.");
                     validate = false;
                     break;
             }

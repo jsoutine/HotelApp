@@ -85,7 +85,7 @@ public class HotelApp {
                     validMenu = true;
                     break;
                 default:
-                    System.out.println("Please enter a valid selection");
+                    System.out.println("Invalid input. Try again.");
                     validMenu = false;
                     break;
             }
