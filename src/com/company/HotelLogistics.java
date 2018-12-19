@@ -833,6 +833,7 @@ public class HotelLogistics {
 
                         } else if (!choice.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-]*[\\s]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-].*")) {
                             System.out.println("Format not followed. Try again! \nPress (Enter)");
+                            input.nextLine();
                             validateinput = false;
                             validateExitToChangeName = true;
                         }
@@ -846,10 +847,8 @@ public class HotelLogistics {
                     input.nextLine();
                     break;
                 default:
-                    System.out.println("Faulty input recognized. Let's try again!");
-                    editAccountName(loggedInAccount);
+                    System.out.println("Faulty input recognized. Let's try again!\nPress (Enter)");
                     break;
-
             }
         } while (!validateExitToChangeName);
     }
@@ -876,7 +875,7 @@ public class HotelLogistics {
                         String newNr = input.nextLine();
 
                         if (newNr.equals("0")) {
-                            editAccountPassword(loggedInAccount);
+                            System.out.println("Returning to previous menu!");
 
                         } else {
 
