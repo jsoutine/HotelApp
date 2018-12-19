@@ -82,7 +82,8 @@ public class HotelLogistics {
             int checkedInToday = 0;
             int toCheckOutToday = 0;
             int checkedOutToday = 0;
-            int overDueStays = 0;
+            int lateCheckOut = 0;
+            int lateCheckIn = 0;
             System.out.printf("%n%s%n%s%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n",
                     "3. ADMIN MAIN MENU",
                     "Logged in as admin (name: ", loggedInAccount.getName(), ")",
@@ -92,22 +93,17 @@ public class HotelLogistics {
                     "4. Check in",
                     "5. Check out",
                     "0. Log out");
-            for (Room room : roomList) {  //Cancel booking if hasn't checked in at the booked date.
-                for (int i = 0; i < room.getRoomBookingList().size(); i++) {
-                    if (room.getRoomBookingList().get(i).getFromDate().isBefore(LocalDate.now()) &&
-                            !room.getRoomBookingList().get(i).isCheckedIn()) {
-                        room.getRoomBookingList().remove(i);
-                        i -= 1;
-                    }
-                }
-            }
-            for (Room room : roomList) {  //Count expected check in & check out for today.
+
+            for (Room room : roomList) {  //Count expected check in & check out for today, including late ones (gives warning)
                 for (BookingConfirm booking : room.getRoomBookingList()) {
                     if (booking.getFromDate().equals(LocalDate.now())) {
                         toCheckInToday++;
                         if (booking.isCheckedIn()) {
                             checkedInToday++;
                         }
+                    }else if(booking.getFromDate().isBefore(LocalDate.now()) && !booking.isCheckedIn()) {
+                        toCheckInToday++;
+                        lateCheckIn++;
                     } else if (booking.getToDate().equals(LocalDate.now())) {
                         toCheckOutToday++;
                         if (booking.isCheckedOut()) {
@@ -115,13 +111,13 @@ public class HotelLogistics {
                         }
                     } else if (booking.getToDate().isBefore(LocalDate.now()) && !booking.isCheckedOut()) {  //if overdue stay
                         toCheckOutToday++;
-                        overDueStays++;
+                        lateCheckOut++;
                     }
                 }
             }
-            System.out.printf("%-18s%d%s%d%n%-18s%d%s%d%s%n",
-                    "Check in today:", checkedInToday, "/", toCheckInToday,
-                    "Check out today:", checkedOutToday, "/", toCheckOutToday, (overDueStays > 0 ? ("  ").concat(Integer.toString(overDueStays)).concat(" overdue stays!") : "")); //Warns if any overdue stays
+            System.out.printf("%-18s%d%s%d%s%n%-18s%d%s%d%s%n",
+                    "Check in today:", checkedInToday, "/", toCheckInToday, (lateCheckIn > 0 ? ("  ").concat(Integer.toString(lateCheckIn)).concat(" late check ins!") : ""),      //Warns if any late check ins
+                    "Check out today:", checkedOutToday, "/", toCheckOutToday, (lateCheckOut > 0 ? ("  ").concat(Integer.toString(lateCheckOut)).concat(" overdue stays!") : "")); //Warns if any overdue stays
             do {
                 menuChoice = input.nextLine();
                 switch (menuChoice) {
@@ -354,7 +350,6 @@ public class HotelLogistics {
         System.out.printf("You can now log in with your unique user ID: %s, and your chosen password. %n%n", newDude.getAccountID());
     }
 
-    //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
     private void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
         boolean backSelected = false;
 
@@ -421,7 +416,8 @@ public class HotelLogistics {
         int countElements;
         int countBookingID = 0;
         int bookingID = 0;
-        int uniqueID = 0;
+        int countValidCheckIns = 0;
+        //int uniqueID = 0;
         boolean validateInput;
         boolean proceed = false;
         boolean cancel;
@@ -432,9 +428,9 @@ public class HotelLogistics {
             cancel = false;
             for (Room room : roomList) {
                 for (BookingConfirm booking : room.getRoomBookingList()) {
-                    if (!booking.isCheckedIn() && booking.getFromDate().equals(LocalDate.now())) {
+                    if (!booking.isCheckedIn() && (booking.getFromDate().equals(LocalDate.now()) || booking.getFromDate().isBefore(LocalDate.now()))) {
                         checkInList.add(booking);
-                        System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), booking);
+                        System.out.printf("%-3s%s%7s%n", Integer.toString(++countElements).concat("."), booking, (booking.getFromDate().isBefore(LocalDate.now()) ? "LATE!" : "")); //Conditional operator: Warns if hasn't checked in at check in date.
                     }
                 }
             }
@@ -472,7 +468,7 @@ public class HotelLogistics {
                                     && !booking.isCheckedIn()) {
                                 countBookingID++;
                                 bookingID = booking.getBookingID();
-                                uniqueID = booking.getUniqueID();
+                                //uniqueID = booking.getUniqueID();
                             }
                         }
                     }
@@ -496,29 +492,44 @@ public class HotelLogistics {
                         menuChoice = input.nextLine();
                         if (countBookingID > 1 && menuChoice.equalsIgnoreCase("A")) {
                             for (Room room : roomList) {
-                                for (BookingConfirm booking : room.getRoomBookingList()) {
-                                    if (booking.getBookingID() == bookingID) {
-                                        booking.setCheckedIn(true);
+                                for (int i = 0 ; i < room.getRoomBookingList().size() ; i++) {
+                                    if (room.getRoomBookingList().get(i).getBookingID() == bookingID) {
+                                        if (i != 0 && !room.getRoomBookingList().get(i - 1).isCheckedOut()) {  //if prevoius booking is not checked out
+                                            System.out.printf("%s%d%s%n", "Unable to check in room nr: ", room.getRoomNumber(), ". Previous booking not checked out.");
+                                        } else {
+                                            room.getRoomBookingList().get(i).setCheckedIn(true);
+                                            System.out.printf("%s%d%n", "Checked in room nr: ", room.getRoomNumber());
+                                            countValidCheckIns++;
+
+                                        }
                                     }
                                 }
                             }
-                            System.out.printf("%s%d%s%d%n%s%n", "Succesfully checked in all ", countBookingID, " rooms of booking ID: ", bookingID, "Back (Enter)");
+                            if(countValidCheckIns == countBookingID) {
+                                System.out.printf("%s%d%s%d%n", "Succesfully checked in all ", countBookingID, " rooms of booking ID: ", bookingID);
+                            } else {
+                                System.out.printf("%s%d%s%d%s%d%n", "Note: Only able to check in ", countValidCheckIns, " of the ", countBookingID, " rooms of booking ID: ", bookingID);
+                            }
+                            System.out.println("Back (Enter)");
                             validateInput = true;
-                            //proceed = true;
                             input.nextLine();
                         } else if (menuChoice.equalsIgnoreCase("C")) {
                             for (Room room : roomList) {
-                                for (BookingConfirm booking : room.getRoomBookingList()) {
-                                    if (booking.getUniqueID() == uniqueID) {
-                                        booking.setCheckedIn(true);
+                                for (int i = 0 ; i < room.getRoomBookingList().size() ; i ++) {
+                                    if (room.getRoomBookingList().get(i).getUniqueID() == checkInList.get(intChoice -1).getUniqueID()) {
+                                        if(i != 0 && !room.getRoomBookingList().get(i -1).isCheckedOut()) {
+                                            System.out.printf("%s%d%s%n", "Unable to check in room nr: ", room.getRoomNumber(), ". Previous booking not checked out.");
+                                        }else {
+                                            room.getRoomBookingList().get(i).setCheckedIn(true);
+                                            System.out.printf("%s%d%n", "Successfully checked in room nr: ", room.getRoomNumber());
+                                        }
                                         break;
                                     }
                                 }
                             }
-                            System.out.printf("%s%d%n%s%n", "Successfully checked in room nr: ", checkInList.get(intChoice - 1).getRoom().getRoomNumber(), "Back (Enter)");
+                            System.out.println("Back (Enter)");
                             validateInput = true;
                             input.nextLine();
-
                         } else if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
                             validateInput = true;
                             cancel = true;
@@ -971,7 +982,7 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-    private void addRoom() {
+    private void adminAddRoom() {
         String choice;
         int val = 0;
         int beds = 0;
@@ -1070,7 +1081,7 @@ public class HotelLogistics {
 
                 switch (menuChoice) {
                     case "A":
-                        addRoom();
+                        adminAddRoom();
                         validateInput = true;
                         break;
                     case "E":
@@ -1285,7 +1296,7 @@ public class HotelLogistics {
         } while (!exitMethod);
 
     }
-    //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
+
     private void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
         boolean logout = false;
@@ -2502,8 +2513,8 @@ public class HotelLogistics {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
-        LocalDate fromDate12 = LocalDate.of(2018, 12, 20); //19-2-20
-        LocalDate toDate12 = LocalDate.of(2018, 12, 21);   //19-2-21
+        LocalDate fromDate12 = LocalDate.of(2018, 12, 24); //19-2-20
+        LocalDate toDate12 = LocalDate.of(2018, 12, 25);   //19-2-21
         try {
             double price12 = calculateSingleBookingPrice(fromDate12, toDate12, roomList.get(9));
             bookingDates(roomList.get(9), fromDate12, toDate12, customerList.get(0), price12, sameBookingID);
