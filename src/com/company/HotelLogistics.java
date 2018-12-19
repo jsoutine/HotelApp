@@ -353,7 +353,6 @@ public class HotelLogistics {
         System.out.printf("You can now log in with your unique user ID: %s.%n%n", newDude.getAccountID());
     }
 
-    //3.1.2.  Ev bara använda 4. istället (Då krävs att metoden känner av om customer/admin)
     private void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
         boolean backSelected = false;
 
@@ -1284,7 +1283,7 @@ public class HotelLogistics {
         } while (!exitMethod);
 
     }
-    //4. Ev slå ihop med 3.1.2. (Då krävs att 4. känner av om customer/admin)
+
     private void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
         boolean logout = false;
