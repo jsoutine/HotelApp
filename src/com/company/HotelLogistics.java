@@ -981,7 +981,7 @@ public class HotelLogistics {
         } while (!validateInput);
     }
 
-    private void addRoom() {
+    private void adminAddRoom() {
         String choice;
         int val = 0;
         int beds = 0;
@@ -1080,7 +1080,7 @@ public class HotelLogistics {
 
                 switch (menuChoice) {
                     case "A":
-                        addRoom();
+                        adminAddRoom();
                         validateInput = true;
                         break;
                     case "E":
