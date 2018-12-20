@@ -49,30 +49,33 @@ public class HotelApp {
                     break;
 
                 case "3":
+                    boolean cancel = false;
                     int numberOfRooms;
                     boolean oneRoom = false;
                     System.out.println("2.3. SEARCH FOR AVAILABLE ROOMS. Note: Need to register to book.");
                     numberOfRooms = logistics.numberOfRoomsBooking(); //Method call
                     if (numberOfRooms == 0) {
-                        validMenu = true;
+                        cancel = true;
                     } else if (numberOfRooms == 1) {
                         oneRoom = true;
-                    }
-                    else {
+                    } else {
                         oneRoom = false;
                     }
-                    ArrayList<BookingSearch> matchingResults = logistics.searchBooking(oneRoom); //Method call
-
-                    if (matchingResults.isEmpty()) {
-                        System.out.println("No results" + "\nBack (Enter)");
-                    } else {
-                        int countElements = 0;
-                        boolean lastMinute;
-                        for (BookingSearch booking : matchingResults) {
-                            logistics.lastMinute(booking);
+                    if (!cancel) {
+                        ArrayList<BookingSearch> matchingResults = logistics.searchBooking(oneRoom); //Method call
+                        if (matchingResults.isEmpty()) {
+                            System.out.println("No results" + "\nBack (Enter)");
+                        } else {
+                            int countElements = 0;
+                            boolean lastMinute;
+                            for (BookingSearch booking : matchingResults) {
+                                logistics.lastMinute(booking);
                                 System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
+                            }
+                            System.out.println("You need to register to make any of the suggested bookings above. \nBack(Enter)");
                         }
-                        System.out.println("You need to register to make any of the suggested bookings above. \nBack(Enter)");
+                    } else {
+                        System.out.println("Back (Enter)");
                     }
                     myApp.input.nextLine();
                     validMenu = false;
@@ -82,7 +85,7 @@ public class HotelApp {
                     validMenu = true;
                     break;
                 default:
-                    System.out.println("Please enter a valid selection");
+                    System.out.println("Invalid input. Try again.");
                     validMenu = false;
                     break;
             }
