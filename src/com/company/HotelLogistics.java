@@ -790,7 +790,6 @@ public class HotelLogistics {
                                         validateinput = false;
                                         validateYorN = true;
 
-
                                     } else {
                                         System.out.println("Inavlid input. Try again:");
                                         validateinput = false;
@@ -920,7 +919,6 @@ public class HotelLogistics {
                                 System.out.println("Faulty input has been entered. Try again!");
                                 validateInput = false;
                                 validateChangePW = false;
-
                             }
                         }
                     } while (!validateInput);
@@ -1038,7 +1036,6 @@ public class HotelLogistics {
 
                     } while (!validateInput);
 
-
                     break;
 
                 case "0":
@@ -1054,7 +1051,6 @@ public class HotelLogistics {
     }
 
     //3.2. (listRooms)
-
     private void adminRooms(Account loggedInAccount) {
         String menuChoice;
         boolean validateInput;
@@ -1256,7 +1252,7 @@ public class HotelLogistics {
                                         }
 
                                         if (validate) {
-                                            if (newDoubleValue <1.00 || newDoubleValue > 4.00) {
+                                            if (newDoubleValue < 1.00 || newDoubleValue > 4.00) {
                                                 System.out.println("Not a valid value. Must be 1.00 - 4.00. Try again:");
                                                 validate = false;
                                             } else {
@@ -1294,9 +1290,7 @@ public class HotelLogistics {
                 }
             } while (!validMenuChoice);
         } while (!exitMethod);
-
     }
-
     private void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
         boolean logout = false;
@@ -1306,7 +1300,7 @@ public class HotelLogistics {
             } else {
                 //4.
                 System.out.printf("%s%n%s%s%n%s%n%s%n%s%n%s%n",
-                        "4\n====CUSTOMER MAIN MENU====",
+                        "4\n========CUSTOMER MAIN MENU=========",
                         "Logged in as: ", loggedInAccount.getName(),
                         "1. Make a booking, or view available",
                         "2. View your bookings",
@@ -1915,7 +1909,6 @@ public class HotelLogistics {
         }
     }
 
-
     //4.2.  &&  3.3.)
     private void viewBookings(Account loggedIn) {  //3 displaying options: 1: Admin sees all booking 2: Admin sees customer specific bookings 3: Customer sees customer specific bookings
         do {
@@ -2198,19 +2191,16 @@ public class HotelLogistics {
                                 } catch (IllegalArgumentException b) {
                                     System.out.println(b.getMessage());
                                     validate = false;
-
                                 }
                             }
-
                         } while (!validate);
                         System.out.println("The new standard for room number " + room.getRoomNumber()
                                 + " is now: " + answer + ".");
-
                         break;
 
                     case "3":
                         boolean acceptRemove = false;
-                        System.out.println("Are you sure that you would like to remove this room? y/n");
+                        System.out.println("Remove this room? y/n");
                         do {
                             validate = true;
 
@@ -2223,11 +2213,11 @@ public class HotelLogistics {
                                 validate = true;
 
                             } else {
-                                System.out.println("Invalid anwser. Type y/n");
+                                System.out.println("Invalid anwser. ");
                                 validate = false;
                             }
 
-                        } while (validate == false);
+                        } while (!validate);
 
                         if (acceptRemove) {
 
@@ -2236,12 +2226,12 @@ public class HotelLogistics {
 
                             } else if (acceptRemove) {
                                 for (BookingConfirm booking : room.getRoomBookingList()) {
-                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now()))
-                                        ;
-                                    acceptRemove = false;
-                                    System.out.println("There are current or future bookings for this room.\n" +
-                                            " Please remomve all current or future bookings for this room before removing it. ");
-                                    break;
+                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
+                                        acceptRemove = false;
+                                        System.out.println("There are current or future bookings for this room.\n" +
+                                                " Please remomve all current or future bookings for this room before removing it. ");
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -2268,7 +2258,6 @@ public class HotelLogistics {
                         System.out.println("Back (Enter) ");
                         input.nextLine();
                         return;
-
 
                     default:
 
@@ -2298,12 +2287,13 @@ public class HotelLogistics {
             }
 
             if (metodlist.isEmpty()) {
+                System.out.println("No present or future bookings for this room.\nBack (Enter)");
 
             } else {
                 for (int i = 0; i < metodlist.size(); i++) {
                     System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
                 }
-                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                System.out.printf("%-4s%s%n", "0. Enter");
                 do {
                     menuChoice = input.nextLine();
                     if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
@@ -2315,8 +2305,6 @@ public class HotelLogistics {
                             if (intChoice < 1 || intChoice > metodlist.size()) {
                                 validateInput = false;
                                 System.out.println("Choice did not match an alternative. Try again:");
-
-
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("Choice did not match an alternative. Try again:");
@@ -2326,6 +2314,7 @@ public class HotelLogistics {
                             for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                                 if (metodlist.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
                                     viewBooking(room.getRoomBookingList().get(i));   //Method call
+                                    break;
                                 }
                             }
                         }
