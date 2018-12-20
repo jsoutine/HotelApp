@@ -21,11 +21,17 @@ public class HotelLogistics {
         boolean match = false;
         if (id.matches("C\\d+") || id.matches("c\\d+")) {
             for (AccountCustomer customer : customerList) {
-                if (customer.getAccountID().equalsIgnoreCase(id) && customer.getPassword().equals(password) && !customer.isCancelledAccount()) {
-                    match = true;
-                    System.out.println("\nWelcome " + customer.getName() + "\n");
-                    customerMainMenu(customer);
-                    break;
+                if (customer.getAccountID().equalsIgnoreCase(id) && customer.getPassword().equals(password)) {
+                    if(customer.isCancelledAccount()) {
+                        System.out.printf("%s%n%s%n", "This account is cancelled. You need to create a new account.", "Back (Enter)");
+                        input.nextLine();
+                        return;
+                    } else {
+                        match = true;
+                        System.out.println("\nWelcome " + customer.getName() + "\n");
+                        customerMainMenu(customer);
+                        break;
+                    }
                 } else {
                     match = false;
                 }
@@ -99,7 +105,7 @@ public class HotelLogistics {
                         if (booking.isCheckedIn()) {
                             checkedInToday++;
                         }
-                    }else if(booking.getFromDate().isBefore(LocalDate.now()) && !booking.isCheckedIn()) {
+                    } else if (booking.getFromDate().isBefore(LocalDate.now()) && !booking.isCheckedIn()) {
                         toCheckInToday++;
                         lateCheckIn++;
                     } else if (booking.getToDate().equals(LocalDate.now())) {
@@ -168,15 +174,15 @@ public class HotelLogistics {
             for (AccountCustomer x : customerList) {
                 if (!x.isCancelledAccount()) {     //If account is not admin, and nor cancelled; add to new ArrayList (methodList)
                     methodList.add(x);
-                    System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), x);
+                    System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), x);
                 }
             }
             if (methodList.isEmpty()) {
                 System.out.println("Customer list is empty.");
 
             } else {
-                System.out.printf("%s%n",
-                        "1-n. Choose customer");
+                System.out.printf("%-4s%s%n",
+                        ("1-").concat(Integer.toString(countElements)).concat("."), " Choose customer");
             }
             System.out.printf("%s%n%s%n%s%n",
                     "A.   Add customer",
@@ -352,20 +358,54 @@ public class HotelLogistics {
     //3.1.3.
     private void adminCancelledAccounts(Account loggedInAccount) {  //UNDER CONSTRUCTION
         ArrayList<Account> cancelledAccounts = new ArrayList<>();
+        String menuChoice;
+        int intChoice = 0;
+        boolean validateInput;
         System.out.println("3.1.3. CANCELLED ACCOUNTS");
         int countElements = 0;
-        for (AccountCustomer x : customerList) {
-            if (x.isCancelledAccount()) {  //If account is cancelled
-                cancelledAccounts.add(x);
-                System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), x);
+        for (AccountCustomer customer : customerList) {
+            if (customer.isCancelledAccount()) {  //If account is cancelled
+                cancelledAccounts.add(customer);
+                System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), customer);
             }
         }
         if (cancelledAccounts.isEmpty()) {
-            System.out.println("No cancelled accounts.");
-
+            System.out.printf("%s%n%s%n", "No cancelled accounts.", "Back (Enter)");
+            input.nextLine();
+        } else {
+            if (cancelledAccounts.size() == 1) { //If only one cancelled account in list
+                System.out.printf("%s%n%s%n","Press 1 to view historic bookings for this customer.", "0. Back");
+            } else {
+                System.out.printf("%-4s%s%n%s%n",
+                        ("1-").concat(Integer.toString(countElements)).concat("."), " View historic bookings for selected customer.",
+                        "0. Back");
+            }
+            do {
+                menuChoice = input.nextLine();
+                if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
+                    return;
+                } else {
+                    try {
+                        intChoice = Integer.parseInt(menuChoice);  // String -> int
+                        validateInput = true;
+                        if (intChoice < 1 || intChoice > cancelledAccounts.size()) {
+                            validateInput = false;
+                            System.out.println("Choice did not match an alternative. Try again:");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Choice did not match an alternative. Try again:");
+                        validateInput = false;
+                    }
+                    if (validateInput) {
+                        for (AccountCustomer customer : customerList) {
+                            if (cancelledAccounts.get(intChoice - 1).getAccountID().equalsIgnoreCase(customer.getAccountID())) {    //Find the corresponding account in the original list.
+                                viewBookingsHistoric(customer);   //Method call
+                            }
+                        }
+                    }
+                }
+            } while (!validateInput);
         }
-        System.out.println("Back (Enter)");
-        input.nextLine();
     }
 
     // 3.5
@@ -453,7 +493,7 @@ public class HotelLogistics {
                         menuChoice = input.nextLine();
                         if (countBookingID > 1 && menuChoice.equalsIgnoreCase("A")) {
                             for (Room room : roomList) {
-                                for (int i = 0 ; i < room.getRoomBookingList().size() ; i++) {
+                                for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                                     if (room.getRoomBookingList().get(i).getBookingID() == bookingID) {
                                         if (i != 0 && !room.getRoomBookingList().get(i - 1).isCheckedOut()) {  //if prevoius booking is not checked out
                                             System.out.printf("%s%d%s%n", "Unable to check in room nr: ", room.getRoomNumber(), ". Previous booking not checked out.");
@@ -466,7 +506,7 @@ public class HotelLogistics {
                                     }
                                 }
                             }
-                            if(countValidCheckIns == countBookingID) {
+                            if (countValidCheckIns == countBookingID) {
                                 System.out.printf("%s%d%s%d%n", "Succesfully checked in all ", countBookingID, " rooms of booking ID: ", bookingID);
                             } else {
                                 System.out.printf("%s%d%s%d%s%d%n", "Note: Only able to check in ", countValidCheckIns, " of the ", countBookingID, " rooms of booking ID: ", bookingID);
@@ -476,11 +516,11 @@ public class HotelLogistics {
                             input.nextLine();
                         } else if (menuChoice.equalsIgnoreCase("C")) {
                             for (Room room : roomList) {
-                                for (int i = 0 ; i < room.getRoomBookingList().size() ; i ++) {
-                                    if (room.getRoomBookingList().get(i).getUniqueID() == checkInList.get(intChoice -1).getUniqueID()) {
-                                        if(i != 0 && !room.getRoomBookingList().get(i -1).isCheckedOut()) {
+                                for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+                                    if (room.getRoomBookingList().get(i).getUniqueID() == checkInList.get(intChoice - 1).getUniqueID()) {
+                                        if (i != 0 && !room.getRoomBookingList().get(i - 1).isCheckedOut()) {
                                             System.out.printf("%s%d%s%n", "Unable to check in room nr: ", room.getRoomNumber(), ". Previous booking not checked out.");
-                                        }else {
+                                        } else {
                                             room.getRoomBookingList().get(i).setCheckedIn(true);
                                             System.out.printf("%s%d%n", "Successfully checked in room nr: ", room.getRoomNumber());
                                         }
@@ -753,7 +793,6 @@ public class HotelLogistics {
                                         validateinput = false;
                                         validateYorN = true;
 
-
                                     } else {
                                         System.out.println("Invalid input. Try again:");
                                         validateinput = false;
@@ -816,7 +855,7 @@ public class HotelLogistics {
                                 validateInput = false;
                             }
                         }
-                    }while (!validateInput);
+                    } while (!validateInput);
                     break;
                 case "O":
                 case "o":
@@ -829,7 +868,7 @@ public class HotelLogistics {
                     validateInput = false;
                     break;
             }
-            if(cancel) {
+            if (cancel) {
                 System.out.println("Cancelled. No new phone number set.");
             }
         } while (!validateInput);
@@ -883,7 +922,6 @@ public class HotelLogistics {
                                 System.out.println("Faulty input has been entered. Try again!");
                                 validateInput = false;
                                 validateChangePW = false;
-
                             }
                         }
                     } while (!validateInput);
@@ -1001,7 +1039,6 @@ public class HotelLogistics {
 
                     } while (!validateInput);
 
-
                     break;
 
                 case "0":
@@ -1017,7 +1054,6 @@ public class HotelLogistics {
     }
 
     //3.2. (listRooms)
-
     private void adminRooms(Account loggedInAccount) {
         String menuChoice;
         boolean validateInput;
@@ -1219,7 +1255,7 @@ public class HotelLogistics {
                                         }
 
                                         if (validate) {
-                                            if (newDoubleValue <1.00 || newDoubleValue > 4.00) {
+                                            if (newDoubleValue < 1.00 || newDoubleValue > 4.00) {
                                                 System.out.println("Not a valid value. Must be 1.00 - 4.00. Try again:");
                                                 validate = false;
                                             } else {
@@ -1258,7 +1294,6 @@ public class HotelLogistics {
             } while (!validMenuChoice);
         } while (!exitMethod);
     }
-
     private void customerMainMenu(AccountCustomer loggedInAccount) {
         String menuChoice;
         boolean logout = false;
@@ -1508,8 +1543,7 @@ public class HotelLogistics {
 
     //4.1.
     private void makeBooking(AccountCustomer concernedAccount) {
-        System.out.println("4.1.====MAKE BOOKING, OR VIEW AVAILABLE====");
-
+        System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
         ArrayList<BookingSearch> matchingResults = new ArrayList<>();
         ArrayList<BookingSearch> addedBookings = new ArrayList<>();
         String answer;
@@ -1892,10 +1926,12 @@ public class HotelLogistics {
             int intChoice = 0;
             for (Room room : roomList) {
                 for (BookingConfirm booking : room.getRoomBookingList()) {
-                    if (loggedIn instanceof AccountAdmin) {
-                        methodList.add(booking);
-                    } else if (booking.getCustomer().getAccountID().equalsIgnoreCase(loggedIn.getAccountID())) {
-                        methodList.add(booking);
+                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
+                        if (loggedIn instanceof AccountAdmin) {
+                            methodList.add(booking);
+                        } else if (booking.getCustomer().getAccountID().equalsIgnoreCase(loggedIn.getAccountID())) {
+                            methodList.add(booking);
+                        }
                     }
                 }
             }  //MAYBE ADD: SORTING DEPENDING ON FROM WHICH METHOD THIS METHOD IS INVOKED (compareTo). t.ex. by date rather than room->date
@@ -1907,11 +1943,21 @@ public class HotelLogistics {
                 for (int i = 0; i < methodList.size(); i++) {
                     System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), methodList.get(i));
                 }
-                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                if (methodList.size() == 1) { //If only one booking in list.
+                    System.out.printf("%s%n%s%n","Press 1 to cancel this customer.", "Back (Enter)");
+                } else {
+                    System.out.printf("%-6s%s%n%-6s%s%n",
+                            ("1-").concat(Integer.toString(methodList.size())).concat("."), "Cancel booking",
+                            "0.", "Back");
+                }
+                System.out.printf("%-6s%s%n%-6s%s%n",  "H.", "Historic bookings", "0.", "Back (Enter)");
                 do {
                     menuChoice = input.nextLine();
                     if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
                         return;
+                    }else if (menuChoice.equalsIgnoreCase("H")) {
+                        viewBookingsHistoric(loggedIn);
+                            return;
                     } else {
                         try {
                             intChoice = Integer.parseInt(menuChoice);  // String -> int
@@ -1927,8 +1973,9 @@ public class HotelLogistics {
                         if (validateInput) {
                             for (Room room : roomList) {
                                 for (int i = 0; i < room.getRoomBookingList().size(); i++) {
-                                    if (methodList.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
-                                        viewBooking(room.getRoomBookingList().get(i));   //Method call
+                                    if (methodList.get(intChoice - 1).getUniqueID() == room.getRoomBookingList().get(i).getUniqueID()) {    //Find the corresponding account in the original list.
+                                        cancelBooking(room.getRoomBookingList().get(i));   //Method call
+                                        break;
                                     }
                                 }
                             }
@@ -1939,7 +1986,35 @@ public class HotelLogistics {
         } while (true);
     }
 
+    //4.4.
+    private void viewBookingsHistoric(Account concernedAccount) {
+        ArrayList<BookingConfirm> historicBookings = new ArrayList<>();
+        System.out.printf("%s%s%n", "4.4. HISTORIC BOOKINGS",
+                (concernedAccount instanceof AccountCustomer ? ("%nFor customer: ").concat(concernedAccount.getName()) : ""));
+        int countElements = 0;
+        for (Room room : roomList) {
+            for (BookingConfirm booking : room.getRoomBookingList()) {
+                if (booking.getToDate().isBefore(LocalDate.now())) {  //If booking is historic
+                    if (concernedAccount instanceof AccountAdmin) {
+                        historicBookings.add(booking);
+                    } else if (booking.getCustomer().getAccountID().equalsIgnoreCase(concernedAccount.getAccountID())) {
+                        historicBookings.add(booking);
+                    }
+                    historicBookings.add(booking);
+                    System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), booking);
+                }
+            }
+        }
+        if (historicBookings.isEmpty()) {
+            System.out.println("No historic bookings.");
+        }
+        System.out.println("Back (Enter)");
+        input.nextLine();
+    }
+
     //4.2.1.
+    /*//4.2.1.
+>>>>>>> master
     private void viewBooking(BookingConfirm booking) {
         String cancel;
         boolean validate = false;
@@ -1979,7 +2054,7 @@ public class HotelLogistics {
         } while (!validate);
         System.out.println("Back (Enter)");
         input.nextLine();
-    }
+    }*/
 
     //4.2.1.1.
     private void cancelBooking(BookingConfirm thisBooking) {
@@ -1990,11 +2065,19 @@ public class HotelLogistics {
         String confirm;
         String menu;
 
+        System.out.printf("%n%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n",
+                "CANCEL BOOKING",
+                "Dates: ", thisBooking.getDates(),
+                "Name: ",thisBooking.getCustomer().getName(),
+                "Room number: ", thisBooking.getRoom().getRoomNumber(),
+                "Room standard: ", thisBooking.getRoom().getStandard(),
+                "Number of beds: ", thisBooking.getRoom().getBeds());
+
         do {
-            System.out.printf("%n%s%s%s%n%s%n%s%n",
-                    "Would you like to cancel booking ", thisBooking, "?",
+            System.out.printf("%n%s%n%s%n%s%n",
+                    "Would you like to cancel this booking?",
                     "Y. Yes",
-                    "N. No, go back to bookings");
+                    "N. No");
 
             confirm = input.nextLine();
             confirm = confirm.toUpperCase();
@@ -2005,6 +2088,10 @@ public class HotelLogistics {
                         for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                             if (thisBooking.getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {
                                 countElements++;
+                            } else if (thisBooking.isCheckedIn() && !thisBooking.isCheckedOut()) {
+                                System.out.println("This booking is checked in. Please check out before cancelling booking. \nBack(Enter)");
+                                input.nextLine();
+                                return;
                             }
                         }
                     }
@@ -2021,9 +2108,8 @@ public class HotelLogistics {
                         System.out.print("\nA. Cancel all\n");
                     }
 
-                    System.out.printf("%s%s%s%s%n%s%n",
-                            "C. Cancel chosen booking for Room nr: ", thisBooking.getRoom().getRoomNumber(),
-                            " Standard: ", thisBooking.getRoom().getStandard(),
+                    System.out.printf("%s%n%s%n",
+                            "C. Confirm cancel booking for selected room.",
                             "0. Back");
                     do {
                         menu = input.nextLine();
@@ -2036,6 +2122,7 @@ public class HotelLogistics {
                                     }
                                 }
                             }
+
                             System.out.printf("%s%d%s%d%n", "Succesfully cancelled all ", countElements, " bookings of booking ID: ", bookingID);
                             validate = true;
                             //proceed = true;
@@ -2053,8 +2140,8 @@ public class HotelLogistics {
                             validate = true;
                             input.nextLine();
                         } else if (menu.equals("0") || menu.equalsIgnoreCase("O")) {
-                            System.out.println("Booking still valid.");
-                            validate = true;
+                            System.out.println("Booking still valid.\n");
+                            //validate = true;
                             return;
                         } else {
                             System.out.println("Invalid input. Try again:");
@@ -2065,13 +2152,14 @@ public class HotelLogistics {
                     validate = true;
                     break;
                 case "N":
-                    System.out.println("Booking still valid.");
+                    System.out.println("Booking still valid.\n");
                     validate = true;
                     break;
                 case "O":
                 case "0":
-                    System.out.println("Booking still valid.");
-                    return;
+                    System.out.println("Booking still valid.\n");
+                    validate = true;
+                    break;
                 default:
                     System.out.println("Invalid input. Try again.");
                     validate = false;
@@ -2160,19 +2248,16 @@ public class HotelLogistics {
                                 } catch (IllegalArgumentException b) {
                                     System.out.println(b.getMessage());
                                     validate = false;
-
                                 }
                             }
-
                         } while (!validate);
                         System.out.println("The new standard for room number " + room.getRoomNumber()
                                 + " is now: " + answer + ".");
-
                         break;
 
                     case "3":
                         boolean acceptRemove = false;
-                        System.out.println("Are you sure that you would like to remove this room? y/n");
+                        System.out.println("Remove this room? y/n");
                         do {
                             validate = true;
 
@@ -2185,11 +2270,11 @@ public class HotelLogistics {
                                 validate = true;
 
                             } else {
-                                System.out.println("Invalid anwser. Type y/n");
+                                System.out.println("Invalid anwser. ");
                                 validate = false;
                             }
 
-                        } while (validate == false);
+                        } while (!validate);
 
                         if (acceptRemove) {
 
@@ -2198,12 +2283,12 @@ public class HotelLogistics {
 
                             } else if (acceptRemove) {
                                 for (BookingConfirm booking : room.getRoomBookingList()) {
-                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now()))
-                                        ;
-                                    acceptRemove = false;
-                                    System.out.println("There are current or future bookings for this room.\n" +
-                                            " Please remomve all current or future bookings for this room before removing it. ");
-                                    break;
+                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
+                                        acceptRemove = false;
+                                        System.out.println("There are current or future bookings for this room.\n" +
+                                                " Please remomve all current or future bookings for this room before removing it. ");
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -2230,7 +2315,6 @@ public class HotelLogistics {
                         System.out.println("Back (Enter) ");
                         input.nextLine();
                         return;
-
 
                     default:
 
@@ -2260,12 +2344,13 @@ public class HotelLogistics {
             }
 
             if (metodlist.isEmpty()) {
+                System.out.println("No present or future bookings for this room.\nBack (Enter)");
 
             } else {
                 for (int i = 0; i < metodlist.size(); i++) {
                     System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), metodlist.get(i));
                 }
-                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                System.out.printf("%-4s%s%n", "0. Enter");
                 do {
                     menuChoice = input.nextLine();
                     if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
@@ -2277,8 +2362,6 @@ public class HotelLogistics {
                             if (intChoice < 1 || intChoice > metodlist.size()) {
                                 validateInput = false;
                                 System.out.println("Choice did not match an alternative. Try again:");
-
-
                             }
                         } catch (NumberFormatException e) {
                             System.out.println("Choice did not match an alternative. Try again:");
@@ -2287,7 +2370,8 @@ public class HotelLogistics {
                         if (validateInput) {
                             for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                                 if (metodlist.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
-                                    viewBooking(room.getRoomBookingList().get(i));   //Method call
+                                    cancelBooking(room.getRoomBookingList().get(i));   //Method call
+                                    break;
                                 }
                             }
                         }
@@ -2309,7 +2393,7 @@ public class HotelLogistics {
         customerList.add(new AccountCustomer("Elin Hansson", "custom", "0707676768"));
         customerList.add(new AccountCustomer("Lena Karlsson", "custom", "0707676768"));
 
-        //customerList.get(0).setCancelledAccount(true); //Set account to cancelled
+        customerList.get(0).setCancelledAccount(true); //Set account to cancelled
 
         //=================================== ADDING ADMINS =====================================================
 
