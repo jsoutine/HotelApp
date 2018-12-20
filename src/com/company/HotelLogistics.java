@@ -101,7 +101,7 @@ public class HotelLogistics {
                         if (booking.isCheckedIn()) {
                             checkedInToday++;
                         }
-                    }else if(booking.getFromDate().isBefore(LocalDate.now()) && !booking.isCheckedIn()) {
+                    } else if (booking.getFromDate().isBefore(LocalDate.now()) && !booking.isCheckedIn()) {
                         toCheckInToday++;
                         lateCheckIn++;
                     } else if (booking.getToDate().equals(LocalDate.now())) {
@@ -492,7 +492,7 @@ public class HotelLogistics {
                         menuChoice = input.nextLine();
                         if (countBookingID > 1 && menuChoice.equalsIgnoreCase("A")) {
                             for (Room room : roomList) {
-                                for (int i = 0 ; i < room.getRoomBookingList().size() ; i++) {
+                                for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                                     if (room.getRoomBookingList().get(i).getBookingID() == bookingID) {
                                         if (i != 0 && !room.getRoomBookingList().get(i - 1).isCheckedOut()) {  //if prevoius booking is not checked out
                                             System.out.printf("%s%d%s%n", "Unable to check in room nr: ", room.getRoomNumber(), ". Previous booking not checked out.");
@@ -505,7 +505,7 @@ public class HotelLogistics {
                                     }
                                 }
                             }
-                            if(countValidCheckIns == countBookingID) {
+                            if (countValidCheckIns == countBookingID) {
                                 System.out.printf("%s%d%s%d%n", "Succesfully checked in all ", countBookingID, " rooms of booking ID: ", bookingID);
                             } else {
                                 System.out.printf("%s%d%s%d%s%d%n", "Note: Only able to check in ", countValidCheckIns, " of the ", countBookingID, " rooms of booking ID: ", bookingID);
@@ -515,11 +515,11 @@ public class HotelLogistics {
                             input.nextLine();
                         } else if (menuChoice.equalsIgnoreCase("C")) {
                             for (Room room : roomList) {
-                                for (int i = 0 ; i < room.getRoomBookingList().size() ; i ++) {
-                                    if (room.getRoomBookingList().get(i).getUniqueID() == checkInList.get(intChoice -1).getUniqueID()) {
-                                        if(i != 0 && !room.getRoomBookingList().get(i -1).isCheckedOut()) {
+                                for (int i = 0; i < room.getRoomBookingList().size(); i++) {
+                                    if (room.getRoomBookingList().get(i).getUniqueID() == checkInList.get(intChoice - 1).getUniqueID()) {
+                                        if (i != 0 && !room.getRoomBookingList().get(i - 1).isCheckedOut()) {
                                             System.out.printf("%s%d%s%n", "Unable to check in room nr: ", room.getRoomNumber(), ". Previous booking not checked out.");
-                                        }else {
+                                        } else {
                                             room.getRoomBookingList().get(i).setCheckedIn(true);
                                             System.out.printf("%s%d%n", "Successfully checked in room nr: ", room.getRoomNumber());
                                         }
@@ -844,14 +844,14 @@ public class HotelLogistics {
                             try {
                                 loggedInAccount.setPhoneNumber(newNr);
                                 validateInput = true;
-                                System.out.println("New phonenumber set: " + loggedInAccount.getPhoneNumber() +"\nBack (Enter)");
+                                System.out.println("New phonenumber set: " + loggedInAccount.getPhoneNumber() + "\nBack (Enter)");
                                 input.nextLine();
                             } catch (IllegalArgumentException e) {
                                 System.out.println(e.getMessage() + " Try again:");
                                 validateInput = false;
                             }
                         }
-                    }while (!validateInput);
+                    } while (!validateInput);
                     break;
                 case "O":
                 case "o":
@@ -864,7 +864,7 @@ public class HotelLogistics {
                     validateInput = false;
                     break;
             }
-            if(cancel) {
+            if (cancel) {
                 System.out.println("Cancelled. No new phone number set.");
             }
         } while (!validateInput);
@@ -1958,8 +1958,9 @@ public class HotelLogistics {
                         if (validateInput) {
                             for (Room room : roomList) {
                                 for (int i = 0; i < room.getRoomBookingList().size(); i++) {
-                                    if (methodList.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
-                                        viewBooking(room.getRoomBookingList().get(i));   //Method call
+                                    if (methodList.get(intChoice - 1).getUniqueID() == room.getRoomBookingList().get(i).getUniqueID()) {    //Find the corresponding account in the original list.
+                                        cancelBooking(room.getRoomBookingList().get(i));   //Method call
+                                        break;
                                     }
                                 }
                             }
@@ -1970,7 +1971,7 @@ public class HotelLogistics {
         } while (true);
     }
 
-    //4.2.1.
+    /*//4.2.1.
     private void viewBooking(BookingConfirm booking) {
         String cancel;
         boolean validate = false;
@@ -2010,7 +2011,7 @@ public class HotelLogistics {
         } while (!validate);
         System.out.println("Back (Enter)");
         input.nextLine();
-    }
+    }*/
 
     //4.2.1.1.
     private void cancelBooking(BookingConfirm thisBooking) {
@@ -2021,11 +2022,19 @@ public class HotelLogistics {
         String confirm;
         String menu;
 
+        System.out.printf("%n%s%n%s%s%n%s%s%n%s%s%n%s%s%n%s%s%n",
+                "CANCEL BOOKING",
+                "Dates: ", thisBooking.getDates(),
+                "Name: ",thisBooking.getCustomer().getName(),
+                "Room number: ", thisBooking.getRoom().getRoomNumber(),
+                "Room standard: ", thisBooking.getRoom().getStandard(),
+                "Number of beds: ", thisBooking.getRoom().getBeds());
+
         do {
-            System.out.printf("%n%s%s%s%n%s%n%s%n",
-                    "Would you like to cancel booking ", thisBooking, "?",
+            System.out.printf("%n%s%n%s%n%s%n",
+                    "Would you like to cancel this booking?",
                     "Y. Yes",
-                    "N. No, go back to bookings");
+                    "N. No");
 
             confirm = input.nextLine();
             confirm = confirm.toUpperCase();
@@ -2036,6 +2045,10 @@ public class HotelLogistics {
                         for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                             if (thisBooking.getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {
                                 countElements++;
+                            } else if (thisBooking.isCheckedIn() && !thisBooking.isCheckedOut()) {
+                                System.out.println("This booking is checked in. Please check out before cancelling booking. \nBack(Enter)");
+                                input.nextLine();
+                                return;
                             }
                         }
                     }
@@ -2052,9 +2065,8 @@ public class HotelLogistics {
                         System.out.print("\nA. Cancel all\n");
                     }
 
-                    System.out.printf("%s%s%s%s%n%s%n",
-                            "C. Cancel chosen booking for Room nr: ", thisBooking.getRoom().getRoomNumber(),
-                            " Standard: ", thisBooking.getRoom().getStandard(),
+                    System.out.printf("%s%n%s%n",
+                            "C. Confirm cancel booking for selected room.",
                             "0. Back");
                     do {
                         menu = input.nextLine();
@@ -2067,6 +2079,7 @@ public class HotelLogistics {
                                     }
                                 }
                             }
+
                             System.out.printf("%s%d%s%d%n", "Succesfully cancelled all ", countElements, " bookings of booking ID: ", bookingID);
                             validate = true;
                             //proceed = true;
@@ -2084,8 +2097,8 @@ public class HotelLogistics {
                             validate = true;
                             input.nextLine();
                         } else if (menu.equals("0") || menu.equalsIgnoreCase("O")) {
-                            System.out.println("Booking still valid.");
-                            validate = true;
+                            System.out.println("Booking still valid.\n");
+                            //validate = true;
                             return;
                         } else {
                             System.out.println("Invalid input. Try again:");
@@ -2096,13 +2109,14 @@ public class HotelLogistics {
                     validate = true;
                     break;
                 case "N":
-                    System.out.println("Booking still valid.");
+                    System.out.println("Booking still valid.\n");
                     validate = true;
                     break;
                 case "O":
                 case "0":
-                    System.out.println("Booking still valid.");
-                    return;
+                    System.out.println("Booking still valid.\n");
+                    validate = true;
+                    break;
                 default:
                     System.out.println("Invalid input. Try again.");
                     validate = false;
@@ -2313,7 +2327,7 @@ public class HotelLogistics {
                         if (validateInput) {
                             for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                                 if (metodlist.get(intChoice - 1).getBookingID() == room.getRoomBookingList().get(i).getBookingID()) {    //Find the corresponding account in the original list.
-                                    viewBooking(room.getRoomBookingList().get(i));   //Method call
+                                    cancelBooking(room.getRoomBookingList().get(i));   //Method call
                                     break;
                                 }
                             }
