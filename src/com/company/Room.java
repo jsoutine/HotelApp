@@ -8,7 +8,6 @@ public class Room {
     private int beds;
     private int standard;
     private ArrayList<BookingConfirm> roomBookingList = new ArrayList<>();
-    //private int pricePerNight; Use enums for standard??
 
     public Room(int beds, int standard) {
         if(beds == 1 || beds == 2 || beds == 4) {
