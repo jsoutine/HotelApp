@@ -359,7 +359,8 @@ public class HotelLogistics {
                     " (ID: " + customer.getAccountID() + ")");
             System.out.println("1. Make booking for " + customer.getName());
             System.out.println("2. View bookings for " + customer.getName());
-            System.out.println("3. Edit customer information");
+            System.out.println("3. View historic bookings");
+            System.out.println("4. Edit customer information");
             System.out.println("0. Back");
             String choice = input.nextLine();
             //do {
@@ -373,6 +374,9 @@ public class HotelLogistics {
                     viewBookings(customer);
                     break;
                 case "3":
+                    viewBookingsHistoric(customer);
+                    break;
+                case "4":
                     editCustomerInfo(customer);
                     break;
 
@@ -393,10 +397,10 @@ public class HotelLogistics {
         ArrayList<Account> cancelledAccounts = new ArrayList<>();
         System.out.println("3.1.3. CANCELLED ACCOUNTS");
         int countElements = 0;
-        for (AccountCustomer x : customerList) {
-            if (x.isCancelledAccount()) {  //If account is cancelled
-                cancelledAccounts.add(x);
-                System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), x);
+        for (AccountCustomer customer : customerList) {
+            if (customer.isCancelledAccount()) {  //If account is cancelled
+                cancelledAccounts.add(customer);
+                System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), customer);
             }
         }
         if (cancelledAccounts.isEmpty()) {
@@ -1930,10 +1934,12 @@ public class HotelLogistics {
             int intChoice = 0;
             for (Room room : roomList) {
                 for (BookingConfirm booking : room.getRoomBookingList()) {
-                    if (loggedIn instanceof AccountAdmin) {
-                        methodList.add(booking);
-                    } else if (booking.getCustomer().getAccountID().equalsIgnoreCase(loggedIn.getAccountID())) {
-                        methodList.add(booking);
+                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
+                        if (loggedIn instanceof AccountAdmin) {
+                            methodList.add(booking);
+                        } else if (booking.getCustomer().getAccountID().equalsIgnoreCase(loggedIn.getAccountID())) {
+                            methodList.add(booking);
+                        }
                     }
                 }
             }  //MAYBE ADD: SORTING DEPENDING ON FROM WHICH METHOD THIS METHOD IS INVOKED (compareTo). t.ex. by date rather than room->date
@@ -1945,11 +1951,14 @@ public class HotelLogistics {
                 for (int i = 0; i < methodList.size(); i++) {
                     System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), methodList.get(i));
                 }
-                System.out.printf("%-4s%s%n", "0.", "Back (Enter)");
+                System.out.printf("%-4s%s%n%-4s%s%n", "0.",  "H.", "Historic bookings", "Back (Enter)");
                 do {
                     menuChoice = input.nextLine();
                     if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
                         return;
+                    }else if (menuChoice.equalsIgnoreCase("H")) {
+                        viewBookingsHistoric(loggedIn);
+                            return;
                     } else {
                         try {
                             intChoice = Integer.parseInt(menuChoice);  // String -> int
@@ -1975,6 +1984,32 @@ public class HotelLogistics {
                 } while (!validateInput);
             }
         } while (true);
+    }
+
+    //4.4.
+    private void viewBookingsHistoric(Account concernedAccount) {
+        ArrayList<BookingConfirm> historicBookings = new ArrayList<>();
+        System.out.printf("%s%n%s%n", "4.4. HISTORIC BOOKINGS",
+                (concernedAccount instanceof AccountCustomer ? ("For customer: ").concat(concernedAccount.getName()) : ""));
+        int countElements = 0;
+        for (Room room : roomList) {
+            for (BookingConfirm booking : room.getRoomBookingList()) {
+                if (booking.getToDate().isBefore(LocalDate.now())) {  //If booking is historic
+                    if (concernedAccount instanceof AccountAdmin) {
+                        historicBookings.add(booking);
+                    } else if (booking.getCustomer().getAccountID().equalsIgnoreCase(concernedAccount.getAccountID())) {
+                        historicBookings.add(booking);
+                    }
+                    historicBookings.add(booking);
+                    System.out.printf("%-3s%s%n", Integer.toString(++countElements).concat("."), booking);
+                }
+            }
+        }
+        if (historicBookings.isEmpty()) {
+            System.out.println("No historic bookings.");
+        }
+        System.out.println("Back (Enter)");
+        input.nextLine();
     }
 
     //4.2.1.
