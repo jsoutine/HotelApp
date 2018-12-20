@@ -30,7 +30,7 @@ public class HotelLogistics {
                     } else {
                         match = true;
                         System.out.println("\nWelcome " + customer.getName() + "\n");
-                        customerMainMenu(customer);
+                        customerMainMenu(customer, false);
                         break;
                     }
                 } else {
@@ -1335,38 +1335,57 @@ public class HotelLogistics {
             } while (!validMenuChoice);
         } while (!exitMethod);
     }
-    private void customerMainMenu(AccountCustomer loggedInAccount) {
+    private void customerMainMenu(AccountCustomer customerAccount, boolean adminView) {
         String menuChoice;
         boolean logout = false;
         do {
-            if (loggedInAccount.isCancelledAccount()) {
+            if (customerAccount.isCancelledAccount()) {
                 logout = true;
             } else {
-                //4.
-                System.out.printf("%s%n%s%s%n%s%n%s%n%s%n%s%n",
-                        "4\n========CUSTOMER MAIN MENU=========",
-                        "Logged in as: ", loggedInAccount.getName(),
-                        "1. Make a booking, or view available",
-                        "2. View your bookings",
-                        "3. Edit account info",
-                        "0. Log out.");
+                if(adminView) {
+                    System.out.printf("%s%n%-12s%s%n%-12s%s%n%s%n%s%n%s%n%s%n%s%n",
+                            "========= CUSTOMER ==========",
+                            "Customer:", customerAccount.getName(),
+                            "Customer ID:", customerAccount.getAccountID(),
+                            "1. Make a booking",
+                            "2. View bookings",
+                            "3. View historic bookings",
+                            "4. Edit account info",
+                            "0. Back.");
+                } else {
+                    System.out.printf("%s%n%s%s%n%s%n%s%n%s%n%s%n%s%n",
+                            "======== MAIN MENU =========",
+                            "Logged in as: ", customerAccount.getName(),
+                            "1. Make a booking, or view available",
+                            "2. View your bookings",
+                            "3. View your historic bookings",
+                            "3. Edit account info",
+                            "0. Log out.");
+                }
                 do {
                     menuChoice = input.nextLine();
                     switch (menuChoice) {
                         case "1":
                             //System.out.println("4.1.");
-                            makeBooking(loggedInAccount);
+                            makeBooking(customerAccount);
                             break;
                         case "2":
                             //System.out.println("4.2.");
-                            viewBookings(loggedInAccount);
+                            viewBookings(customerAccount);
                             break;
                         case "3":
+                            viewBookingsHistoric(customerAccount);
+                            break;
+                        case "4":
                             //System.out.println("4.3.");
-                            editCustomerInfo(loggedInAccount);
+                            editCustomerInfo(customerAccount);
                             break;
                         case "0":
-                            logout = logOut();
+                            if(adminView) {
+                                logout = true;
+                            } else {
+                                logout = logOut();
+                            }
                             break;
                         default:
                             System.out.println("Invalid option. Type a a choice 0-3:");
@@ -1985,13 +2004,12 @@ public class HotelLogistics {
                     System.out.printf("%-4s%s%n", Integer.toString(i + 1).concat(". "), methodList.get(i));
                 }
                 if (methodList.size() == 1) { //If only one booking in list.
-                    System.out.printf("%s%n%s%n","Press 1 to cancel this customer.", "Back (Enter)");
+                    System.out.printf("%s%n%n","Press 1 to cancel this customer.");
                 } else {
-                    System.out.printf("%-6s%s%n%-6s%s%n",
-                            ("1-").concat(Integer.toString(methodList.size())).concat("."), "Cancel booking",
-                            "0.", "Back");
+                    System.out.printf("%-6s%s%n",
+                            ("1-").concat(Integer.toString(methodList.size())).concat("."), "Cancel booking");
                 }
-                System.out.printf("%-6s%s%n%-6s%s%n",  "H.", "Historic bookings", "0.", "Back (Enter)");
+                System.out.printf("%-6s%s%n%-6s%s%n",  "H.", "Historic bookings", "0.", "Back");
                 do {
                     menuChoice = input.nextLine();
                     if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
