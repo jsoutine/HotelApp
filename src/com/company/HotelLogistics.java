@@ -395,6 +395,9 @@ public class HotelLogistics {
     //3.1.3.
     private void adminCancelledAccounts(Account loggedInAccount) {  //UNDER CONSTRUCTION
         ArrayList<Account> cancelledAccounts = new ArrayList<>();
+        String menuChoice;
+        int intChoice = 0;
+        boolean validateInput;
         System.out.println("3.1.3. CANCELLED ACCOUNTS");
         int countElements = 0;
         for (AccountCustomer customer : customerList) {
@@ -405,10 +408,36 @@ public class HotelLogistics {
         }
         if (cancelledAccounts.isEmpty()) {
             System.out.println("No cancelled accounts.");
-
+        } else {
+            System.out.printf("%-4s%s%n%s%n",
+                    ("1-").concat(Integer.toString(countElements)).concat("."), " View historic bookings for selected customer.",
+                    "0. Back");
+            do { // do this while input is not numeric, or while input does not match accounts (1-n) or 0, A or C.
+                menuChoice = input.nextLine();
+                if (menuChoice.equals("0") || menuChoice.equalsIgnoreCase("O")) {
+                    return;
+                } else {
+                    try {
+                        intChoice = Integer.parseInt(menuChoice);  // String -> int
+                        validateInput = true;
+                        if (intChoice < 1 || intChoice > cancelledAccounts.size()) {
+                            validateInput = false;
+                            System.out.println("Choice did not match an alternative. Try again:");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Choice did not match an alternative. Try again:");
+                        validateInput = false;
+                    }
+                    if (validateInput) {
+                        for (int i = 0; i < customerList.size(); i++) {
+                            if (cancelledAccounts.get(intChoice - 1).getAccountID().equalsIgnoreCase(customerList.get(i).getAccountID())) {    //Find the corresponding account in the original list.
+                                viewBookingsHistoric(customerList.get(i));   //Method call
+                            }
+                        }
+                    }
+                }
+            } while (!validateInput);
         }
-        System.out.println("Back (Enter)");
-        input.nextLine();
     }
 
     // 3.5
