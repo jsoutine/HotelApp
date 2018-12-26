@@ -1308,7 +1308,7 @@ public class HotelLogistics {
                         "1. Make a booking, or view available rooms",
                         "2. View bookings",
                         "3. Edit account info",
-                        "0. Log out.");
+                        "0. Log out.");   //
                 do {
                     menuChoice = input.nextLine();
                     switch (menuChoice) {
