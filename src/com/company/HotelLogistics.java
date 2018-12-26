@@ -1,6 +1,5 @@
 package com.company;
 
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -90,9 +89,8 @@ public class HotelLogistics {
             int checkedOutToday = 0;
             int lateCheckOut = 0;
             int lateCheckIn = 0;
-            System.out.printf("%n%s%n%s%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n",
-                    "3. ADMIN MAIN MENU",
-                    "Logged in as admin (name: ", loggedInAccount.getName(), ")",
+            System.out.printf("%s%n%s%n%s%n%s%n%s%n%s%n%s%n",
+                    "3.\n====ADMIN MAIN MENU====",
                     "1. Customers",
                     "2. Rooms",
                     "3. Bookings",
@@ -136,7 +134,7 @@ public class HotelLogistics {
                         validateInput = true;
                         break;
                     case "3":
-                        System.out.println("Method still under construction");
+                        //System.out.println("Method still under construction");
                         viewBookings(loggedInAccount);
                         validateInput = true;
                         break;
@@ -221,14 +219,13 @@ public class HotelLogistics {
                     if (validateInput) {
                         for (int i = 0; i < customerList.size(); i++) {
                             if (methodList.get(intChoice - 1).getAccountID().equalsIgnoreCase(customerList.get(i).getAccountID())) {    //Find the corresponding account in the original list.
-                                adminCustomer(customerList.get(i));   //Method call
+                                customerMainMenu(customerList.get(i));   //Method call
                             }
                         }
                     }
                 }
             } while (!validateInput);
         } while (true); //Always loop, until menuChoice = 0 -> Return
-
     }
 
     //3.1.1.
@@ -246,7 +243,7 @@ public class HotelLogistics {
         boolean checkAll = false;
         boolean checkSwitch;
 
-        System.out.printf("%n%s%n%n%s%n%s%n%s%n",
+        System.out.printf("%s%n%s%n%s%n%s%n",
                 "====NEW GUEST====",
                 "Welcome to Hotel Gittan. Register your account here.",
                 "1. Proceed",
@@ -258,7 +255,9 @@ public class HotelLogistics {
 
             switch (menu) {
                 case "1":
-                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.");
+                    System.out.println("====ACCOUNT CREATION====" +
+                            "\nYou will be assigned a unique user ID." +
+                            "\nPlease fill in the following information below.");
                     checkSwitch = true;
                     break;
                 case "O":
@@ -354,48 +353,6 @@ public class HotelLogistics {
         AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
         customerList.add(newDude);
         System.out.printf("You can now log in with your unique user ID: %s, and your chosen password. %n%n", newDude.getAccountID());
-    }
-
-    private void adminCustomer(AccountCustomer customer) {   //UNDER CONSTRUCTION
-        boolean backSelected = false;
-
-        do {
-            System.out.println("====[ADMIN] CUSTOMER INFO====");
-            System.out.println("Customer selected: " + customer.getName() +
-                    " (ID: " + customer.getAccountID() + ")");
-            System.out.println("1. Make booking for " + customer.getName());
-            System.out.println("2. View bookings for " + customer.getName());
-            System.out.println("3. View historic bookings");
-            System.out.println("4. Edit customer information");
-            System.out.println("0. Back");
-            String choice = input.nextLine();
-            //do {
-            switch (choice) {
-                case "1":
-                    System.out.println("[ADMIN]");
-                    makeBooking(customer);
-                    break;
-
-                case "2":
-                    viewBookings(customer);
-                    break;
-                case "3":
-                    viewBookingsHistoric(customer);
-                    break;
-                case "4":
-                    editCustomerInfo(customer);
-                    break;
-
-                case "0":
-                    backSelected = true;
-                    break;
-
-                default:
-                    System.out.println("Faulty input. Enter 0-3.\nPress (Enter)");
-                    input.nextLine();
-            }
-            //}while (!choice.matches("1") && !choice.matches("2") && !choice.matches("3") && !choice.matches("0"));
-        } while (!backSelected);
     }
 
     //3.1.3.
@@ -752,9 +709,9 @@ public class HotelLogistics {
                 System.out.println("Phonenumber: " + concernedAccount.getPhoneNumber());
                 System.out.println("Password:    " + concernedAccount.getPassword());
                 System.out.println("=============================");
-                System.out.println("1. Name");
-                System.out.println("2. Phonenumber");
-                System.out.println("3. Password");
+                System.out.println("1. Edit name");
+                System.out.println("2. Edit phone number");
+                System.out.println("3. Edit Password");
                 System.out.println("4. Remove account");
                 System.out.println("0. Back");
 
@@ -793,9 +750,9 @@ public class HotelLogistics {
         boolean validateExitToChangeName = true;
 
         do {
-            System.out.println("4.3.1\n====CHANGE NAME====");
+            System.out.println("4.3.1. Edit name");
             System.out.println("Name currently assigned: " + loggedInAccount.getName());
-            System.out.println("1. Change name");
+            System.out.println("1. Edit current name");
             System.out.println("0. Back");
 
             String choice = input.nextLine();
@@ -806,8 +763,10 @@ public class HotelLogistics {
                         choice = input.nextLine();
 
                         if (choice.equals("0")) {
+
                             validateinput = true;
                             System.out.println("Edit name cancelled. \nBack (Enter)");
+
                         } else if (choice.matches("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-]*[\\s]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-].*")) {
                             System.out.println("New name: " + choice);
                             System.out.println("Are you happy with the newly entered name?");
@@ -816,7 +775,7 @@ public class HotelLogistics {
                                 System.out.println("y/n");
                                 String yesOrNo = input.nextLine();
                                 if (yesOrNo.equals("0")) {
-                                    System.out.println("Returning to 'CHANGE NAME' menu!");
+                                    System.out.println("Very well, then lets return to the previous menu!");
                                     validateExitToChangeName = false;
                                     validateYorN = true;
 
@@ -835,7 +794,7 @@ public class HotelLogistics {
                                         validateYorN = true;
 
                                     } else {
-                                        System.out.println("Inavlid input. Try again:");
+                                        System.out.println("Invalid input. Try again:");
                                         validateinput = false;
                                         validateYorN = false;
                                     }
@@ -843,6 +802,7 @@ public class HotelLogistics {
                             } while (!validateYorN);
 
                         } else if (!choice.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-]*[\\s]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-].*")) {
+
                             System.out.println("Format not followed. Try again:");
                             validateinput = false;
                             validateExitToChangeName = true;
@@ -860,7 +820,6 @@ public class HotelLogistics {
                     System.out.println("Invalid input. Try again:");
                     validateExitToChangeName = false;
                     break;
-
             }
         } while (!validateExitToChangeName);
     }
@@ -870,9 +829,9 @@ public class HotelLogistics {
         boolean cancel = false;
 
         do {
-            System.out.println("4.3.2\n====CHANGE PHONENUMBER====");
-            System.out.println("Phonenumber currently assigned: " + loggedInAccount.getPhoneNumber());
-            System.out.println("1. Change current phonenumber");
+            System.out.println("4.3.2 Edit phone number");
+            System.out.println("Phone number currently assigned: " + loggedInAccount.getPhoneNumber());
+            System.out.println("1. Edit current phone number");
             System.out.println("0. Back");
             String choice = input.nextLine();
 
@@ -884,11 +843,12 @@ public class HotelLogistics {
                         if (newNr.equals("0")) {
                             cancel = true;
                             validateInput = true;
+
                         } else {
                             try {
                                 loggedInAccount.setPhoneNumber(newNr);
                                 validateInput = true;
-                                System.out.println("New phonenumber set: " + loggedInAccount.getPhoneNumber() + "\nBack (Enter)");
+                                System.out.println("New phone number set: " + loggedInAccount.getPhoneNumber() +"\nBack (Enter)");
                                 input.nextLine();
                             } catch (IllegalArgumentException e) {
                                 System.out.println(e.getMessage() + " Try again:");
@@ -918,9 +878,9 @@ public class HotelLogistics {
         boolean validateInput = true;
         boolean validateChangePW = true;
         do {
-            System.out.println("4.3.3\n====CHANGE PASSWORD====");
+            System.out.println("4.3.3. Edit password");
             System.out.println("Current password: " + loggedInAccount.getPassword());
-            System.out.println("1. Change current password");
+            System.out.println("1. Edit current password");
             System.out.println("0. Back");
             String choice = input.nextLine();
 
@@ -936,7 +896,6 @@ public class HotelLogistics {
                             input.nextLine();
 
                         } else if (!newPwd.equals(loggedInAccount.getPassword())) {
-                            System.out.println("New password: " + newPwd);
                             System.out.println("Are you happy with your newly entered password?");
                             System.out.println("y/n or press 0 to go back to menu!");
                             String yesOrNo = input.nextLine();
@@ -1026,11 +985,11 @@ public class HotelLogistics {
 
     private void adminAddRoom() {
         String choice;
-        int val = 0;
         int beds = 0;
         String answer;
         int standard = 0;
         boolean validateInput;
+
         do {
             System.out.println("====ADD ROOM======");
             System.out.println("1. Create new room");
@@ -1166,8 +1125,8 @@ public class HotelLogistics {
             cancel = false;
             System.out.printf("%s%n%s%n%s%n%s%n%s%n",
                     "Edit price for:",
-                    "1. standards",
-                    "2. beds",
+                    "1. Standards",
+                    "2. Beds",
                     "0. Back",
                     "Type a choice:");
             do {
@@ -1177,7 +1136,7 @@ public class HotelLogistics {
                 switch (menuChoice) {
                     case "1":
                         System.out.printf("%s%n",
-                                "choose standard 1-5, " +
+                                "Choose standard 1-5, " +
                                         "or 0 to cancel.");
                         for (StandardPrice standard : standardList) {
                             System.out.println(standard.getName() + " standard/room. Price: " + standard.getPrice() + "SEK");
@@ -1344,12 +1303,12 @@ public class HotelLogistics {
             } else {
                 //4.
                 System.out.printf("%s%n%s%s%n%s%n%s%n%s%n%s%n",
-                        "4\n========CUSTOMER MAIN MENU=========",
-                        "Logged in as: ", loggedInAccount.getName(),
-                        "1. Make a booking, or view available",
-                        "2. View your bookings",
+                        "4.\n====CUSTOMER MAIN MENU====",
+                        "Customer name: ", loggedInAccount.getName(),
+                        "1. Make a booking, or view available rooms",
+                        "2. View bookings",
                         "3. Edit account info",
-                        "0. Log out.");
+                        "0. Log out.");   //
                 do {
                     menuChoice = input.nextLine();
                     switch (menuChoice) {
@@ -1366,6 +1325,7 @@ public class HotelLogistics {
                             editCustomerInfo(loggedInAccount);
                             break;
                         case "0":
+                            //System.out.println("3.4");
                             logout = logOut();
                             break;
                         default:
@@ -1584,7 +1544,6 @@ public class HotelLogistics {
     //4.1.
     private void makeBooking(AccountCustomer concernedAccount) {
         System.out.println("4.1. MAKE BOOKING, OR VIEW AVAILABLE");
-
         ArrayList<BookingSearch> matchingResults = new ArrayList<>();
         ArrayList<BookingSearch> addedBookings = new ArrayList<>();
         String answer;
@@ -1691,9 +1650,9 @@ public class HotelLogistics {
                             if (!oneRoom && validateInput) {
                                 if (matchingResults.get(bookingChoice - 1).isAdded()) {
                                     System.out.printf("%s%n%s%n%s%n",
-                                            "This room is alredy added to your booking. Remove from your list?",
-                                            "Y. Yes, remove this room from the list.",
-                                            "N. No, don't remove this from the list.");
+                                            "This room is already added to your booking. Remove from your list?",
+                                            "Y. Yes, remove this room",
+                                            "N. No, don't remove this room.");
                                     do {
                                         answer = input.nextLine();
                                         if (answer.equalsIgnoreCase("Y")) {

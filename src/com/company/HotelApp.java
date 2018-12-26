@@ -24,7 +24,7 @@ public class HotelApp {
         String password;
         boolean validMenu;
 
-        System.out.println("\n====WELCOME=====");
+        System.out.println("====WELCOME=====");
         do {
             System.out.printf("%s%n%s%n%s%n%s%n",
                     "1. Log in",
