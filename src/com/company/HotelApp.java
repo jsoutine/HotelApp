@@ -15,7 +15,9 @@ public class HotelApp {
 
         //================================= INITIALIZE OBJECTS ======================================================
 
+        //logistics.createRoomsSaveToFile();
         logistics.createObjects();
+        //logistics.createBookingsSaveToFile();
 
         //============================ EXAMPLE OF LOG IN STRUCTURE ===================================================
 

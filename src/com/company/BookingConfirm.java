@@ -1,8 +1,9 @@
 package com.company;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class BookingConfirm extends Booking {
+public class BookingConfirm extends Booking implements Serializable {
     private AccountCustomer customer;
     private int bookingID;
     private static int bookingIdCount = 0;

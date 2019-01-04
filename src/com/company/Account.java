@@ -1,6 +1,8 @@
 package com.company;
 
-public abstract class Account {
+import java.io.Serializable;
+
+public abstract class Account implements Serializable {
     private String name;
     private String accountID;
     private String password;

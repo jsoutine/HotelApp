@@ -1,6 +1,8 @@
 package com.company;
 
-public class StandardPrice {
+import java.io.Serializable;
+
+public class StandardPrice implements Serializable {
 
     private double price;
     private int name;
