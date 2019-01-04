@@ -1,8 +1,9 @@
 package com.company;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Booking {
+public class Booking implements Serializable {
     private LocalDate fromDate;
     private LocalDate toDate;
     private Room room;

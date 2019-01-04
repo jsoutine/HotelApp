@@ -1,6 +1,8 @@
 package com.company;
 
-public class AccountCustomer extends Account{
+import java.io.Serializable;
+
+public class AccountCustomer extends Account implements Serializable {
     private String phoneNumber;
     private String accountID;
     private static int accountCounter;
