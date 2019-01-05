@@ -25,6 +25,7 @@ public class HotelLogistics {
 
     //2.1.
     public void logIn(String id, String password) {
+        loadAllCustomers();
         boolean match = false;
         if (id.matches("C\\d+") || id.matches("c\\d+")) {
             for (AccountCustomer customer : customerList) {
@@ -107,6 +108,7 @@ public class HotelLogistics {
                     "0. Log out");
 
             loadAllRooms();
+            loadAllCustomers();
             for (Room room : roomList) {  //Count expected check in & check out for today, including late ones (gives warning)
                 for (BookingConfirm booking : room.getRoomBookingList()) {
                     if (booking.getFromDate().equals(LocalDate.now())) {
@@ -177,6 +179,7 @@ public class HotelLogistics {
         int intChoice = 0;  //for choosing a customer
 
         do {
+            updateCustomerList();
             System.out.println("3.1. CUSTOMERS");
 
             int countElements = 0;
@@ -361,6 +364,7 @@ public class HotelLogistics {
 
         AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
         customerList.add(newDude);
+        save.saveCustomers(customerList);
         System.out.printf("You can now log in with your unique user ID: %s, and your chosen password. %n%n", newDude.getAccountID());
     }
 
@@ -372,6 +376,7 @@ public class HotelLogistics {
         boolean validateInput;
         System.out.println("3.1.3. CANCELLED ACCOUNTS");
         int countElements = 0;
+        updateCustomerList();
         for (AccountCustomer customer : customerList) {
             if (customer.isCancelledAccount()) {  //If account is cancelled
                 cancelledAccounts.add(customer);
@@ -714,6 +719,7 @@ public class HotelLogistics {
     private void editCustomerInfo(AccountCustomer concernedAccount) {
         boolean validateInput = false;
         String choice;
+        updateCustomerList();
 
         do {
             if (concernedAccount.isCancelledAccount()) {
@@ -799,6 +805,7 @@ public class HotelLogistics {
                                     if (yesOrNo.equalsIgnoreCase("Y")) {
                                         System.out.println("Invalid input. \nBack (Enter)");
                                         loggedInAccount.setName(choice);
+                                        save.saveCustomers(customerList);
                                         validateinput = true;
                                         validateYorN = true;
                                         validateExitToChangeName = true;
@@ -862,8 +869,9 @@ public class HotelLogistics {
                         } else {
                             try {
                                 loggedInAccount.setPhoneNumber(newNr);
+                                save.saveCustomers(customerList);
                                 validateInput = true;
-                                System.out.println("New phone number set: " + loggedInAccount.getPhoneNumber() +"\nBack (Enter)");
+                                System.out.println("New phone number set: " + loggedInAccount.getPhoneNumber() + "\nBack (Enter)");
                                 input.nextLine();
                             } catch (IllegalArgumentException e) {
                                 System.out.println(e.getMessage() + " Try again:");
@@ -918,6 +926,7 @@ public class HotelLogistics {
                             if (yesOrNo.equalsIgnoreCase("Y")) {
                                 System.out.println("Very well, then lets return to the previous menu \nPress (Enter)");
                                 loggedInAccount.setPassword(newPwd);
+                                save.saveCustomers(customerList);
                                 validateInput = true;
                                 validateChangePW = true;
                                 input.nextLine();
@@ -934,7 +943,7 @@ public class HotelLogistics {
                                 input.nextLine();
 
                             } else {
-                                System.out.println("Faulty input has been entered. Try again!");
+                                System.out.println("Invalid input. Try again:");
                                 validateInput = false;
                                 validateChangePW = false;
                             }
@@ -949,7 +958,7 @@ public class HotelLogistics {
                     validateChangePW = true;
                     break;
                 default:
-                    System.out.println("Faulty input recognized. Let's try again!");
+                    System.out.println("Invalid input. Try again:");
                     validateInput = false;
                     validateChangePW = false;
                     break;
@@ -973,6 +982,7 @@ public class HotelLogistics {
                     String pwCheck = input.nextLine();
                     if (pwCheck.matches(loggedInAccount.getPassword())) {
                         loggedInAccount.setCancelledAccount(true);
+                        save.saveCustomers(customerList);
                         validateInput = true;
                         validatePW = true;
                         System.out.println("4.3.4.2\nAccount has now been removed!\nPress (Enter) to return to login screen");
@@ -2133,11 +2143,11 @@ public class HotelLogistics {
 
             switch (confirm) {
                 case "Y":
-                    if(thisBooking.isCheckedIn() && !thisBooking.isCheckedOut()) {
+                    if (thisBooking.isCheckedIn() && !thisBooking.isCheckedOut()) {
                         System.out.println("This booking is checked in. Please check out if you want to cancel this booking in advance. \nBack (Enter)");
                         input.nextLine();
                         return;
-                    } else if(thisBooking.getFromDate().isBefore(LocalDate.now())) {
+                    } else if (thisBooking.getFromDate().isBefore(LocalDate.now())) {
                         System.out.println("You can only cancel a future booking. Contact hotel admin personal to cancel this booking. \nBack (Enter)");
                         input.nextLine();
                         return;
@@ -2458,17 +2468,6 @@ public class HotelLogistics {
     }
 
     public void createObjects() {
-        //=================================== ADDING CUSTOMERS =====================================================
-
-        customerList.add(new AccountCustomer("Ron Burgundy", "custom", "045125033"));
-        customerList.add(new AccountCustomer("Anton Göransson", "custom", "0703545036"));
-        customerList.add(new AccountCustomer("Arnold Svensson", "custom", "0705421876"));
-        customerList.add(new AccountCustomer("Erik Larsson", "custom", "0704576556"));
-        customerList.add(new AccountCustomer("Elin Hansson", "custom", "0707676768"));
-        customerList.add(new AccountCustomer("Lena Karlsson", "custom", "0707676768"));
-
-        customerList.get(0).setCancelledAccount(true); //Set account to cancelled
-
         //=================================== ADDING ADMINS =====================================================
 
         adminList.add(new AccountAdmin("Admin", "admin"));
@@ -2488,6 +2487,19 @@ public class HotelLogistics {
         bedConstantList.add(new BedPrice(4, 1.7));
 
 
+    }
+
+    public void createCustomersSaveToFile() { //Note: Needs to be done before generating bookings.
+        customerList.add(new AccountCustomer("Ron Burgundy", "custom", "045125033"));
+        customerList.add(new AccountCustomer("Anton Göransson", "custom", "0703545036"));
+        customerList.add(new AccountCustomer("Arnold Svensson", "custom", "0705421876"));
+        customerList.add(new AccountCustomer("Erik Larsson", "custom", "0704576556"));
+        customerList.add(new AccountCustomer("Elin Hansson", "custom", "0707676768"));
+        customerList.add(new AccountCustomer("Lena Karlsson", "custom", "0707676768"));
+
+        customerList.get(5).setCancelledAccount(true); //Set account to cancelled
+
+        save.saveCustomers(customerList); //customerList -> File
     }
 
     public void createBookingsSaveToFile() {
@@ -2602,7 +2614,7 @@ public class HotelLogistics {
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
-        for(Room room : roomList) {
+        for (Room room : roomList) {
             save.saveRoom(room);
         }
     }
@@ -2662,7 +2674,7 @@ public class HotelLogistics {
         int beds;
         ArrayList<BookingConfirm> roomBookingList = new ArrayList<>();
 
-        for(int i = 0 ; i < 100 ; i ++) {
+        for (int i = 0; i < 100; i++) {
             try {
                 data.clear();
                 data = load.loadRoom(roomNumber);
@@ -2672,7 +2684,7 @@ public class HotelLogistics {
                     roomBookingList = (ArrayList<BookingConfirm>) data.get(3);
                     roomList.add(new Room(roomNumber, beds, standard, roomBookingList));
                 }
-            }catch (NullPointerException e) {
+            } catch (NullPointerException e) {
                 //System.out.println(e.getMessage());
             }
             roomNumber++;
@@ -2685,7 +2697,7 @@ public class HotelLogistics {
         int beds;
         ArrayList<BookingConfirm> roomBookingList = new ArrayList<>();
 
-        for(Room room : roomList) {
+        for (Room room : roomList) {
             try {
                 data.clear();
                 data = load.loadRoom(room.getRoomNumber());
@@ -2697,7 +2709,7 @@ public class HotelLogistics {
                     room.setStandard(standard);
                     room.setRoomBookingList(roomBookingList);
                 }
-            }catch (NullPointerException e) {
+            } catch (NullPointerException e) {
                 //System.out.println(e.getMessage());
             }
         }
@@ -2710,17 +2722,60 @@ public class HotelLogistics {
         ArrayList<BookingConfirm> roomBookingList = new ArrayList<>();
 
         data = load.loadRoom(roomNumber);
-        if (!data.equals(null)) {
+        if (data.size() == 4) {
             standard = (int) data.get(1);
             beds = (int) data.get(2);
             roomBookingList = (ArrayList<BookingConfirm>) data.get(3);
             for (Room room : roomList) {
-                if(room.getRoomNumber() == roomNumber) {
+                if (room.getRoomNumber() == roomNumber) {
                     room.setBeds(beds);
                     room.setStandard(standard);
                     room.setRoomBookingList(roomBookingList);
                 }
             }
+        }
+    }
+
+    public void loadAllCustomers() { // File -> customerList (Creates entire new customerList from file)
+        ArrayList<AccountCustomer> customersFromFile = new ArrayList<>();
+        customerList.clear();
+            try {
+                customersFromFile.clear();
+                customersFromFile = load.loadCustomers();
+                if (!customersFromFile.isEmpty()) {
+                    for (AccountCustomer customer : customersFromFile) {
+                        customerList.add(new AccountCustomer(customer.getName(), customer.getPassword(), customer.isCancelledAccount(),
+                                customer.getAccountID(), customer.getPhoneNumber()));
+                    }
+                } else {
+                    System.out.println("No customers in the file system.");
+                }
+            } catch (NullPointerException e) {
+                //System.out.println(e.getMessage());
+            }
+    }
+
+    public void updateCustomerList() { // File -> customerList (Updates the existing customer's info in customerList)
+        ArrayList<AccountCustomer> customersFromFile = new ArrayList<>();
+        try {
+            customersFromFile.clear();
+            customersFromFile = load.loadCustomers();
+            if (!customersFromFile.isEmpty()) {
+                for (AccountCustomer custFromFile : customersFromFile) {
+                    for (AccountCustomer custFromApp : customerList) {
+                        if (custFromFile.getAccountID().equals(custFromApp.getAccountID())) {
+                            custFromApp.setName(custFromFile.getName());
+                            custFromApp.setPassword(custFromFile.getPassword());
+                            custFromApp.setCancelledAccount(custFromFile.isCancelledAccount());
+                            custFromApp.setPhoneNumber(custFromFile.getPhoneNumber());
+                        }
+                    }
+                }
+            } else {
+                System.out.println("No customers in the file system.");
+            }
+        } catch (NullPointerException e) {
+            //System.out.println(e.getMessage());
         }
     }
 }

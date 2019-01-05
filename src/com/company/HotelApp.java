@@ -13,13 +13,15 @@ public class HotelApp {
         HotelApp myApp = new HotelApp();
         HotelLogistics logistics = new HotelLogistics();
 
-        //================================= INITIALIZE OBJECTS ======================================================
+        //======================= INITIALIZE OBJECTS FOR DEMO PURPOSE =================================================
 
+        //The order here is important.
         //logistics.createRoomsSaveToFile();
-        logistics.createObjects();
+        //logistics.createCustomersSaveToFile();
+        logistics.createObjects(); //Don't comment out this until all of it's objects are written to files
         //logistics.createBookingsSaveToFile();
 
-        //============================ EXAMPLE OF LOG IN STRUCTURE ===================================================
+        //=============================================================================================================
 
         String selection;
         String answerID;

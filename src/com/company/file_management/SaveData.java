@@ -1,5 +1,6 @@
 package com.company.file_management;
 
+import com.company.AccountCustomer;
 import com.company.BookingConfirm;
 import com.company.Room;
 
@@ -32,6 +33,23 @@ public class SaveData {
             fileOutput.close();
             //System.out.println("Room " + room.getRoomNumber() + " saved.");
         } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public void saveCustomers (ArrayList<AccountCustomer> customerList) {
+        try {
+            File file = new File("src/com/company/file_management/files/customers.ser");
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream fileOutput = new FileOutputStream(file, false);
+            ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+
+            objectOutput.writeObject(customerList);
+            objectOutput.close();
+            fileOutput.close();
+        }catch (IOException i) {
             i.printStackTrace();
         }
     }
