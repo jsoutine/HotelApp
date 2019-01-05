@@ -13,21 +13,22 @@ public class HotelApp {
         HotelApp myApp = new HotelApp();
         HotelLogistics logistics = new HotelLogistics();
 
-        //================================= INITIALIZE OBJECTS ======================================================
+        //======================= INITIALIZE OBJECTS FOR DEMO PURPOSE =================================================
 
-        logistics.createObjects();
+        //The order here is important.
+        //logistics.createRoomsSaveToFile();
+        //logistics.createCustomersSaveToFile();
+        logistics.createObjects(); //Don't comment out this until all of it's objects are written to files
+        //logistics.createBookingsSaveToFile();
 
-        //============================ EXAMPLE OF LOG IN STRUCTURE ===================================================
+        //=============================================================================================================
 
         String selection;
-        int intAnswer = 0;
         String answerID;
         String password;
-        boolean validateInput;
         boolean validMenu;
 
         System.out.println("====WELCOME=====");
-
         do {
             System.out.printf("%s%n%s%n%s%n%s%n",
                     "1. Log in",
@@ -41,44 +42,44 @@ public class HotelApp {
                 case "1":
                     System.out.print("Please enter your user ID: ");
                     answerID = myApp.input.nextLine();
-
                     System.out.print("Please enter your password: ");
                     password = myApp.input.nextLine();
                     logistics.logIn(answerID, password);
-
                     validMenu = false;
                     break;
-
                 case "2":
                     logistics.addCustomer();
                     validMenu = false;
                     break;
 
                 case "3":
+                    boolean cancel = false;
                     int numberOfRooms;
                     boolean oneRoom = false;
                     System.out.println("2.3. SEARCH FOR AVAILABLE ROOMS. Note: Need to register to book.");
                     numberOfRooms = logistics.numberOfRoomsBooking(); //Method call
                     if (numberOfRooms == 0) {
-                        validMenu = true;
+                        cancel = true;
                     } else if (numberOfRooms == 1) {
                         oneRoom = true;
-                    }
-                    else {
+                    } else {
                         oneRoom = false;
                     }
-                    ArrayList<BookingSearch> matchingResults = logistics.searchBooking(oneRoom); //Method call
-
-                    if (matchingResults.isEmpty()) {
-                        System.out.println("No results" + "\nBack (Enter)");
-                    } else {
-                        int countElements = 0;
-                        boolean lastMinute;
-                        for (BookingSearch booking : matchingResults) {
-                            logistics.lastMinute(booking);
+                    if (!cancel) {
+                        ArrayList<BookingSearch> matchingResults = logistics.searchBooking(oneRoom); //Method call
+                        if (matchingResults.isEmpty()) {
+                            System.out.println("No results" + "\nBack (Enter)");
+                        } else {
+                            int countElements = 0;
+                            boolean lastMinute;
+                            for (BookingSearch booking : matchingResults) {
+                                logistics.lastMinute(booking);
                                 System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
+                            }
+                            System.out.println("You need to register to make any of the suggested bookings above. \nBack(Enter)");
                         }
-                        System.out.println("You need to register to make any of the suggested bookings above. \nBack(Enter)");
+                    } else {
+                        System.out.println("Back (Enter)");
                     }
                     myApp.input.nextLine();
                     validMenu = false;
@@ -88,13 +89,10 @@ public class HotelApp {
                     validMenu = true;
                     break;
                 default:
-                    System.out.println("Please enter a valid selection");
+                    System.out.println("Invalid input. Try again.");
                     validMenu = false;
                     break;
             }
-
         } while (!validMenu);
-
-
     }
 }

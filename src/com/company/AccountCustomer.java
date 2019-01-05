@@ -1,10 +1,18 @@
 package com.company;
 
-public class AccountCustomer extends Account{
+import java.io.Serializable;
+
+public class AccountCustomer extends Account implements Serializable {
     private String phoneNumber;
     private String accountID;
     private static int accountCounter;
     private String phoneValidate = "0\\d\\d\\d\\d\\d\\d\\d\\d+"; //Regular expression; At least 9 numeric digits, starting with 0 (Should use Pattern instead?)
+
+    public AccountCustomer (String name, String password, boolean cancelledAccount, String accountID, String phoneNumber) {
+        super(name, password, cancelledAccount);
+        this.accountID = accountID;
+        this.phoneNumber = phoneNumber;
+    }
 
     public AccountCustomer(String name, String password, String phoneNumber) {
         super(name, password);

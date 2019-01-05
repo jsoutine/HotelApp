@@ -1,6 +1,8 @@
 package com.company;
 
-public abstract class Account {
+import java.io.Serializable;
+
+public abstract class Account implements Serializable {
     private String name;
     private String accountID;
     private String password;
@@ -10,6 +12,12 @@ public abstract class Account {
         this.name = name;
         this.password = password;
         cancelledAccount = false;
+    }
+
+    public Account (String name, String password, boolean cancelledAccount) {
+        this.name = name;
+        this.password = password;
+        this.cancelledAccount = cancelledAccount;
     }
 
     public String getName() {

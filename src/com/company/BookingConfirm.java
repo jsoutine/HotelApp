@@ -1,8 +1,9 @@
 package com.company;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class BookingConfirm extends Booking {
+public class BookingConfirm extends Booking implements Serializable {
     private AccountCustomer customer;
     private int bookingID;
     private static int bookingIdCount = 0;
@@ -15,7 +16,7 @@ public class BookingConfirm extends Booking {
     public BookingConfirm (Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingID) {
         super(room, fromDate, toDate, price);
         this.customer = customer;
-        if (!sameBookingID) {    //The first room in a booking has: sameBookingID = false.
+        if (!sameBookingID) {    //The first room in a booking has: sameBookingID = false. Thereby increasing the first, and setting the following to the same.
             bookingID = ++bookingIdCount;
         }else {
             bookingID = bookingIdCount;

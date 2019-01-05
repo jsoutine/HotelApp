@@ -1,14 +1,21 @@
 package com.company;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Room {
+public class Room implements Serializable {
     private int roomNumber;
     private static int roomCounter;
     private int beds;
     private int standard;
     private ArrayList<BookingConfirm> roomBookingList = new ArrayList<>();
-    //private int pricePerNight; Use enums for standard??
+
+    public Room (int roomNumber, int beds, int standard, ArrayList<BookingConfirm> roomBookingList) {
+        this. roomNumber = roomNumber;
+        this.beds = beds;
+        this.standard = standard;
+        this.roomBookingList = roomBookingList;
+    }
 
     public Room(int beds, int standard) {
         if(beds == 1 || beds == 2 || beds == 4) {
@@ -30,6 +37,10 @@ public class Room {
         return roomBookingList;
     }
 
+    public void setRoomBookingList(ArrayList<BookingConfirm> roomBookingList) {
+        this.roomBookingList = roomBookingList;
+    }
+
     public int getRoomNumber() {
         return roomNumber;
     }
@@ -38,11 +49,6 @@ public class Room {
         return beds;
     }
 
-    public int getStandard() {
-        return standard;
-    }
-
-
     public void setBeds (int beds) {
         if(beds == 1 || beds == 2 || beds == 4) {
             this.beds = beds;
@@ -50,6 +56,10 @@ public class Room {
             throw new IllegalArgumentException(
                     "Number of beds in a room can only be 1, 2 or 4.");
         }
+    }
+
+    public int getStandard() {
+        return standard;
     }
 
     public void setStandard (int standard) {

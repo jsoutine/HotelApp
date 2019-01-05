@@ -1,6 +1,8 @@
 package com.company;
 
-public class BedPrice {
+import java.io.Serializable;
+
+public class BedPrice implements Serializable {
 
     private double constant;
     private int numberOfBeds;
