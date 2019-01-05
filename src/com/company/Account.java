@@ -14,6 +14,12 @@ public abstract class Account implements Serializable {
         cancelledAccount = false;
     }
 
+    public Account (String name, String password, boolean cancelledAccount) {
+        this.name = name;
+        this.password = password;
+        this.cancelledAccount = cancelledAccount;
+    }
+
     public String getName() {
         return name;
     }
