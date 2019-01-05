@@ -249,10 +249,10 @@ public class HotelLogistics {
         boolean checkAll = false;
         boolean checkSwitch;
 
-        System.out.printf("%n%s%n%n%s%n%s%n%s%n",
+        System.out.printf("%s%n%s%n%s%n%s%n",
                 "====NEW GUEST====",
-                "Welcome to Hotel Gittan. Register your account here.",
-                "1. Proceed",
+                "Welcome to Hotel Gittan!\nYou may register your account here.",
+                "1. Create",
                 "0. Go back");
 
         do {
@@ -261,7 +261,11 @@ public class HotelLogistics {
 
             switch (menu) {
                 case "1":
-                    System.out.println("\nYou will be assigned a unique user ID. Please fill in the following information below.\"");
+                    System.out.println(
+                            "====ACCOUNT CREATION====" +
+                            "\nYou will be assigned a unique user ID." +
+                            "\nPlease fill in following information shown below." +
+                            "\n========================");
                     checkSwitch = true;
                     break;
                 case "O":
@@ -285,7 +289,9 @@ public class HotelLogistics {
                 firstName = input.nextLine();
 
                 if (firstName.matches(".*\\d+.*")) {
-                    System.out.println("Your name can't contain numbers. Try again. \n");
+                    System.out.println("Your name can't contain numbers. Try again!\n");
+                } else if (firstName.isEmpty()){
+                    System.out.println("No letters has been entered. Try again!\n");
                 }
             }
 
@@ -295,6 +301,8 @@ public class HotelLogistics {
 
                 if (lastName.matches(".*\\d+.*")) {
                     System.out.println("Your name can't contain numbers. Try again. \n");
+                } else if (lastName.isEmpty()){
+                    System.out.println("No letters has been entered. Try again!\n");
                 }
             }
 
@@ -323,13 +331,15 @@ public class HotelLogistics {
             } while (!password.equals(passwordCheck));
 
             do {
-                System.out.printf("%n%s%n%s%s%n%s%s%n%s%s%n%s%s%n%n%s%n%s%n%s%n%s%n",
+                System.out.printf("%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s",
+                        "====ACCOUNT VERIFICATION====",
                         "The information you have entered is: ",
-                        "First name: ", firstName,
-                        "Last name: ", lastName,
-                        "Phone number: ", phoneNumber,
-                        "Password: ", password,
-                        "Is this information correct?",
+                        "First name: " + firstName,
+                        "Last name: " + lastName,
+                        "Phone number: " + phoneNumber,
+                        "Password: " + password,
+                        "========================",
+                        "Is the information above correct?",
                         "Y. Yes, this is correct.",
                         "N. No, let me fill it in again.",
                         "0. Cancel and go back.");
@@ -1171,8 +1181,8 @@ public class HotelLogistics {
         do {
             System.out.printf("%s%n%s%n%s%n%s%n%s%n",
                     "Edit price for:",
-                    "1. standards",
-                    "2. beds",
+                    "1. Standards",
+                    "2. Beds",
                     "0. Back",
                     "Type a choice:");
             do {

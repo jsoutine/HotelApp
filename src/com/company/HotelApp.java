@@ -26,7 +26,7 @@ public class HotelApp {
         boolean validateInput;
         boolean validMenu;
 
-        System.out.println("\n====WELCOME=====");
+        System.out.println("====WELCOME=====");
 
         do {
             System.out.printf("%s%n%s%n%s%n%s%n",
