@@ -750,7 +750,7 @@ public class HotelLogistics {
                             editAccountPassword(concernedAccount);
                             break;
                         case "4":
-                            removeAccount(concernedAccount);
+                            cancelAccount(concernedAccount);
                             break;
                         case "0":
                             validateInput = true;
@@ -966,13 +966,16 @@ public class HotelLogistics {
         } while (!validateChangePW);
     }
 
-    private void removeAccount(AccountCustomer loggedInAccount) {
+    private void cancelAccount(AccountCustomer loggedInAccount) {
         boolean validateInput;
         boolean validatePW;
 
         System.out.println("4.3.4\n====REMOVE ACCOUNT====");
         do {
-            System.out.println("Do you truly wish to remove your account?");
+            System.out.printf("%s%n%s%n%s%n%s%n", "Do you truly wish to remove this account?",
+                    "Note: Any future bookings made will de cancelled. Present bookings that are not checked in will also be cancelled",
+                    "Y. Yes, remove account.",
+                    "N. No, do not remove account.");
             System.out.println("y/n");
             String yesOrNo = input.nextLine();
 
@@ -982,6 +985,17 @@ public class HotelLogistics {
                     String pwCheck = input.nextLine();
                     if (pwCheck.matches(loggedInAccount.getPassword())) {
                         loggedInAccount.setCancelledAccount(true);
+                        //Do: Update room
+                        for(Room room : roomList) {
+                            for(int i = 0 ; i < room.getRoomBookingList().size() ; i++) {
+                                if ((room.getRoomBookingList().get(i).getCustomer().getAccountID().equals(loggedInAccount.getAccountID())) &&
+                                        !room.getRoomBookingList().get(i).isCheckedIn()) {
+                                    room.getRoomBookingList().remove(i);           //Cancel all unchecked in bookings for this customer
+                                    i -= 1;
+                                }
+                            }
+                            save.saveRoom(room);
+                        }
                         save.saveCustomers(customerList);
                         validateInput = true;
                         validatePW = true;
@@ -2182,7 +2196,7 @@ public class HotelLogistics {
                                 for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                                     if (room.getRoomBookingList().get(i).getBookingID() == bookingID) {
                                         room.getRoomBookingList().remove(i);
-                                        i -= i;
+                                        i -= 1;
                                         save.saveRoom(room);
                                     }
                                 }
@@ -2665,7 +2679,7 @@ public class HotelLogistics {
         }
     }
 
-    public void loadAllRooms() {  // File -> roomList (Creates entire new roomList from file)
+    private void loadAllRooms() {  // File -> roomList (Creates entire new roomList from file)
         ArrayList<Object> data = new ArrayList<>();
         roomList.clear();
         //data.clear();
@@ -2691,7 +2705,7 @@ public class HotelLogistics {
         }
     }
 
-    public void updateAllRooms() { // File -> roomList (Updates the rooms in roomList)
+    private void updateAllRooms() { // File -> roomList (Updates the rooms in roomList)
         ArrayList<Object> data = new ArrayList<>();
         int standard;
         int beds;
@@ -2715,7 +2729,7 @@ public class HotelLogistics {
         }
     }
 
-    public void updateRoom(int roomNumber) {  // File -> roomList (Updates specific room in roomList)
+    private void updateRoom(int roomNumber) {  // File -> roomList (Updates specific room in roomList)
         ArrayList<Object> data = new ArrayList<>();
         int standard;
         int beds;
@@ -2736,7 +2750,7 @@ public class HotelLogistics {
         }
     }
 
-    public void loadAllCustomers() { // File -> customerList (Creates entire new customerList from file)
+    private void loadAllCustomers() { // File -> customerList (Creates entire new customerList from file)
         ArrayList<AccountCustomer> customersFromFile = new ArrayList<>();
         customerList.clear();
             try {
@@ -2755,7 +2769,7 @@ public class HotelLogistics {
             }
     }
 
-    public void updateCustomerList() { // File -> customerList (Updates the existing customer's info in customerList)
+    private void updateCustomerList() { // File -> customerList (Updates the existing customer's info in customerList)
         ArrayList<AccountCustomer> customersFromFile = new ArrayList<>();
         try {
             customersFromFile.clear();

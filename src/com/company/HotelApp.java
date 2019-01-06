@@ -13,13 +13,12 @@ public class HotelApp {
         HotelApp myApp = new HotelApp();
         HotelLogistics logistics = new HotelLogistics();
 
-        //======================= INITIALIZE OBJECTS FOR DEMO PURPOSE =================================================
+        //=====   INITIALIZE OBJECTS FOR DEMO PURPOSE: The orders of theese method calls are important ===============
 
-        //The order here is important.
-        //logistics.createRoomsSaveToFile();
-        //logistics.createCustomersSaveToFile();
+        logistics.createRoomsSaveToFile();
+        logistics.createCustomersSaveToFile();
         logistics.createObjects(); //Don't comment out this until all of it's objects are written to files
-        //logistics.createBookingsSaveToFile();
+        logistics.createBookingsSaveToFile();
 
         //=============================================================================================================
 
