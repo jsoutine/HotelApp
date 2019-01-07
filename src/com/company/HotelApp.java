@@ -17,7 +17,7 @@ public class HotelApp {
 
         //The order here is important.
         //logistics.createRoomsSaveToFile();
-        //logistics.createCustomersSaveToFile();
+        //logistics.createAccountsSaveToFile();
         logistics.createObjects(); //Don't comment out this until all of it's objects are written to files
         //logistics.createBookingsSaveToFile();
 

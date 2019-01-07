@@ -295,7 +295,6 @@ public class HotelLogistics {
                     System.out.println("Your name can't contain numbers. Try again. \n");
                 }
             }
-
             while (lastName.matches(".*\\d+.*") || lastName.isEmpty()) {
                 System.out.print("Last name: ");
                 lastName = input.nextLine();
@@ -304,7 +303,6 @@ public class HotelLogistics {
                     System.out.println("Your name can't contain numbers. Try again. \n");
                 }
             }
-
             while (!phoneNumber.matches(phoneValidate)) {
                 System.out.print("Phone number: ");
                 phoneNumber = input.nextLine();
@@ -313,7 +311,6 @@ public class HotelLogistics {
                     System.out.println("Invalid phone number. It must be numeric, start with '0' and contain at least 9 digits.\n");
                 }
             }
-
             name = firstName + " " + lastName; // two variables for user friendliness, combined to pass on to customerAccount.
 
             do {
@@ -2070,50 +2067,6 @@ public class HotelLogistics {
         input.nextLine();
     }
 
-    //4.2.1.
-    /*//4.2.1.
->>>>>>> master
-    private void viewBooking(BookingConfirm booking) {
-        String cancel;
-        boolean validate = false;
-
-        System.out.println("4.2.1. BOOKING");
-        System.out.println(booking);
-
-        do {
-            System.out.printf("%n%s%n%s%n%s%n",
-                    "Enter the cancel menu for this booking?",
-
-                    "Y. Yes",
-                    "N. No");
-
-            cancel = input.nextLine();
-            cancel = cancel.toUpperCase();
-
-            switch (cancel) {
-                case "Y":
-                    if (booking.isCheckedIn() && !booking.isCheckedOut()) {
-                        System.out.println("This booking is checked in. Please check out before cancelling booking. \nBack(Enter)");
-                        input.nextLine();
-                        return;
-                    } else {
-                        cancelBooking(booking);
-                        validate = true;
-                        break;
-                    }
-                case "N":
-                    System.out.println("Booking still valid.");
-                    validate = true;
-                    break;
-                default:
-                    System.out.println("Invalid input. Try again.");
-                    break;
-            }
-        } while (!validate);
-        System.out.println("Back (Enter)");
-        input.nextLine();
-    }*/
-
     //4.2.1.1.
     private void cancelBooking(BookingConfirm thisBooking) {
         int countElements = 0;
@@ -2489,17 +2442,19 @@ public class HotelLogistics {
 
     }
 
-    public void createCustomersSaveToFile() { //Note: Needs to be done before generating bookings.
+    public void createAccountsSaveToFile() { //Note: Needs to be done before generating bookings.
         customerList.add(new AccountCustomer("Ron Burgundy", "custom", "045125033"));
         customerList.add(new AccountCustomer("Anton Göransson", "custom", "0703545036"));
         customerList.add(new AccountCustomer("Arnold Svensson", "custom", "0705421876"));
         customerList.add(new AccountCustomer("Erik Larsson", "custom", "0704576556"));
         customerList.add(new AccountCustomer("Elin Hansson", "custom", "0707676768"));
         customerList.add(new AccountCustomer("Lena Karlsson", "custom", "0707676768"));
+        adminList.add(new AccountAdmin("Admin", "admin"));
 
         customerList.get(5).setCancelledAccount(true); //Set account to cancelled
 
         save.saveCustomers(customerList); //customerList -> File
+        save.saveAdmins(adminList);
     }
 
     public void createBookingsSaveToFile() {
@@ -2773,6 +2728,25 @@ public class HotelLogistics {
                 }
             } else {
                 System.out.println("No customers in the file system.");
+            }
+        } catch (NullPointerException e) {
+            //System.out.println(e.getMessage());
+        }
+    }
+
+    public void loadAllAdmins() { // File -> adminList (Creates entire new adminList from file)
+        ArrayList<AccountAdmin> adminsFromFile = new ArrayList<>();
+        adminList.clear();
+        try {
+            adminsFromFile.clear();
+            adminsFromFile = load.loadAdmins();
+            if (!adminsFromFile.isEmpty()) {
+                for (AccountAdmin admin : adminsFromFile) {
+                    adminList.add(new AccountAdmin(admin.getName(), admin.getPassword(), admin.isCancelledAccount(),
+                            admin.getAccountID()));
+                }
+            } else {
+                System.out.println("No admins in the file system.");
             }
         } catch (NullPointerException e) {
             //System.out.println(e.getMessage());
