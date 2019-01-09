@@ -1146,8 +1146,167 @@ public class HotelLogistics {
         } while (true); //Always loop, until menuChoice = 0 -> Return
     }
 
-    //3.2.4 (edit price)
+    // 3.2.3.
+    private void adminEditRoomInfo(Room room) {
+        String answer;
+        int intAnwser;
+        boolean validate;
 
+        do {
+            updateRoom(room.getRoomNumber());
+            System.out.printf("%s%d%n%-10s%d%n%-10s%d%n%s%n%s%n%s%n%s%n%s%n",
+                    "3.2.3. EDIT ROOM NUMBER ", room.getRoomNumber(),
+                    "Beds: ", room.getBeds(),
+                    "Standard:", room.getStandard(),
+                    "1: Edit beds",
+                    "2: Edit standard ",
+                    "3: Remove room",
+                    "4: View bookings for this room",
+                    "0. Back");
+            do {
+                answer = input.nextLine();
+
+                switch (answer) {
+                    case "1":
+                        System.out.println("Edit the number of beds for room " + room.getRoomNumber() +
+                                ", or press \"0\" to cancel. ");
+
+                        do {
+                            System.out.println("Type in the new number of beds for this room: ");
+
+                            answer = input.nextLine();
+                            if (answer.equals("0") || answer.equalsIgnoreCase("o")) {
+                                System.out.println("Edit number has been cancelled. \n " +
+                                        "Back (enter)");
+                                input.nextLine();
+                                validate = true;
+                            } else {
+
+                                try {
+                                    intAnwser = Integer.parseInt(answer);
+                                    room.setBeds(intAnwser);
+                                    save.saveRoom(room);
+                                    validate = true;
+
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Answer must be digits. ");
+                                    validate = false;
+
+                                } catch (IllegalArgumentException b) {
+                                    System.out.println(b.getMessage());
+                                    validate = false;
+                                }
+                            }
+                        }
+                        while (!validate);
+                        System.out.println("The new number of bed(s) in room " + room.getRoomNumber()
+                                + " is now " + answer + ".");
+                        break;
+                    case "2":
+                        System.out.println("Edit standard for room number " + room.getRoomNumber());
+
+                        do {
+                            System.out.println("Type in new standard for the room, or press \"0\" to cancel ");
+                            answer = input.nextLine();
+
+                            if (answer.equals("0") || answer.equalsIgnoreCase("o")) {
+                                System.out.println("Edit number has been cancelled. \n " +
+                                        "Back (enter).");
+                                input.nextLine();
+                                validate = true;
+                            } else {
+                                try {
+                                    intAnwser = Integer.parseInt(answer);
+                                    room.setStandard(intAnwser);
+                                    save.saveRoom(room);
+                                    validate = true;
+
+                                } catch (NumberFormatException a) {
+                                    System.out.println("Answer must be digits.");
+                                    validate = false;
+
+                                } catch (IllegalArgumentException b) {
+                                    System.out.println(b.getMessage());
+                                    validate = false;
+                                }
+                            }
+                        } while (!validate);
+                        System.out.println("The new standard for room number " + room.getRoomNumber()
+                                + " is now: " + answer + ".");
+                        break;
+                    case "3":
+                        boolean acceptRemove = false;
+                        System.out.println("Remove this room? y/n");
+                        do {
+                            validate = true;
+
+                            answer = input.nextLine();
+                            if (answer.equalsIgnoreCase("y")) {
+                                acceptRemove = true;
+                                validate = true;
+                            } else if (answer.equalsIgnoreCase("n")) {
+                                acceptRemove = false;
+                                validate = true;
+
+                            } else {
+                                System.out.println("Invalid anwser. ");
+                                validate = false;
+                            }
+
+                        } while (!validate);
+
+                        if (acceptRemove) {
+
+                            if (room.getRoomBookingList().isEmpty()) {
+                                acceptRemove = true;
+
+                            } else if (acceptRemove) {
+                                for (BookingConfirm booking : room.getRoomBookingList()) {
+                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
+                                        acceptRemove = false;
+                                        System.out.println("There are current or future bookings for this room.\n" +
+                                                " Please remomve all current or future bookings for this room before removing it. ");
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (!acceptRemove) {
+                            System.out.println("Removing room cancelled.");
+                        } else {
+                            for (int i = 0; i < roomList.size(); i++) {
+                                if (roomList.get(i).getRoomNumber() == room.getRoomNumber()) {
+                                    delete.deleteRoom(roomList.get(i).getRoomNumber());
+                                    loadAllRooms();
+                                    System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), " removed succesfully.");
+                                    System.out.println("Back (Enter) ");
+                                    input.nextLine();
+                                    return;
+                                }
+                            }
+                        }
+                        System.out.println("Back (Enter) ");
+                        input.nextLine();
+                        break;
+                    case "4": // view bookings.
+                        viewBookingsForRoom(room);
+                        validate = true;
+                        break;
+                    case "0":
+                        System.out.println("Back (Enter) ");
+                        input.nextLine();
+                        return;
+                    default:
+                        System.out.println("Not correct anwser, please enter 0-4");
+                        validate = false;
+                        break;
+                }
+
+            } while (!validate);
+        } while (true);
+    }
+
+    //3.2.4 (edit price)
     private void adminEditPrices() {
         String menuChoice;
         String answer;
@@ -1955,8 +2114,8 @@ public class HotelLogistics {
         double price;
         double standardPrice = 1;
         double bedsConstant = 1;
-        load.loadStandards();
-        load.loadBedPrices();
+        loadAllStandards();
+        loadAllBedPrices();
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);
         try {
             standardPrice = standardList.get(room.getStandard() - 1).getPrice();  //May throw IndexOutOfBoundsException if no match??
@@ -2218,166 +2377,6 @@ public class HotelLogistics {
             }
         } while (!validate);
         loadAllRooms(); //Since booking(s) may have been removed
-    }
-
-    // 3.2.3.
-    private void adminEditRoomInfo(Room room) {
-        String answer;
-        int intAnwser;
-        boolean validate;
-
-        do {
-            updateRoom(room.getRoomNumber());
-            System.out.printf("%s%d%n%-10s%d%n%-10s%d%n%s%n%s%n%s%n%s%n%s%n",
-                    "3.2.3. EDIT ROOM NUMBER ", room.getRoomNumber(),
-                    "Beds: ", room.getBeds(),
-                    "Standard:", room.getStandard(),
-                    "1: Edit beds",
-                    "2: Edit standard ",
-                    "3: Remove room",
-                    "4: View bookings for this room",
-                    "0. Back");
-            do {
-                answer = input.nextLine();
-
-                switch (answer) {
-                    case "1":
-                        System.out.println("Edit the number of beds for room " + room.getRoomNumber() +
-                                ", or press \"0\" to cancel. ");
-
-                        do {
-                            System.out.println("Type in the new number of beds for this room: ");
-
-                            answer = input.nextLine();
-                            if (answer.equals("0") || answer.equalsIgnoreCase("o")) {
-                                System.out.println("Edit number has been cancelled. \n " +
-                                        "Back (enter)");
-                                input.nextLine();
-                                validate = true;
-                            } else {
-
-                                try {
-                                    intAnwser = Integer.parseInt(answer);
-                                    room.setBeds(intAnwser);
-                                    save.saveRoom(room);
-                                    validate = true;
-
-                                } catch (NumberFormatException e) {
-                                    System.out.println("Answer must be digits. ");
-                                    validate = false;
-
-                                } catch (IllegalArgumentException b) {
-                                    System.out.println(b.getMessage());
-                                    validate = false;
-                                }
-                            }
-                        }
-                        while (!validate);
-                        System.out.println("The new number of bed(s) in room " + room.getRoomNumber()
-                                + " is now " + answer + ".");
-                        break;
-                    case "2":
-                        System.out.println("Edit standard for room number " + room.getRoomNumber());
-
-                        do {
-                            System.out.println("Type in new standard for the room, or press \"0\" to cancel ");
-                            answer = input.nextLine();
-
-                            if (answer.equals("0") || answer.equalsIgnoreCase("o")) {
-                                System.out.println("Edit number has been cancelled. \n " +
-                                        "Back (enter).");
-                                input.nextLine();
-                                validate = true;
-                            } else {
-                                try {
-                                    intAnwser = Integer.parseInt(answer);
-                                    room.setStandard(intAnwser);
-                                    save.saveRoom(room);
-                                    validate = true;
-
-                                } catch (NumberFormatException a) {
-                                    System.out.println("Answer must be digits.");
-                                    validate = false;
-
-                                } catch (IllegalArgumentException b) {
-                                    System.out.println(b.getMessage());
-                                    validate = false;
-                                }
-                            }
-                        } while (!validate);
-                        System.out.println("The new standard for room number " + room.getRoomNumber()
-                                + " is now: " + answer + ".");
-                        break;
-                    case "3":
-                        boolean acceptRemove = false;
-                        System.out.println("Remove this room? y/n");
-                        do {
-                            validate = true;
-
-                            answer = input.nextLine();
-                            if (answer.equalsIgnoreCase("y")) {
-                                acceptRemove = true;
-                                validate = true;
-                            } else if (answer.equalsIgnoreCase("n")) {
-                                acceptRemove = false;
-                                validate = true;
-
-                            } else {
-                                System.out.println("Invalid anwser. ");
-                                validate = false;
-                            }
-
-                        } while (!validate);
-
-                        if (acceptRemove) {
-
-                            if (room.getRoomBookingList().isEmpty()) {
-                                acceptRemove = true;
-
-                            } else if (acceptRemove) {
-                                for (BookingConfirm booking : room.getRoomBookingList()) {
-                                    if (booking.getToDate().equals(LocalDate.now()) || booking.getToDate().isAfter(LocalDate.now())) {
-                                        acceptRemove = false;
-                                        System.out.println("There are current or future bookings for this room.\n" +
-                                                " Please remomve all current or future bookings for this room before removing it. ");
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        if (!acceptRemove) {
-                            System.out.println("Removing room cancelled.");
-                        } else {
-                            for (int i = 0; i < roomList.size(); i++) {
-                                if (roomList.get(i).getRoomNumber() == room.getRoomNumber()) {
-                                    delete.deleteRoom(roomList.get(i).getRoomNumber());
-                                    loadAllRooms();
-                                    System.out.printf("%s%d%s", "Room ", room.getRoomNumber(), " removed succesfully.");
-                                    System.out.println("Back (Enter) ");
-                                    input.nextLine();
-                                    return;
-                                }
-                            }
-                        }
-                        System.out.println("Back (Enter) ");
-                        input.nextLine();
-                        break;
-                    case "4": // view bookings.
-                        viewBookingsForRoom(room);
-                        validate = true;
-                        break;
-                    case "0":
-                        System.out.println("Back (Enter) ");
-                        input.nextLine();
-                        return;
-                    default:
-                        System.out.println("Not correct anwser, please enter 0-4");
-                        validate = false;
-                        break;
-                }
-
-            } while (!validate);
-        } while (true);
     }
 
     private void viewBookingsForRoom(Room room) {
