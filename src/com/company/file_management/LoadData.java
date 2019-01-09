@@ -1,5 +1,6 @@
 package com.company.file_management;
 
+import com.company.AccountAdmin;
 import com.company.AccountCustomer;
 
 import java.io.File;
@@ -50,6 +51,32 @@ public class LoadData {
                 fileInput.close();
                 objectInput.close();
                 return customerList;
+            } catch (IOException i) {
+                i.printStackTrace();
+                return null;
+            } catch (ClassNotFoundException c) {
+                c.printStackTrace();
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<AccountAdmin> loadAdmins() {
+        File file = new File("src/com/company/file_management/files/admins.ser");
+        ArrayList<AccountAdmin> adminList = new ArrayList<>();
+        if(file.exists()) {
+            try {
+                FileInputStream fileInput = new FileInputStream(file);
+                ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+
+                adminList = (ArrayList<AccountAdmin>) objectInput.readObject();
+
+                fileInput.close();
+                objectInput.close();
+                return adminList;
             } catch (IOException i) {
                 i.printStackTrace();
                 return null;

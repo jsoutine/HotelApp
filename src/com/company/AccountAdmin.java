@@ -9,6 +9,13 @@ public class AccountAdmin extends Account {
         accountID = "A".concat(Integer.toString(++accountCounter));
     }
 
+    public AccountAdmin(String name, String password, boolean cancelledAccount, String accountID) {
+        super(name, password, cancelledAccount);
+        this.accountID = accountID;
+    }
+
+
+
     public String getAccountID() {
         return accountID;
     }
