@@ -1396,7 +1396,7 @@ public class HotelLogistics {
                             break;
                     }
                 }
-                while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("0"));
+                while (!menuChoice.equals("1") && !menuChoice.equals("2") && !menuChoice.equals("3") && !menuChoice.equals("4") && !menuChoice.equals("0"));
             }
         } while (!logout);
     }
