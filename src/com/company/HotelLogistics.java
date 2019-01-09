@@ -981,9 +981,9 @@ public class HotelLogistics {
 
             if (yesOrNo.equalsIgnoreCase("Y")) {
                 do {
-                    System.out.println("Enter your password to verify deletion of account: ");
+                    System.out.println("Enter password to verify deletion of account: ");
                     String pwCheck = input.nextLine();
-                    if (pwCheck.matches(loggedInAccount.getPassword())) {
+                    if (pwCheck.matches(loggedInAccount.getPassword()) || pwCheck.equals(adminList.get(0).getPassword())) {
                         loggedInAccount.setCancelledAccount(true);
                         //Do: Update room
                         for(Room room : roomList) {
@@ -999,7 +999,7 @@ public class HotelLogistics {
                         save.saveCustomers(customerList);
                         validateInput = true;
                         validatePW = true;
-                        System.out.println("4.3.4.2\nAccount has now been removed!\nPress (Enter) to return to login screen");
+                        System.out.println("Account cancelled.\nBack (Enter)");
                         input.nextLine();
 
                     } else {
@@ -1360,7 +1360,7 @@ public class HotelLogistics {
                             "1. Make a booking, or view available",
                             "2. View your bookings",
                             "3. View your historic bookings",
-                            "3. Edit account info",
+                            "4. Edit account info",
                             "0. Log out");
                 }
                 loadAllRooms();

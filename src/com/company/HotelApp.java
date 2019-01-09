@@ -13,9 +13,9 @@ public class HotelApp {
         HotelApp myApp = new HotelApp();
         HotelLogistics logistics = new HotelLogistics();
 
-        //=====   INITIALIZE OBJECTS FOR DEMO PURPOSE: The orders of theese method calls are important ===============
+        //=====  INITIALIZE OBJECTS FOR DEMO PURPOSE: The orders of theese method calls are important ===============
 
-        logistics.createRoomsSaveToFile();
+        logistics.createRoomsSaveToFile(); System.out.println("CREATING OBJECTS. To instead load from file only; comment out method calls: \nlogistics.createRoomsSaveToFile()\nlogistics.createCustomersSaveToFile()\nlogistics.createBookingsSaveToFile()\nFrom class HotelApp.");
         logistics.createCustomersSaveToFile();
         logistics.createObjects(); //Don't comment out this until all of it's objects are written to files
         logistics.createBookingsSaveToFile();
