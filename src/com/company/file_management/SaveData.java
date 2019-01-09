@@ -1,9 +1,6 @@
 package com.company.file_management;
 
-import com.company.AccountAdmin;
-import com.company.AccountCustomer;
-import com.company.BookingConfirm;
-import com.company.Room;
+import com.company.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,6 +62,40 @@ public class SaveData {
             ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
 
             objectOutput.writeObject(adminArrayList);
+            objectOutput.close();
+            fileOutput.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public void saveBedPrices(ArrayList<BedPrice> bedsList) {
+        try {
+            File file = new File("src/com/company/file_management/files/beds.ser");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream fileOutput = new FileOutputStream(file, false);
+            ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+
+            objectOutput.writeObject(bedsList);
+            objectOutput.close();
+            fileOutput.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public void saveStandards(ArrayList<StandardPrice> standardList) {
+        try {
+            File file = new File("src/com/company/file_management/files/standards.ser");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream fileOutput = new FileOutputStream(file, false);
+            ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+
+            objectOutput.writeObject(standardList);
             objectOutput.close();
             fileOutput.close();
         } catch (IOException i) {
