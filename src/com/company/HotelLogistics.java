@@ -16,7 +16,7 @@ public class HotelLogistics {
     private ArrayList<AccountCustomer> customerList = new ArrayList<>();  //Lista över kunder.
     private ArrayList<AccountAdmin> adminList = new ArrayList<>();
     private ArrayList<Room> roomList = new ArrayList<>();        //Lista över rummen
-    private ArrayList<BedPrice> bedConstantList = new ArrayList<>();
+    private ArrayList<BedPrice> bedPriceList = new ArrayList<>();
     private ArrayList<StandardPrice> standardList = new ArrayList<>();
     private Scanner input = new Scanner(System.in);
     private DeleteData delete = new DeleteData();
@@ -26,6 +26,7 @@ public class HotelLogistics {
     //2.1.
     public void logIn(String id, String password) {
         loadAllCustomers();
+        loadAllAdmins();
         boolean match = false;
         if (id.matches("C\\d+") || id.matches("c\\d+")) {
             for (AccountCustomer customer : customerList) {
@@ -89,7 +90,6 @@ public class HotelLogistics {
         String menuChoice;
         boolean logout = false;
         boolean validateInput;
-
         do {
             int toCheckInToday = 0;
             int checkedInToday = 0;
@@ -106,7 +106,6 @@ public class HotelLogistics {
                     "4. Check in",
                     "5. Check out",
                     "0. Log out");
-
             loadAllRooms();
             loadAllCustomers();
             for (Room room : roomList) {  //Count expected check in & check out for today, including late ones (gives warning)
@@ -747,7 +746,7 @@ public class HotelLogistics {
                             editAccountPassword(concernedAccount);
                             break;
                         case "4":
-                            removeAccount(concernedAccount);
+                            cancelAccount(concernedAccount);
                             break;
                         case "0":
                             validateInput = true;
@@ -963,26 +962,40 @@ public class HotelLogistics {
         } while (!validateChangePW);
     }
 
-    private void removeAccount(AccountCustomer loggedInAccount) {
+    private void cancelAccount(AccountCustomer loggedInAccount) {
         boolean validateInput;
         boolean validatePW;
 
         System.out.println("4.3.4\n====REMOVE ACCOUNT====");
         do {
-            System.out.println("Do you truly wish to remove your account?");
+            System.out.printf("%s%n%s%n%s%n%s%n", "Do you truly wish to remove this account?",
+                    "Note: Any future bookings made will de cancelled. Present bookings that are not checked in will also be cancelled",
+                    "Y. Yes, remove account.",
+                    "N. No, do not remove account.");
             System.out.println("y/n");
             String yesOrNo = input.nextLine();
 
             if (yesOrNo.equalsIgnoreCase("Y")) {
                 do {
-                    System.out.println("Enter your password to verify deletion of account: ");
+                    System.out.println("Enter password to verify deletion of account: ");
                     String pwCheck = input.nextLine();
-                    if (pwCheck.matches(loggedInAccount.getPassword())) {
+                    if (pwCheck.matches(loggedInAccount.getPassword()) || pwCheck.equals(adminList.get(0).getPassword())) {
                         loggedInAccount.setCancelledAccount(true);
+                        //Do: Update room
+                        for(Room room : roomList) {
+                            for(int i = 0 ; i < room.getRoomBookingList().size() ; i++) {
+                                if ((room.getRoomBookingList().get(i).getCustomer().getAccountID().equals(loggedInAccount.getAccountID())) &&
+                                        !room.getRoomBookingList().get(i).isCheckedIn()) {
+                                    room.getRoomBookingList().remove(i);           //Cancel all unchecked in bookings for this customer
+                                    i -= 1;
+                                }
+                            }
+                            save.saveRoom(room);
+                        }
                         save.saveCustomers(customerList);
                         validateInput = true;
                         validatePW = true;
-                        System.out.println("4.3.4.2\nAccount has now been removed!\nPress (Enter) to return to login screen");
+                        System.out.println("Account cancelled.\nBack (Enter)");
                         input.nextLine();
 
                     } else {
@@ -1144,6 +1157,8 @@ public class HotelLogistics {
         boolean exitMethod = false;
         boolean cancel;
         boolean validMenuChoice;
+        loadAllStandards();
+        loadAllBedPrices();
 
         do {
             cancel = false;
@@ -1159,6 +1174,7 @@ public class HotelLogistics {
 
                 switch (menuChoice) {
                     case "1":
+                        updateStandardList();
                         System.out.printf("%s%n",
                                 "Choose standard 1-5, " +
                                         "or 0 to cancel.");
@@ -1214,6 +1230,7 @@ public class HotelLogistics {
 
                                             } else {
                                                 standardList.get(intAnwser).setPrice(newDoubleValue);
+                                                save.saveStandards(standardList);
                                                 System.out.println("Room standard " + standardList.get(intAnwser).getName() +
                                                         ". New price is:  " + standardList.get(intAnwser).getPrice() + " SEK  \nBack (Enter)");
                                                 validate = true;
@@ -1226,9 +1243,10 @@ public class HotelLogistics {
                         } while (!validate);
                         break;
                     case "2":
+                        updateBedPriceList();
                         System.out.printf("%s%n",
                                 "Choose the beds/room constant price to edit, or 0 to cancel:");
-                        for (BedPrice beds : bedConstantList) {
+                        for (BedPrice beds : bedPriceList) {
                             System.out.println(beds.getNumberOfBeds() + " beds/room. Constant: " + beds.getConstant() +
                                     " x standard price per night and room.");
                         }
@@ -1251,8 +1269,8 @@ public class HotelLogistics {
 
                             if (!cancel && validate) {
                                 validate = false;
-                                for (int i = 0; i < bedConstantList.size(); i++) {
-                                    if (bedConstantList.get(i).getNumberOfBeds() == intAnwser) {
+                                for (int i = 0; i < bedPriceList.size(); i++) {
+                                    if (bedPriceList.get(i).getNumberOfBeds() == intAnwser) {
                                         intAnwser = i;
                                         validate = true;
                                         break;
@@ -1263,10 +1281,10 @@ public class HotelLogistics {
                                     System.out.println("Input did not match an alternative. Try again:");
                                 } else {
 
-                                    System.out.println("Enter new constant value for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
+                                    System.out.println("Enter new constant value for " + bedPriceList.get(intAnwser).getNumberOfBeds() +
                                             " beds/room: (X.X)" +
                                             "\nCurrent constant value: "
-                                            + bedConstantList.get(intAnwser).getConstant() + " SEK.");
+                                            + bedPriceList.get(intAnwser).getConstant() + " SEK.");
                                     do {
                                         answer = input.nextLine();
 
@@ -1283,9 +1301,10 @@ public class HotelLogistics {
                                                 System.out.println("Not a valid value. Must be 1.00 - 4.00. Try again:");
                                                 validate = false;
                                             } else {
-                                                bedConstantList.get(intAnwser).setConstant(newDoubleValue);
-                                                System.out.println("New beds constant price for " + bedConstantList.get(intAnwser).getNumberOfBeds() +
-                                                        " per room is: " + bedConstantList.get(intAnwser).getConstant() + " SEK \nBack (Enter)");
+                                                bedPriceList.get(intAnwser).setConstant(newDoubleValue);
+                                                save.saveBedPrices(bedPriceList);
+                                                System.out.println("New beds constant price for " + bedPriceList.get(intAnwser).getNumberOfBeds() +
+                                                        " per room is: " + bedPriceList.get(intAnwser).getConstant() + " SEK \nBack (Enter)");
                                                 validate = true;
                                                 input.nextLine();
                                             }
@@ -1343,7 +1362,7 @@ public class HotelLogistics {
                             "1. Make a booking, or view available",
                             "2. View your bookings",
                             "3. View your historic bookings",
-                            "3. Edit account info",
+                            "4. Edit account info",
                             "0. Log out");
                 }
                 loadAllRooms();
@@ -1512,7 +1531,7 @@ public class HotelLogistics {
                         System.out.println("Invalid input. Please type numeric values:");
                         validateInput = false;
                     }
-                    if (beds < 1 || beds > 4) {   //WHAT SHOULD THE MAX NUMBER OF BEDS FOR A ROOM BE???
+                    if (beds < 1 || beds > 4) {
                         System.out.println("Invalid number of beds. Must be 1-4. Try again.");
                         validateInput = false;
                     } else {
@@ -1537,7 +1556,7 @@ public class HotelLogistics {
                         System.out.println("Invalid input. Please type numeric values:");
                         validateInput = false;
                     }
-                    if (standard < 1 || standard > 5) {   //WHAT SHOULD THE MAX NUMBER OF BEDS FOR A ROOM BE???
+                    if (standard < 1 || standard > 5) {
                         System.out.println("Invalid standard. Must be 1-5. Try again.");
                         validateInput = false;
                     } else {
@@ -1934,16 +1953,26 @@ public class HotelLogistics {
 
     private double calculateSingleBookingPrice(LocalDate fromDate, LocalDate toDate, Room room) {  //Used to determine the price of a specific room item booking.
         double price;
+        double standardPrice = 1;
         double bedsConstant = 1;
+        load.loadStandards();
+        load.loadBedPrices();
         long periodDays = ChronoUnit.DAYS.between(fromDate, toDate);
-        double standardPrice = standardList.get(room.getStandard() - 1).getPrice();  //May throw IndexOutOfBoundsException if no match??
-        for (BedPrice beds : bedConstantList) {
-            if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
-                bedsConstant = beds.getConstant();
-                break;
-            }
+        try {
+            standardPrice = standardList.get(room.getStandard() - 1).getPrice();  //May throw IndexOutOfBoundsException if no match??
+        }catch (IndexOutOfBoundsException e) {
+            System.out.println("ERROR! The expected room standard was not found. The given price is invalid.");
         }
+            for (BedPrice beds : bedPriceList) {
+                if (room.getBeds() == beds.getNumberOfBeds()) {  //If number of beds in the room equals
+                    bedsConstant = beds.getConstant();
+                    break;
+                }
+            }
         price = periodDays * standardPrice * bedsConstant;   //nights x standard x beds
+        if(price == 1) {
+            System.out.println("ERROR! Price calculation failed. The given price is invalid.");
+        }
         return price;
     }
 
@@ -2025,12 +2054,17 @@ public class HotelLogistics {
                             validateInput = false;
                         }
                         if (validateInput) {
+                            boolean skip = false;
                             for (Room room : roomList) {
                                 for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                                     if (methodList.get(intChoice - 1).getUniqueID() == room.getRoomBookingList().get(i).getUniqueID()) {    //Find the corresponding account in the original list.
                                         cancelBooking(room.getRoomBookingList().get(i));   //Method call
+                                        skip = true;
                                         break;
                                     }
+                                }
+                                if(skip) {
+                                    break;
                                 }
                             }
                         }
@@ -2135,13 +2169,13 @@ public class HotelLogistics {
                                 for (int i = 0; i < room.getRoomBookingList().size(); i++) {
                                     if (room.getRoomBookingList().get(i).getBookingID() == bookingID) {
                                         room.getRoomBookingList().remove(i);
-                                        i -= i;
+                                        i -= 1;
                                         save.saveRoom(room);
                                     }
                                 }
                             }
 
-                            System.out.printf("%s%d%s%d%n", "Successfully cancelled all ", countElements, " bookings of booking ID: ", bookingID);
+                            System.out.printf("%s%d%s%d%n%s%n", "Successfully cancelled all ", countElements, " bookings of booking ID: ", bookingID, "Back (Enter)");
                             validate = true;
                             //proceed = true;
                             input.nextLine();
@@ -2155,7 +2189,7 @@ public class HotelLogistics {
                                     }
                                 }
                             }
-                            System.out.printf("%s%s%n", "Successfully cancelled booking: ", thisBooking);
+                            System.out.printf("%s%s%n%s%n", "Successfully cancelled booking: ", thisBooking, "Back (Enter)");
                             validate = true;
                             input.nextLine();
                         } else if (menu.equals("0") || menu.equalsIgnoreCase("O")) {
@@ -2420,44 +2454,59 @@ public class HotelLogistics {
         } while (true);
     }
 
-    public void createObjects() {
-        //=================================== ADDING ADMINS =====================================================
-
-        adminList.add(new AccountAdmin("Admin", "admin"));
-
-        //============================ CREATE STANDARD PRICE OBJECT ============================================
-
+    public void createObjectsSaveToFile() {
+        //==================================== CREATE ROOMS =====================================================
+        roomList.add(new Room(1, 1));               //1
+        roomList.add(new Room(1, 1));               //2
+        roomList.add(new Room(1, 2));               //3
+        roomList.add(new Room(1, 2));               //4
+        roomList.add(new Room(2, 1));               //5
+        roomList.add(new Room(2, 1));               //6
+        roomList.add(new Room(2, 1));               //7
+        roomList.add(new Room(2, 2));               //8
+        roomList.add(new Room(2, 2));               //9
+        roomList.add(new Room(2, 2));               //10
+        roomList.add(new Room(2, 2));               //11
+        roomList.add(new Room(2, 2));               //12
+        roomList.add(new Room(2, 3));               //13
+        roomList.add(new Room(2, 3));               //14
+        roomList.add(new Room(2, 3));               //15
+        roomList.add(new Room(2, 4));               //16
+        roomList.add(new Room(2, 4));               //17
+        roomList.add(new Room(2, 5));               //18
+        roomList.add(new Room(2, 5));               //19
+        roomList.add(new Room(4, 1));               //20
+        roomList.add(new Room(4, 2));               //21
+        roomList.add(new Room(4, 2));               //22
+        roomList.add(new Room(4, 3));               //23
+        roomList.add(new Room(4, 4));               //24
+        roomList.add(new Room(4, 5));               //25
+        for (Room room : roomList) {
+            save.saveRoom(room);
+        }//========================== CREATE STANDARD PRICE OBJECTS ============================================
         standardList.add(new StandardPrice(1, 999));
         standardList.add(new StandardPrice(2, 1499));
         standardList.add(new StandardPrice(3, 1999));
         standardList.add(new StandardPrice(4, 2999));
         standardList.add(new StandardPrice(5, 4999));
-
-        //============================ CREATE BEDS OBJECT =======================================================
-
-        bedConstantList.add(new BedPrice(1, 1));
-        bedConstantList.add(new BedPrice(2, 1.2));
-        bedConstantList.add(new BedPrice(4, 1.7));
-
-
-    }
-
-    public void createAccountsSaveToFile() { //Note: Needs to be done before generating bookings.
+        save.saveStandards(standardList);
+        //============================ CREATE BEDS OBJECTS =======================================================
+        bedPriceList.add(new BedPrice(1, 1));
+        bedPriceList.add(new BedPrice(2, 1.2));
+        bedPriceList.add(new BedPrice(4, 1.7));
+        save.saveBedPrices(bedPriceList);
+        //=============================== CREATE ACCOUNTS =======================================================
         customerList.add(new AccountCustomer("Ron Burgundy", "custom", "045125033"));
         customerList.add(new AccountCustomer("Anton Göransson", "custom", "0703545036"));
         customerList.add(new AccountCustomer("Arnold Svensson", "custom", "0705421876"));
         customerList.add(new AccountCustomer("Erik Larsson", "custom", "0704576556"));
         customerList.add(new AccountCustomer("Elin Hansson", "custom", "0707676768"));
         customerList.add(new AccountCustomer("Lena Karlsson", "custom", "0707676768"));
-        adminList.add(new AccountAdmin("Admin", "admin"));
-
+        adminList.add(new AccountAdmin("Admin", "admin")); //Create admin
         customerList.get(5).setCancelledAccount(true); //Set account to cancelled
-
         save.saveCustomers(customerList); //customerList -> File
         save.saveAdmins(adminList);
-    }
-
-    public void createBookingsSaveToFile() {
+        //================================ CREATE BOOKINGS =======================================================
         loadAllRooms();
         boolean sameBookingID = false;
 
@@ -2574,53 +2623,7 @@ public class HotelLogistics {
         }
     }
 
-    public void createRoomsSaveToFile() {
-        //=========================== EXAMPLES OF ADDING ROOMS =====================================================
-        //============================ EXAMPLES OF ADDING ROOMS =====================================================
-
-        roomList.add(new Room(1, 1));               //1
-        roomList.add(new Room(1, 1));               //2
-        roomList.add(new Room(1, 2));               //3
-        roomList.add(new Room(1, 2));               //4
-
-        //================================== 4 ST SINGELROOM. STANDARD 1-2 =========================================
-        //===================================2 ST STANDARD 1 & 2ST STANDARD 2=======================================
-
-        roomList.add(new Room(2, 1));               //5
-        roomList.add(new Room(2, 1));               //6
-        roomList.add(new Room(2, 1));               //7
-        roomList.add(new Room(2, 2));               //8
-        roomList.add(new Room(2, 2));               //9
-        roomList.add(new Room(2, 2));               //10
-        roomList.add(new Room(2, 2));               //11
-        roomList.add(new Room(2, 2));               //12
-        roomList.add(new Room(2, 3));               //13
-        roomList.add(new Room(2, 3));               //14
-        roomList.add(new Room(2, 3));               //15
-        roomList.add(new Room(2, 4));               //16
-        roomList.add(new Room(2, 4));               //17
-        roomList.add(new Room(2, 5));               //18
-        roomList.add(new Room(2, 5));               //19
-
-        //===================================== 15 ST DOUBLE ROOM STANDARD 1-5=======================================
-        //========== 3 ST STANDARD 1, 5 ST STANDARD 2, 3 ST STANDARD 3, 2 ST STANDARD 4, 2 ST STANDARD 5=============
-
-        roomList.add(new Room(4, 1));               //20
-        roomList.add(new Room(4, 2));               //21
-        roomList.add(new Room(4, 2));               //22
-        roomList.add(new Room(4, 3));               //23
-        roomList.add(new Room(4, 4));               //24
-        roomList.add(new Room(4, 5));               //25
-
-        //===================================== 6 ST 4 BEDS ROOM STANDARD 2-4========================================
-        //========= 1 ST STANDARD 1, 2 ST STANDARD 2, 1 ST STANDARD 3, 1 ST STANDARD 4, 1 ST STANDARD 5 =============
-        //======================================SUM ROOMS = 25 =====================================================
-        for (Room room : roomList) {
-            save.saveRoom(room);
-        }
-    }
-
-    public void loadAllRooms() {  // File -> roomList (Creates entire new roomList from file)
+    private void loadAllRooms() {  // File -> roomList (Creates entire new roomList from file)
         ArrayList<Object> data = new ArrayList<>();
         roomList.clear();
         //data.clear();
@@ -2646,7 +2649,7 @@ public class HotelLogistics {
         }
     }
 
-    public void updateAllRooms() { // File -> roomList (Updates the rooms in roomList)
+    private void updateAllRooms() { // File -> roomList (Updates the rooms in roomList)
         ArrayList<Object> data = new ArrayList<>();
         int standard;
         int beds;
@@ -2670,7 +2673,7 @@ public class HotelLogistics {
         }
     }
 
-    public void updateRoom(int roomNumber) {  // File -> roomList (Updates specific room in roomList)
+    private void updateRoom(int roomNumber) {  // File -> roomList (Updates specific room in roomList)
         ArrayList<Object> data = new ArrayList<>();
         int standard;
         int beds;
@@ -2691,7 +2694,7 @@ public class HotelLogistics {
         }
     }
 
-    public void loadAllCustomers() { // File -> customerList (Creates entire new customerList from file)
+    private void loadAllCustomers() { // File -> customerList (Creates entire new customerList from file)
         ArrayList<AccountCustomer> customersFromFile = new ArrayList<>();
         customerList.clear();
             try {
@@ -2710,7 +2713,7 @@ public class HotelLogistics {
             }
     }
 
-    public void updateCustomerList() { // File -> customerList (Updates the existing customer's info in customerList)
+    private void updateCustomerList() { // File -> customerList (Updates the existing customer's info in customerList)
         ArrayList<AccountCustomer> customersFromFile = new ArrayList<>();
         try {
             customersFromFile.clear();
@@ -2747,6 +2750,84 @@ public class HotelLogistics {
                 }
             } else {
                 System.out.println("No admins in the file system.");
+            }
+        } catch (NullPointerException e) {
+            //System.out.println(e.getMessage());
+        }
+    }
+
+    private void loadAllBedPrices() { // File -> bedPriceList (Creates entire new bedPriceList from file)
+        ArrayList<BedPrice> bedPricesFromFile = new ArrayList<>();
+        bedPriceList.clear();
+        try {
+            bedPricesFromFile.clear();
+            bedPricesFromFile = load.loadBedPrices();
+            if (!bedPricesFromFile.isEmpty()) {
+                for (BedPrice bedPrice : bedPricesFromFile) {
+                    bedPriceList.add(new BedPrice(bedPrice.getNumberOfBeds(), bedPrice.getConstant()));
+                }
+            } else {
+                System.out.println("No bed prices in the file system.");
+            }
+        } catch (NullPointerException e) {
+            //System.out.println(e.getMessage());
+        }
+    }
+
+    private void updateBedPriceList() { // File -> bedPriceList (Updates the existing bed prices)
+        ArrayList<BedPrice> bedPricesFromFile = new ArrayList<>();
+        try {
+            bedPricesFromFile.clear();
+            bedPricesFromFile = load.loadBedPrices();
+            if (!bedPricesFromFile.isEmpty()) {
+                for (BedPrice bedPriceFromFile : bedPricesFromFile) {
+                    for (BedPrice bedPriceFromApp : bedPriceList) {
+                        if (bedPriceFromFile.getNumberOfBeds() == bedPriceFromApp.getNumberOfBeds()) {
+                            bedPriceFromApp.setConstant(bedPriceFromFile.getConstant());
+                        }
+                    }
+                }
+            } else {
+                System.out.println("No bed prices in the file system.");
+            }
+        } catch (NullPointerException e) {
+            //System.out.println(e.getMessage());
+        }
+    }
+
+    private void loadAllStandards() { // File -> standardList (Creates entire new standardList from file)
+        ArrayList<StandardPrice> standardsFromFile = new ArrayList<>();
+        standardList.clear();
+        try {
+            standardsFromFile.clear();
+            standardsFromFile = load.loadStandards();
+            if (!standardsFromFile.isEmpty()) {
+                for (StandardPrice standard : standardsFromFile) {
+                    standardList.add(new StandardPrice(standard.getName(), standard.getPrice()));
+                }
+            } else {
+                System.out.println("No room standards in the file system.");
+            }
+        } catch (NullPointerException e) {
+            //System.out.println(e.getMessage());
+        }
+    }
+
+    private void updateStandardList() { // File -> standarList (Updates the existing room standard's price constant values)
+        ArrayList<StandardPrice> standardsFromFile = new ArrayList<>();
+        try {
+            standardsFromFile.clear();
+            standardsFromFile = load.loadStandards();
+            if (!standardsFromFile.isEmpty()) {
+                for (StandardPrice standardFromFile : standardsFromFile) {
+                    for (StandardPrice standardFromApp : standardList) {
+                        if (standardFromFile.getName() == standardFromApp.getName()) {
+                            standardFromApp.setPrice(standardFromFile.getPrice());
+                        }
+                    }
+                }
+            } else {
+                System.out.println("No room standards in the file system.");
             }
         } catch (NullPointerException e) {
             //System.out.println(e.getMessage());
