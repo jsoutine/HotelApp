@@ -4,6 +4,7 @@ import com.company.file_management.DeleteData;
 import com.company.file_management.LoadData;
 import com.company.file_management.SaveData;
 
+import java.sql.SQLOutput;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -291,7 +292,9 @@ public class HotelLogistics {
                 firstName = input.nextLine();
 
                 if (firstName.matches(".*\\d+.*")) {
-                    System.out.println("Your name can't contain numbers. Try again. \n");
+                    System.out.println("Your name can't contain numbers. Try again!\n");
+                } else if (firstName.isEmpty()) {
+                    System.out.println("No letters has been entered. Try again!\n");
                 }
             }
             while (lastName.matches(".*\\d+.*") || lastName.isEmpty()) {
@@ -300,6 +303,8 @@ public class HotelLogistics {
 
                 if (lastName.matches(".*\\d+.*")) {
                     System.out.println("Your name can't contain numbers. Try again. \n");
+                } else if (lastName.isEmpty()) {
+                    System.out.println("No letters has been entered. Try again!\n");
                 }
             }
             while (!phoneNumber.matches(phoneValidate)) {
@@ -324,7 +329,8 @@ public class HotelLogistics {
             } while (!password.equals(passwordCheck));
 
             do {
-                System.out.printf("%n%s%n%s%s%n%s%s%n%s%s%n%s%s%n%n%s%n%s%n%s%n%s%n",
+                System.out.printf("%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s",
+                        "====ACCOUNT VERIFICATION====",
                         "The information you have entered is: ",
                         "First name: ", firstName,
                         "Last name: ", lastName,
@@ -755,8 +761,7 @@ public class HotelLogistics {
                             System.out.println("Invalid input. Try Again:");
                             break;
                     }
-                }
-                while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
+                } while (!choice.equals("1") && !choice.equals("2") && !choice.equals("3") && !choice.equals("4") && !choice.equals("0"));
             }
         } while (!validateInput);
     }
@@ -765,68 +770,117 @@ public class HotelLogistics {
         boolean validateinput = true;
         boolean validateYorN;
         boolean validateExitToChangeName = true;
+        boolean cancel = false;
+        boolean exitChange = false;
 
         do {
             System.out.println("4.3.1. Edit name");
             System.out.println("Name currently assigned: " + loggedInAccount.getName());
             System.out.println("1. Edit current name");
             System.out.println("0. Back");
-
             String choice = input.nextLine();
+
             switch (choice) {
                 case "1":
                     do {
-                        System.out.println("Enter new name: \n0. Cancel.");
-                        choice = input.nextLine();
+                        String fullName;
+                        String firstName;
+                        String lastName = "";
+                        do {
+                            do {
+                                System.out.println("Enter new first name: ");
+                                firstName = input.nextLine();
 
-                        if (choice.equals("0")) {
-
-                            validateinput = true;
-                            System.out.println("Edit name cancelled. \nBack (Enter)");
-
-                        } else if (choice.matches("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-]*[\\s]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-].*")) {
-                            System.out.println("New name: " + choice);
-                            System.out.println("Are you happy with the newly entered name?");
+                                if (firstName.equals("0")) {
+                                    cancel = true;
+                                    exitChange = true;
+                                } else {
+                                    if (firstName.matches(".*\\d+.*") && !firstName.equals("0")) {
+                                        System.out.println("Your first name can't contain numbers. Try again. \n");
+                                        cancel = false;
+                                    } else if (firstName.isEmpty()) {
+                                        System.out.println("No digits entered. Try again.\n");
+                                        cancel = false;
+                                    } else {
+                                        cancel = true;
+                                        exitChange = true;
+                                    }
+                                }
+                            } while (!cancel);
 
                             do {
+                                if (firstName.equals("0")) {
+                                    cancel = true;
+                                    exitChange = true;
+                                } else {
+                                    System.out.println("Enter new last name: ");
+                                    lastName = input.nextLine();
+                                    if (lastName.matches(".*\\d+.*") && !lastName.equals("0")) {
+                                        System.out.println("Your name can't contain numbers. Try again.");
+                                        cancel = false;
+                                    } else if (lastName.isEmpty()) {
+                                        System.out.println("No digits entered. Try again.");
+                                        cancel = false;
+                                    } else if (lastName.equals("0")) {
+                                        cancel = true;
+                                        exitChange = true;
+                                    }
+                                }
+                            } while (!cancel);
+                        } while (!exitChange);
+
+                        fullName = firstName + " " + lastName;
+
+                        if (loggedInAccount.getName().matches(fullName)) {
+                            System.out.println("Name entered matches the previous one. Try again.");
+                            validateExitToChangeName = false;
+                            validateinput = false;
+                        }
+
+                        if (firstName.equals("0") || lastName.equals("0")) {
+                            validateinput = true;
+                            validateExitToChangeName = false;
+                            System.out.println("Edit of name cancelled. \nBack (Enter)");
+                            input.nextLine();
+
+                        } else if (!loggedInAccount.getName().matches(fullName)) {
+                            System.out.println("New name: " + fullName);
+
+                            do {
+                                System.out.println("Keep new name?");
                                 System.out.println("y/n");
                                 String yesOrNo = input.nextLine();
+
                                 if (yesOrNo.equals("0")) {
-                                    System.out.println("Very well, then lets return to the previous menu!");
+                                    System.out.println("Changes cancelled. Returning to menu.\n");
                                     validateExitToChangeName = false;
+                                    validateinput = true;
                                     validateYorN = true;
 
                                 } else {
-
                                     if (yesOrNo.equalsIgnoreCase("Y")) {
-                                        System.out.println("Invalid input. \nBack (Enter)");
-                                        loggedInAccount.setName(choice);
+                                        loggedInAccount.setName(fullName);
                                         save.saveCustomers(customerList);
                                         validateinput = true;
                                         validateYorN = true;
                                         validateExitToChangeName = true;
-                                        input.nextLine();
 
                                     } else if (yesOrNo.equalsIgnoreCase("N")) {
                                         validateinput = false;
                                         validateYorN = true;
+                                        validateExitToChangeName = false;
 
                                     } else {
-                                        System.out.println("Invalid input. Try again:");
+                                        System.out.println("Invalid input. Try again.");
                                         validateinput = false;
                                         validateYorN = false;
                                     }
                                 }
                             } while (!validateYorN);
-
-                        } else if (!choice.matches("^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-]*[\\s]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'-].*")) {
-
-                            System.out.println("Format not followed. Try again:");
-                            validateinput = false;
-                            validateExitToChangeName = true;
                         }
                     } while (!validateinput);
                     break;
+
                 case "0":
                 case "o":
                 case "O":
@@ -835,15 +889,16 @@ public class HotelLogistics {
                     input.nextLine();
                     break;
                 default:
-                    System.out.println("Invalid input. Try again:");
+                    System.out.println("Invalid input. Try again.");
                     validateExitToChangeName = false;
                     break;
             }
         } while (!validateExitToChangeName);
     }
 
+
     private void editAccountPhoneNr(AccountCustomer loggedInAccount) {
-        boolean validateInput = true;
+        boolean validateInput;
         boolean cancel = false;
 
         do {
@@ -2696,20 +2751,20 @@ public class HotelLogistics {
     private void loadAllCustomers() { // File -> customerList (Creates entire new customerList from file)
         ArrayList<AccountCustomer> customersFromFile = new ArrayList<>();
         customerList.clear();
-            try {
-                customersFromFile.clear();
-                customersFromFile = load.loadCustomers();
-                if (!customersFromFile.isEmpty()) {
-                    for (AccountCustomer customer : customersFromFile) {
-                        customerList.add(new AccountCustomer(customer.getName(), customer.getPassword(), customer.isCancelledAccount(),
-                                customer.getAccountID(), customer.getPhoneNumber()));
-                    }
-                } else {
-                    System.out.println("No customers in the file system.");
+        try {
+            customersFromFile.clear();
+            customersFromFile = load.loadCustomers();
+            if (!customersFromFile.isEmpty()) {
+                for (AccountCustomer customer : customersFromFile) {
+                    customerList.add(new AccountCustomer(customer.getName(), customer.getPassword(), customer.isCancelledAccount(),
+                            customer.getAccountID(), customer.getPhoneNumber()));
                 }
-            } catch (NullPointerException e) {
-                //System.out.println(e.getMessage());
+            } else {
+                System.out.println("No customers in the file system.");
             }
+        } catch (NullPointerException e) {
+            //System.out.println(e.getMessage());
+        }
     }
 
     private void updateCustomerList() { // File -> customerList (Updates the existing customer's info in customerList)
