@@ -6,22 +6,16 @@ import java.time.LocalDate;
 public class BookingConfirm extends Booking implements Serializable {
     private AccountCustomer customer;
     private int bookingID;
-    private static int bookingIdCount = 0;
-    private boolean sameBookingID;
     private int uniqueID;  //The unique room bookingID, not dependent on bookingID
     private static int uniqueIDcounter;
     private boolean checkedIn;
     private boolean checkedOut;
 
-    public BookingConfirm (Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingID) {
+    public BookingConfirm (Room room, LocalDate fromDate, LocalDate toDate, double price, int bookingID, int uniqueID, AccountCustomer customer) {
         super(room, fromDate, toDate, price);
         this.customer = customer;
-        if (!sameBookingID) {    //The first room in a booking has: sameBookingID = false. Thereby increasing the first, and setting the following to the same.
-            bookingID = ++bookingIdCount;
-        }else {
-            bookingID = bookingIdCount;
-        }
-        uniqueID = ++uniqueIDcounter;
+        this.bookingID = bookingID;
+        this.uniqueID = uniqueID;
         checkedIn = false;
         checkedOut = false;
     }

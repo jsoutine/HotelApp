@@ -143,4 +143,30 @@ public class LoadData {
             return null;
         }
     }
+
+    public int[] loadEntityCounts() { //For loading count values for ID's: Rooms(0), Customers(1), Admins(2) Bookings(3)
+        File file = new File("src/com/company/file_management/files/entityCounts.dat");
+        int[] entityValues = new int[5];
+        if(file.exists()) {
+            try {
+                FileInputStream fileInput = new FileInputStream(file);
+                ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+
+                entityValues = (int[]) objectInput.readObject();
+
+                fileInput.close();
+                objectInput.close();
+                return entityValues;
+            } catch (IOException i) {
+                i.printStackTrace();
+                return null;
+            } catch (ClassNotFoundException c) {
+                c.printStackTrace();
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
 }

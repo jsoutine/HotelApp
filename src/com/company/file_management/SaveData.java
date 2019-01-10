@@ -102,4 +102,21 @@ public class SaveData {
             i.printStackTrace();
         }
     }
+
+    public void saveEntityCounts(int[] entityValues) { //For saving count values for ID's: Rooms(0), Accounts(1), Bookings(2)
+        try {
+            File file = new File("src/com/company/file_management/files/entityCounts.dat");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream fileOutput = new FileOutputStream(file, false);
+            ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+
+            objectOutput.writeObject(entityValues);
+            objectOutput.close();
+            fileOutput.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
 }
