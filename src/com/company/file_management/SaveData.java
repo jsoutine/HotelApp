@@ -103,7 +103,7 @@ public class SaveData {
         }
     }
 
-    public void saveEntityCounts(int[] entityValues) { //For saving count values for ID's: Rooms(0), Accounts(1), Bookings(2)
+    public void saveEntityCounts(int[] entityValues) { //For saving count values for ID's: Rooms(0), Customers(1), Admins(2), Booking ID(3), Unique booking ID (4)
         try {
             File file = new File("src/com/company/file_management/files/entityCounts.dat");
             if (!file.exists()) {
