@@ -1,7 +1,5 @@
 package com.company;
 
-import java.awt.print.Book;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -13,13 +11,9 @@ public class HotelApp {
         HotelApp myApp = new HotelApp();
         HotelLogistics logistics = new HotelLogistics();
 
-        //======================= INITIALIZE OBJECTS FOR DEMO PURPOSE =================================================
+        //==========  INITIALIZE OBJECTS FOR DEMO PURPOSE; Comment out if not wanting to boot the files ===============
 
-        //The order here is important.
-        //logistics.createRoomsSaveToFile();
-        //logistics.createCustomersSaveToFile();
-        logistics.createObjects(); //Don't comment out this until all of it's objects are written to files
-        //logistics.createBookingsSaveToFile();
+        //logistics.createObjectsSaveToFile(); System.out.println("CREATING OBJECTS. To instead load from file; comment out this method (logistics.createObjectsSaveToFile()) from Class HotelApp.");
 
         //=============================================================================================================
 

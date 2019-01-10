@@ -12,7 +12,7 @@ public class BedPrice implements Serializable {
             this.constant = constant;
         } else {
             throw new IllegalArgumentException (
-            "constant value must me atleast one");
+            "Constant value must be over 0");
         }
         this.numberOfBeds = numberOfBeds;
     }

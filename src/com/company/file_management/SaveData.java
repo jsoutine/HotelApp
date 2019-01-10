@@ -1,8 +1,6 @@
 package com.company.file_management;
 
-import com.company.AccountCustomer;
-import com.company.BookingConfirm;
-import com.company.Room;
+import com.company.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +20,7 @@ public class SaveData {
 
         try {
             File file = new File("src/com/company/file_management/files/room" + room.getRoomNumber() + ".ser");
-            if(!file.exists()) {
+            if (!file.exists()) {
                 file.createNewFile();
             }
             FileOutputStream fileOutput = new FileOutputStream(file, false);
@@ -37,10 +35,10 @@ public class SaveData {
         }
     }
 
-    public void saveCustomers (ArrayList<AccountCustomer> customerList) {
+    public void saveCustomers(ArrayList<AccountCustomer> customerList) {
         try {
             File file = new File("src/com/company/file_management/files/customers.ser");
-            if(!file.exists()) {
+            if (!file.exists()) {
                 file.createNewFile();
             }
             FileOutputStream fileOutput = new FileOutputStream(file, false);
@@ -49,7 +47,58 @@ public class SaveData {
             objectOutput.writeObject(customerList);
             objectOutput.close();
             fileOutput.close();
-        }catch (IOException i) {
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public void saveAdmins(ArrayList<AccountAdmin> adminArrayList) {
+        try {
+            File file = new File("src/com/company/file_management/files/admins.ser");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream fileOutput = new FileOutputStream(file, false);
+            ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+
+            objectOutput.writeObject(adminArrayList);
+            objectOutput.close();
+            fileOutput.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public void saveBedPrices(ArrayList<BedPrice> bedsList) {
+        try {
+            File file = new File("src/com/company/file_management/files/beds.ser");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream fileOutput = new FileOutputStream(file, false);
+            ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+
+            objectOutput.writeObject(bedsList);
+            objectOutput.close();
+            fileOutput.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public void saveStandards(ArrayList<StandardPrice> standardList) {
+        try {
+            File file = new File("src/com/company/file_management/files/standards.ser");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream fileOutput = new FileOutputStream(file, false);
+            ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+
+            objectOutput.writeObject(standardList);
+            objectOutput.close();
+            fileOutput.close();
+        } catch (IOException i) {
             i.printStackTrace();
         }
     }

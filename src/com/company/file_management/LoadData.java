@@ -1,6 +1,9 @@
 package com.company.file_management;
 
+import com.company.AccountAdmin;
 import com.company.AccountCustomer;
+import com.company.BedPrice;
+import com.company.StandardPrice;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +53,84 @@ public class LoadData {
                 fileInput.close();
                 objectInput.close();
                 return customerList;
+            } catch (IOException i) {
+                i.printStackTrace();
+                return null;
+            } catch (ClassNotFoundException c) {
+                c.printStackTrace();
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<AccountAdmin> loadAdmins() {
+        File file = new File("src/com/company/file_management/files/admins.ser");
+        ArrayList<AccountAdmin> adminList = new ArrayList<>();
+        if(file.exists()) {
+            try {
+                FileInputStream fileInput = new FileInputStream(file);
+                ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+
+                adminList = (ArrayList<AccountAdmin>) objectInput.readObject();
+
+                fileInput.close();
+                objectInput.close();
+                return adminList;
+            } catch (IOException i) {
+                i.printStackTrace();
+                return null;
+            } catch (ClassNotFoundException c) {
+                c.printStackTrace();
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<BedPrice> loadBedPrices() {
+        File file = new File("src/com/company/file_management/files/beds.ser");
+        ArrayList<BedPrice> bedsList = new ArrayList<>();
+        if(file.exists()) {
+            try {
+                FileInputStream fileInput = new FileInputStream(file);
+                ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+
+                bedsList = (ArrayList<BedPrice>) objectInput.readObject();
+
+                fileInput.close();
+                objectInput.close();
+                return bedsList;
+            } catch (IOException i) {
+                i.printStackTrace();
+                return null;
+            } catch (ClassNotFoundException c) {
+                c.printStackTrace();
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<StandardPrice> loadStandards() {
+        File file = new File("src/com/company/file_management/files/standards.ser");
+        ArrayList<StandardPrice> standardList = new ArrayList<>();
+        if(file.exists()) {
+            try {
+                FileInputStream fileInput = new FileInputStream(file);
+                ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+
+                standardList = (ArrayList<StandardPrice>) objectInput.readObject();
+
+                fileInput.close();
+                objectInput.close();
+                return standardList;
             } catch (IOException i) {
                 i.printStackTrace();
                 return null;
