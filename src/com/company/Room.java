@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class Room implements Serializable {
     private int roomNumber;
-    private static int roomCounter;
     private int beds;
     private int standard;
     private ArrayList<BookingConfirm> roomBookingList = new ArrayList<>();
@@ -17,7 +16,8 @@ public class Room implements Serializable {
         this.roomBookingList = roomBookingList;
     }
 
-    public Room(int beds, int standard) {
+    public Room(int roomNumber, int beds, int standard) {
+        this.roomNumber = roomNumber;
         if(beds == 1 || beds == 2 || beds == 4) {
             this.beds = beds;
         }else{
@@ -30,7 +30,6 @@ public class Room implements Serializable {
             throw new IllegalArgumentException(
                 "Standards only rank 1-5.");
         }
-        roomNumber = ++roomCounter;
     }
 
     public ArrayList<BookingConfirm> getRoomBookingList(){

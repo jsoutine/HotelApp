@@ -4,7 +4,6 @@ import com.company.file_management.DeleteData;
 import com.company.file_management.LoadData;
 import com.company.file_management.SaveData;
 
-import java.sql.SQLOutput;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -347,7 +346,7 @@ public class HotelLogistics {
 
                 switch (choice) {
                     case "Y":
-                        System.out.printf("Thank you %s. ", name);
+                        System.out.printf("Thank you %s.%n", name);
                         checkAll = true;
                         break;
                     case "N":
@@ -363,11 +362,16 @@ public class HotelLogistics {
                 }
             } while (!checkSwitch);
         } while (!checkAll);
-
-        AccountCustomer newDude = new AccountCustomer(name, password, phoneNumber);
-        customerList.add(newDude);
-        save.saveCustomers(customerList);
-        System.out.printf("You can now log in with your unique user ID: %s, and your chosen password. %n%n", newDude.getAccountID());
+        try {
+            AccountCustomer newDude = new AccountCustomer(getEntityCounts("Customer"), name, password, phoneNumber);
+            customerList.add(newDude);
+            save.saveCustomers(customerList);
+            System.out.printf("You can now log in with your unique user ID: %s, and your chosen password. %n%n", newDude.getAccountID());
+        }catch(IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Back (Enter)");
+        input.nextLine();
     }
 
     //3.1.3.
@@ -1054,7 +1058,7 @@ public class HotelLogistics {
                         input.nextLine();
 
                     } else {
-                        System.out.println("Wrong password has been entered. Try again! \nPress (Enter)");
+                        System.out.println("Invalid password. Try again:");
                         validateInput = false;
                         validatePW = false;
                         input.nextLine();
@@ -1118,10 +1122,15 @@ public class HotelLogistics {
                         }
                         if (standard == 1 || standard == 2 || standard == 3 || standard == 4 || standard == 5) {
                             validateInput = true;
-                            Room newRoom = new Room(beds, standard);
-                            roomList.add(newRoom);
-                            save.saveRoom(newRoom);
-                            System.out.println("New room has been created!\nBack (Enter)");
+                            try {
+                                Room newRoom = new Room(getEntityCounts("Room"), beds, standard);
+                                roomList.add(newRoom);
+                                save.saveRoom(newRoom);
+                                System.out.println("New room has been created!");
+                            }catch(IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
+                            System.out.println("Back (Enter)");
                             input.nextLine();
                         } else {
                             validateInput = false;
@@ -1678,7 +1687,7 @@ public class HotelLogistics {
                     System.out.println("Invalid date. Please try again:");
                     validateInput = false;
                 } catch (DateTimeException e) {     //Or DateTimeException
-                    System.out.println(e.getMessage() + ". Please try again:");
+                    System.out.println("The date does not exist. Please try again:");
                     validateInput = false;
                 }
                 if (validateInput == true && fromDate.isBefore(LocalDate.now())) {
@@ -1713,7 +1722,7 @@ public class HotelLogistics {
                         System.out.println("Invalid date. Please try again:");
                         validateInput = false;
                     } catch (DateTimeException e) {     //Or DateTimeException
-                        System.out.println(e.getMessage() + ". Please try again:");
+                        System.out.println("The date does not exist. Please try again:");
                         validateInput = false;
                     }
                     if (validateInput == true && (toDate.isBefore(fromDate)) || toDate.equals(fromDate)) {
@@ -1856,13 +1865,23 @@ public class HotelLogistics {
                         System.out.printf("%-4s%s%n", Integer.toString(++countElements).concat("."), booking);
                     }
                     if (oneRoom) {   //If booking one room
-                        System.out.println("1-n: Make a booking from the list. \n0. Cancel. No booking will be made.");
+                        if (matchingResults.size() == 1) {
+                            System.out.printf("%s%n", "Press 1 to make the suggested booking above.");
+                        } else {
+                            System.out.printf("%-6s%s%n%-6s%n",
+                                    ("1-").concat(Integer.toString(countElements)).concat(":"), "Make a booking from the list.", "0. Cancel. No booking will be made.");
+                        }
                     } else {      //If booking more than one room
-                        System.out.printf("%s%d%s%.02f%s%n%s%n%s%s%s%n%s%n",
-                                "Added rooms: ", addedBookings.size(), ". Sum: ", calculateSumBookingPrice(addedBookings), " SEK.",
-                                "1-n: Add a room from the list to your booking.",
-                                "P. Proceed to make booking of ", addedBookings.size(), " added rooms.",
-                                "0. Cancel. No booking will be made.");
+                        System.out.printf("%s%d%s%.02f%s%n",
+                                "Added rooms: ", addedBookings.size(), ". Sum: ", calculateSumBookingPrice(addedBookings), " SEK.");
+                        if (matchingResults.size() == 1) {
+                            System.out.printf("%s%n", "Press 1 to add the suggested room to your booking.");
+                        } else {
+                            System.out.printf("%-6s%s%n",
+                                    ("1-").concat(Integer.toString(countElements)).concat(":"), "Add a room from the list to your booking.");
+                        }
+                        System.out.printf("%-6s%s%d%s%n%-6s%s%n", "P.", "Proceed to make booking of ", addedBookings.size(), " added rooms.",
+                                "0.", "Cancel. No booking will be made." );
                     }
                     do {
                         answer = input.nextLine();
@@ -2010,19 +2029,21 @@ public class HotelLogistics {
                 switch (answer) {
                     case "Y":
                     case "y":
+                        int bookingID = 0;
                         try {
-                            boolean sameBookingID = false;
-                            for (int i = 0; i < addedBookings.size(); i++) {
-                                if (i != 0) {                     //Only the first room of a booking increments the bookingID.
-                                    sameBookingID = true;
+                            bookingID = getEntityCounts("BookingID");
+                            try {
+                                for (BookingSearch booking : addedBookings) {
+                                    bookingDates(booking.getRoom(), booking.getFromDate(), booking.getToDate(),
+                                            concernedAccount, booking.getPrice(), bookingID, getEntityCounts("UniqueBookingID"));
                                 }
-                                bookingDates(addedBookings.get(i).getRoom(), addedBookings.get(i).getFromDate(),
-                                        addedBookings.get(i).getToDate(), concernedAccount, addedBookings.get(i).getPrice(), sameBookingID);
+                                //validateInput = true;
+                                System.out.println("Booking succesful!");
+                            } catch (IllegalArgumentException f) {
+                                System.out.println("BOOKING FAILED!\n" + f.getMessage());
                             }
-                            //validateInput = true;
-                            System.out.println("Booking succesful!");
-                        } catch (IllegalArgumentException e) {
-                            System.out.println("BOOKING FAILED!\n" + e.getMessage());
+                        }catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
                         }
                         validateInput = true;
                         System.out.println("Back (Enter)");
@@ -2092,23 +2113,23 @@ public class HotelLogistics {
     }
 
     //Part of 4.1.
-    private void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, boolean sameBookingId) {  //Can be used to book, or sort bookings in cronological time order.
+    private void bookingDates(Room room, LocalDate fromDate, LocalDate toDate, AccountCustomer customer, double price, int bookingID, int uniqueBookingID) {  //Can be used to book, or sort bookings in cronological time order.
         updateRoom(room.getRoomNumber());
         if (room.getRoomBookingList().isEmpty()) {                                                  //If booking list for room is empty.
-            room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));
+            room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, price, bookingID, uniqueBookingID, customer));
             save.saveRoom(room);
             //System.out.println("Booking successful. Code 1");
             return;
         } else if (room.getRoomBookingList().size() == 1) {                                        //If only one booking in list.
             if (toDate.isEqual(room.getRoomBookingList().get(0).getFromDate()) ||                      // If check out is same day as existing check in.
                     toDate.isBefore(room.getRoomBookingList().get(0).getFromDate())) {                 // If check out is before existing check in.
-                room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));     //Add before existing booking in list.
+                room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, price, bookingID, uniqueBookingID, customer));     //Add before existing booking in list.
                 save.saveRoom(room);
                 //System.out.println("Booking successful. Code 2");
                 return;
             } else if (fromDate.isEqual(room.getRoomBookingList().get(0).getToDate()) ||      // If check in is same day as existing check out.
                     fromDate.isAfter(room.getRoomBookingList().get(0).getToDate())) {         // If check in is after existing check out.
-                room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));             // Add after existing booking in list.
+                room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, price, bookingID, uniqueBookingID, customer));             // Add after existing booking in list.
                 save.saveRoom(room);
                 //System.out.println("Booking successful. Code 3");
                 return;
@@ -2122,13 +2143,13 @@ public class HotelLogistics {
                 if (i == 0) {
                     if (toDate.equals(room.getRoomBookingList().get(i).getFromDate()) ||    // If index is 0 && if check out is same day as existing check in || check out is before existing check in.
                             toDate.isBefore(room.getRoomBookingList().get(i).getFromDate())) {
-                        room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));       //Add before existing booking in room booking list.
+                        room.getRoomBookingList().add(0, new BookingConfirm(room, fromDate, toDate, price, bookingID, uniqueBookingID, customer));       //Add before existing booking in room booking list.
                         save.saveRoom(room);
                         //System.out.println("Booking successful. Code 4 " + " Iteration " + i);
                         return;
                     } else if ((fromDate.equals(room.getRoomBookingList().get(i).getToDate()) || fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) &&
                             (toDate.equals(room.getRoomBookingList().get(1).getFromDate()) || toDate.isBefore(room.getRoomBookingList().get(1).getFromDate()))) {
-                        room.getRoomBookingList().add(i + 1, new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));
+                        room.getRoomBookingList().add(i + 1, new BookingConfirm(room, fromDate, toDate, price, bookingID, uniqueBookingID, customer));
                         save.saveRoom(room);
                         return;
                     }
@@ -2141,7 +2162,7 @@ public class HotelLogistics {
                             fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) &&
                             (toDate.equals(room.getRoomBookingList().get(i + 1).getFromDate()) ||              // If check out is same day as next check in.
                                     toDate.isBefore(room.getRoomBookingList().get(i + 1).getFromDate()))) {    // If check out is before next check in
-                        room.getRoomBookingList().add(i + 1, new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));       // Add after booking i. (Available between existing bookings i & i+1)
+                        room.getRoomBookingList().add(i + 1, new BookingConfirm(room, fromDate, toDate, price, bookingID, uniqueBookingID, customer));       // Add after booking i. (Available between existing bookings i & i+1)
                         save.saveRoom(room);
                         //System.out.println("Booking successful. Code 5 " + " Iteration " + i);
                         return;
@@ -2152,7 +2173,7 @@ public class HotelLogistics {
                 } else if (i == room.getRoomBookingList().size() - 1) {                         // If index points to last item in list.
                     if (fromDate.equals(room.getRoomBookingList().get(i).getToDate()) ||        // If check in is same day as existing check out.
                             fromDate.isAfter(room.getRoomBookingList().get(i).getToDate())) {   // If check in is after existing check ou (i).
-                        room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, customer, price, sameBookingId));
+                        room.getRoomBookingList().add(new BookingConfirm(room, fromDate, toDate, price, bookingID, uniqueBookingID, customer));
                         save.saveRoom(room);
                         //System.out.println("Booking successful. Code 6 " + " Iteration " + i);
                         return;
@@ -2509,32 +2530,41 @@ public class HotelLogistics {
     }
 
     public void createObjectsSaveToFile() {
+        //=============================== INITIALIZE OBJECT COUNT ID'S ================================================
+        int[] entityCount = new int[5];
+        entityCount[0] = 1; //Rooms
+        entityCount[1] = 1; //Customers
+        entityCount[2] = 1; //Admins
+        entityCount[3] = 1; //BookingID
+        entityCount[4] = 1; //Unique booking ID
+        save.saveEntityCounts(entityCount);
+
         //==================================== CREATE ROOMS =====================================================
-        roomList.add(new Room(1, 1));               //1
-        roomList.add(new Room(1, 1));               //2
-        roomList.add(new Room(1, 2));               //3
-        roomList.add(new Room(1, 2));               //4
-        roomList.add(new Room(2, 1));               //5
-        roomList.add(new Room(2, 1));               //6
-        roomList.add(new Room(2, 1));               //7
-        roomList.add(new Room(2, 2));               //8
-        roomList.add(new Room(2, 2));               //9
-        roomList.add(new Room(2, 2));               //10
-        roomList.add(new Room(2, 2));               //11
-        roomList.add(new Room(2, 2));               //12
-        roomList.add(new Room(2, 3));               //13
-        roomList.add(new Room(2, 3));               //14
-        roomList.add(new Room(2, 3));               //15
-        roomList.add(new Room(2, 4));               //16
-        roomList.add(new Room(2, 4));               //17
-        roomList.add(new Room(2, 5));               //18
-        roomList.add(new Room(2, 5));               //19
-        roomList.add(new Room(4, 1));               //20
-        roomList.add(new Room(4, 2));               //21
-        roomList.add(new Room(4, 2));               //22
-        roomList.add(new Room(4, 3));               //23
-        roomList.add(new Room(4, 4));               //24
-        roomList.add(new Room(4, 5));               //25
+        roomList.add(new Room(getEntityCounts("Room"), 1, 1));               //1
+        roomList.add(new Room(getEntityCounts("Room"), 1, 1));               //2
+        roomList.add(new Room(getEntityCounts("Room"), 1, 2));               //3
+        roomList.add(new Room(getEntityCounts("Room"), 1, 2));               //4
+        roomList.add(new Room(getEntityCounts("Room"), 2, 1));               //5
+        roomList.add(new Room(getEntityCounts("Room"), 2, 1));               //6
+        roomList.add(new Room(getEntityCounts("Room"), 2, 1));               //7
+        roomList.add(new Room(getEntityCounts("Room"), 2, 2));               //8
+        roomList.add(new Room(getEntityCounts("Room"), 2, 2));               //9
+        roomList.add(new Room(getEntityCounts("Room"), 2, 2));               //10
+        roomList.add(new Room(getEntityCounts("Room"), 2, 2));               //11
+        roomList.add(new Room(getEntityCounts("Room"), 2, 2));               //12
+        roomList.add(new Room(getEntityCounts("Room"), 2, 3));               //13
+        roomList.add(new Room(getEntityCounts("Room"), 2, 3));               //14
+        roomList.add(new Room(getEntityCounts("Room"), 2, 3));               //15
+        roomList.add(new Room(getEntityCounts("Room"), 2, 4));               //16
+        roomList.add(new Room(getEntityCounts("Room"), 2, 4));               //17
+        roomList.add(new Room(getEntityCounts("Room"), 2, 5));               //18
+        roomList.add(new Room(getEntityCounts("Room"), 2, 5));               //19
+        roomList.add(new Room(getEntityCounts("Room"), 4, 1));               //20
+        roomList.add(new Room(getEntityCounts("Room"), 4, 2));               //21
+        roomList.add(new Room(getEntityCounts("Room"), 4, 2));               //22
+        roomList.add(new Room(getEntityCounts("Room"), 4, 3));               //23
+        roomList.add(new Room(getEntityCounts("Room"), 4, 4));               //24
+        roomList.add(new Room(getEntityCounts("Room"), 4, 5));               //25
         for (Room room : roomList) {
             save.saveRoom(room);
         }//========================== CREATE STANDARD PRICE OBJECTS ============================================
@@ -2550,26 +2580,25 @@ public class HotelLogistics {
         bedPriceList.add(new BedPrice(4, 1.7));
         save.saveBedPrices(bedPriceList);
         //=============================== CREATE ACCOUNTS =======================================================
-        customerList.add(new AccountCustomer("Ron Burgundy", "custom", "045125033"));
-        customerList.add(new AccountCustomer("Anton Göransson", "custom", "0703545036"));
-        customerList.add(new AccountCustomer("Arnold Svensson", "custom", "0705421876"));
-        customerList.add(new AccountCustomer("Erik Larsson", "custom", "0704576556"));
-        customerList.add(new AccountCustomer("Elin Hansson", "custom", "0707676768"));
-        customerList.add(new AccountCustomer("Lena Karlsson", "custom", "0707676768"));
-        adminList.add(new AccountAdmin("Admin", "admin")); //Create admin
+        customerList.add(new AccountCustomer(getEntityCounts("Customer"),"Ron Burgundy", "custom", "045125033"));
+        customerList.add(new AccountCustomer(getEntityCounts("Customer"),"Anton Göransson", "custom", "0703545036"));
+        customerList.add(new AccountCustomer(getEntityCounts("Customer"),"Arnold Svensson", "custom", "0705421876"));
+        customerList.add(new AccountCustomer(getEntityCounts("Customer"),"Erik Larsson", "custom", "0704576556"));
+        customerList.add(new AccountCustomer(getEntityCounts("Customer"),"Elin Hansson", "custom", "0707676768"));
+        customerList.add(new AccountCustomer(getEntityCounts("Customer"),"Lena Karlsson", "custom", "0707676768"));
+        adminList.add(new AccountAdmin(getEntityCounts("Admin"),"Admin", "admin")); //Create admin
         customerList.get(5).setCancelledAccount(true); //Set account to cancelled
         save.saveCustomers(customerList); //customerList -> File
         save.saveAdmins(adminList);
         //================================ CREATE BOOKINGS =======================================================
         loadAllRooms();
-        boolean sameBookingID = false;
 
         LocalDate fromDate1 = LocalDate.of(2019, 3, 12);
-        LocalDate toDate1 = LocalDate.of(2019, 3, 21);
+        LocalDate toDate1 = LocalDate.of(2019, 3, 13);
 
         try {    //                room       ,   customer
             double price1 = calculateSingleBookingPrice(fromDate1, toDate1, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate1, toDate1, customerList.get(1), price1, sameBookingID);
+            bookingDates(roomList.get(0), fromDate1, toDate1, customerList.get(1), price1, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED!1 " + e.getMessage());
         }
@@ -2578,7 +2607,7 @@ public class HotelLogistics {
         LocalDate toDate2 = LocalDate.of(2019, 2, 15);
         try {
             double price2 = calculateSingleBookingPrice(fromDate2, toDate2, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate2, toDate2, customerList.get(2), price2, sameBookingID);
+            bookingDates(roomList.get(0), fromDate2, toDate2, customerList.get(2), price2, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -2587,7 +2616,7 @@ public class HotelLogistics {
         LocalDate toDate3 = LocalDate.of(2019, 7, 13);
         try {
             double price3 = calculateSingleBookingPrice(fromDate3, toDate3, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate3, toDate3, customerList.get(3), price3, sameBookingID);
+            bookingDates(roomList.get(0), fromDate3, toDate3, customerList.get(3), price3, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -2596,16 +2625,16 @@ public class HotelLogistics {
         LocalDate toDate4 = LocalDate.of(2019, 5, 18);
         try {
             double price4 = calculateSingleBookingPrice(fromDate4, toDate4, roomList.get(2));
-            bookingDates(roomList.get(2), fromDate4, toDate4, customerList.get(4), price4, sameBookingID);
+            bookingDates(roomList.get(2), fromDate4, toDate4, customerList.get(4), price4, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
         LocalDate fromDate5 = LocalDate.of(2019, 6, 12);
-        LocalDate toDate5 = LocalDate.of(2019, 6, 17);
+        LocalDate toDate5 = LocalDate.of(2019, 6, 14);
         try {
             double price5 = calculateSingleBookingPrice(fromDate4, toDate4, roomList.get(2));
-            bookingDates(roomList.get(2), fromDate5, toDate5, customerList.get(5), price5, sameBookingID);
+            bookingDates(roomList.get(2), fromDate5, toDate5, customerList.get(5), price5, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -2614,7 +2643,7 @@ public class HotelLogistics {
         LocalDate toDate6 = LocalDate.of(2019, 5, 24);
         try {
             double price6 = calculateSingleBookingPrice(fromDate6, toDate6, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate6, toDate6, customerList.get(4), price6, sameBookingID);
+            bookingDates(roomList.get(0), fromDate6, toDate6, customerList.get(4), price6, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -2623,7 +2652,7 @@ public class HotelLogistics {
         LocalDate toDate7 = LocalDate.of(2019, 2, 5);
         try {
             double price7 = calculateSingleBookingPrice(fromDate7, toDate7, roomList.get(0));
-            bookingDates(roomList.get(0), fromDate7, toDate7, customerList.get(4), price7, sameBookingID);
+            bookingDates(roomList.get(0), fromDate7, toDate7, customerList.get(4), price7, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -2632,7 +2661,7 @@ public class HotelLogistics {
         LocalDate toDate8 = LocalDate.of(2019, 1, 12);
         try {
             double price8 = calculateSingleBookingPrice(fromDate8, toDate8, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate8, toDate8, customerList.get(0), price8, sameBookingID);
+            bookingDates(roomList.get(9), fromDate8, toDate8, customerList.get(0), price8, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -2641,7 +2670,7 @@ public class HotelLogistics {
         LocalDate toDate9 = LocalDate.of(2019, 2, 16);
         try {
             double price9 = calculateSingleBookingPrice(fromDate9, toDate9, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate9, toDate9, customerList.get(0), price9, sameBookingID);
+            bookingDates(roomList.get(9), fromDate9, toDate9, customerList.get(0), price9, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -2650,7 +2679,7 @@ public class HotelLogistics {
         LocalDate toDate10 = LocalDate.of(2019, 1, 18);
         try {
             double price10 = calculateSingleBookingPrice(fromDate10, toDate10, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate10, toDate10, customerList.get(0), price10, sameBookingID);
+            bookingDates(roomList.get(9), fromDate10, toDate10, customerList.get(0), price10, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -2659,16 +2688,16 @@ public class HotelLogistics {
         LocalDate toDate11 = LocalDate.of(2019, 2, 18);
         try {
             double price11 = calculateSingleBookingPrice(fromDate11, toDate11, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate11, toDate11, customerList.get(0), price11, sameBookingID);
+            bookingDates(roomList.get(9), fromDate11, toDate11, customerList.get(0), price11, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
 
-        LocalDate fromDate12 = LocalDate.of(2019, 1, 2); //19-2-20
-        LocalDate toDate12 = LocalDate.of(2019, 1, 3);   //19-2-21
+        LocalDate fromDate12 = LocalDate.of(2019, 1, 11); //19-2-20
+        LocalDate toDate12 = LocalDate.of(2019, 1, 12);   //19-2-21
         try {
-            double price12 = calculateSingleBookingPrice(fromDate12, toDate12, roomList.get(9));
-            bookingDates(roomList.get(9), fromDate12, toDate12, customerList.get(0), price12, sameBookingID);
+            double price12 = calculateSingleBookingPrice(fromDate12, toDate12, roomList.get(10));
+            bookingDates(roomList.get(10), fromDate12, toDate12, customerList.get(0), price12, getEntityCounts("BookingID"), getEntityCounts("UniqueBookingID"));
         } catch (IllegalArgumentException e) {
             System.out.println("BOOKING FAILED! " + e.getMessage());
         }
@@ -2886,5 +2915,34 @@ public class HotelLogistics {
         } catch (NullPointerException e) {
             //System.out.println(e.getMessage());
         }
+    }
+
+    private int getEntityCounts (String ID) { //Entity counts from file. Increments and saves after every use.
+        int[] theEntities = new int[5];
+        int theID = 0;
+
+        theEntities = load.loadEntityCounts();
+        switch (ID) {
+            case "Room":
+                theID = theEntities[0]++;
+                break;
+            case "Customer":
+                theID = theEntities[1]++;
+                break;
+            case "Admin":
+                theID = theEntities[2]++;
+                break;
+            case "BookingID":
+                theID = theEntities[3]++;
+                break;
+            case "UniqueBookingID":
+                theID = theEntities[4]++;
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Unable to create " + ID + ". Error when loading data from server files.");
+        }
+        save.saveEntityCounts(theEntities);
+        return theID;
     }
 }
