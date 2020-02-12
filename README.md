@@ -3,6 +3,6 @@ An application for a hotel booking system to be used by hotel employees and cust
 
 The application uses dynamic functionality, supporting a realistic implementation.
 
-Frequently saving and updating to common files, the application has the functionality to  support management from multiple users simultaneously. 
+Frequently saving and updating to common files, the application has the functionality to  support management from multiple users. 
 
 Scaleable for hotels of any size.
